@@ -11,7 +11,8 @@ use PPI;
 
 use Exporter qw(import);
 our @ISA = qw(Exporter);
-our @EXPORT = qw(bump_version);
+our @EXPORT_OK = qw(bump_version get_version);
+our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 our $VERSION = '0.01';
 
@@ -25,7 +26,25 @@ sub bump_version {
 
     my @module_files = _find_modules($dir);
 
-    print Dumper \@module_files;
+    for (@module_files) {
+        printf "%s\n", _find_version_line($_);
+    }
+}
+sub get_version {
+    my ($dir) = @_;
+
+    _validate_dir($dir);
+
+    my @module_files = _find_modules($dir);
+
+    my %version_info;
+
+    for (@module_files) {
+        my $version = _find_version($_);
+        $version_info{$_} = $version;
+    }
+
+    return \%version_info;
 }
 sub _find_modules {
     my ($dir) = @_;
@@ -35,6 +54,43 @@ sub _find_modules {
     return File::Find::Rule->file()
                             ->name('*.pm')
                             ->in($dir);
+}
+sub _find_version {
+    my ($module_file) = @_;
+
+    my $version_line = _find_version_line($module_file);
+
+    if ($version_line =~ /=(.*)$/) {
+        my $ver = $1;
+
+        $ver =~ s/\s+//g;
+        $ver =~ s/;//g;
+        $ver =~ s/[:alpha:]+//g;
+        $ver =~ s/"//g;
+        $ver =~ s/'//g;
+
+        if (! defined eval { version->parse($ver); 1 }) {
+            croak("Can't find a valid version in file '$_'");
+        }
+
+        return $ver;
+    }
+}
+sub _find_version_line {
+    my ($module_file) = @_;
+
+    my $doc = PPI::Document->new($module_file);
+
+    my $version_line = (
+        $doc->find(
+            sub {
+                $_[1]->isa("PPI::Statement::Variable")
+                    and $_[1]->content =~ /\$VERSION/;
+            }
+        )
+    )->[0]->content;
+
+    return $version_line;
 }
 sub _validate_dir {
     return if ! defined $_[0];
@@ -49,6 +105,7 @@ sub _validate_version {
         croak("The version number '$version' specified is invalid");
     }
 }
+
 1;
 __END__
 
