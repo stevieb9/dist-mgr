@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use version;
 
+use Carp qw(croak);
 use Data::Dumper;
 use File::Find::Rule;
 use PPI;
@@ -19,12 +20,8 @@ my $default_dir = 'lib/';
 sub bump_version {
     my ($version, $dir) = @_;
 
-    if (! defined $version) {
-        croak("version parameter must be supplied!");
-    }
-    if (! defined eval { version->parse($version); 1 }) {
-        croak("The version number '$version' specified is invalid");
-    }
+    _validate_version($version);
+    _validate_dir($dir);
 
     my @module_files = _find_modules($dir);
 
@@ -39,7 +36,19 @@ sub _find_modules {
                             ->name('*.pm')
                             ->in($dir);
 }
+sub _validate_dir {
+    return if ! defined $_[0];
+    croak("Directory '$_[0]' is invalid") if ! -d $_[0];
+}
+sub _validate_version {
+    my ($version) = @_;
 
+    croak("version parameter must be supplied!") if ! defined $version;
+
+    if (! defined eval { version->parse($version); 1 }) {
+        croak("The version number '$version' specified is invalid");
+    }
+}
 1;
 __END__
 
