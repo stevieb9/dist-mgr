@@ -3,8 +3,13 @@ package Module::Bump::Version;
 use strict;
 use warnings;
 
+use File::Find::Rule;
+use PPI;
+
 our $VERSION = '0.01';
 
+sub bump {
+}
 1;
 __END__
 

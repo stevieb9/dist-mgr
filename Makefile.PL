@@ -31,7 +31,8 @@ WriteMakefile(
         'Test::More' => '0',
     },
     PREREQ_PM => {
-        'PPI'               => 0,
+        'PPI'              => 0,
+        'File::Find::Rule' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Module-Bump-Version-*' },
