@@ -10,7 +10,7 @@ WriteMakefile(
     ABSTRACT_FROM    => 'lib/Module/Bump/Version.pm',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
-    MIN_PERL_VERSION => '5.006',
+    MIN_PERL_VERSION => '5.010',
     META_MERGE => {
         'meta-spec' => { version => 2 },
         resources   => {
@@ -31,8 +31,9 @@ WriteMakefile(
         'Test::More' => '0',
     },
     PREREQ_PM => {
-        'PPI'              => 0,
-        'File::Find::Rule' => 0,
+        'PPI'               => 0,
+        'File::Find::Rule'  => 0,
+        'version'           => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Module-Bump-Version-*' },
