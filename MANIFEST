@@ -1,5 +1,5 @@
 Changes
-lib/Perl/Bump/Version.pm
+lib/Module/Bump/Version.pm
 Makefile.PL
 MANIFEST			This list of files
 README

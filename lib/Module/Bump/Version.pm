@@ -1,4 +1,4 @@
-package Perl::Bump::Version;
+package Module::Bump::Version;
 
 use strict;
 use warnings;
@@ -10,13 +10,13 @@ __END__
 
 =head1 NAME
 
-Perl::Bump::Version - Prepare a Perl distribution for its next release cycle
+Module::Bump::Version - Prepare a Perl distribution for its next release cycle
 
 =head1 DESCRIPTION
 
 =head1 SYNOPSIS
 
-    use Perl::Bump::Version;
+    use Module::Bump::Version;
 
 =head1 FUNCTIONS
 
