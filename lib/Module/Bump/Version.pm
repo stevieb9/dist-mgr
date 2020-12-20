@@ -2,14 +2,44 @@ package Module::Bump::Version;
 
 use strict;
 use warnings;
+use version;
 
+use Data::Dumper;
 use File::Find::Rule;
 use PPI;
 
+use Exporter qw(import);
+our @ISA = qw(Exporter);
+our @EXPORT = qw(bump_version);
+
 our $VERSION = '0.01';
 
-sub bump {
+my $default_dir = 'lib/';
+
+sub bump_version {
+    my ($version, $dir) = @_;
+
+    if (! defined $version) {
+        croak("version parameter must be supplied!");
+    }
+    if (! defined eval { version->parse($version); 1 }) {
+        croak("The version number '$version' specified is invalid");
+    }
+
+    my @module_files = _find_modules($dir);
+
+    print Dumper \@module_files;
 }
+sub _find_modules {
+    my ($dir) = @_;
+
+    $dir //= $default_dir;
+
+    return File::Find::Rule->file()
+                            ->name('*.pm')
+                            ->in($dir);
+}
+
 1;
 __END__
 
