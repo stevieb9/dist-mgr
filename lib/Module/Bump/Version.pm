@@ -33,27 +33,44 @@ sub bump_version {
     _validate_version($version);
     _validate_fs_entry($dir);
 
-    my @module_files = _find_modules($dir);
+    my $dry_run;
+
+    if ($version =~ /^-/) {
+        print "\nDry run\n\n";
+        $version =~ s/-//;
+        $dry_run = 1;
+    }
+
+    my @module_files = _find_module_files($dir);
+
+    my %files;
 
     for (@module_files) {
-        my $version_line = _find_version_line($_);
+        my $current_version = _extract_file_version($_);
+        my $version_line = _extract_file_version_line($_);
         my @file_contents = _fetch_file_contents($_);
+
+        if (! defined $version_line) {
+            next;
+        }
+
+        if (! defined $current_version) {
+            next;
+        }
 
         my $mem_file;
 
         open my $wfh, '>', \$mem_file or croak("Can't open mem file!: $!");
 
-        my $current_version;
-
         for my $line (@file_contents) {
             chomp $line;
             if ($line eq $version_line) {
-                $current_version = _find_file_version($_);
                 $line =~ s/$current_version/$version/;
+
+                $files{$_}{from} = $version;
+                $files{$_}{to}   = $current_version;
             }
         }
-
-        print "Changed $_ from version '$current_version' to '$version'\n";
     }
 }
 sub get_version_info {
@@ -109,7 +126,7 @@ sub _extract_file_version {
             $ver =~ s/'//g;
 
             if (! defined eval { version->parse($ver); 1 }) {
-                warn("Can't find a valid version in file '$_'\n");
+                warn("$_: Can't find a valid version\n");
                 return undef;
             }
 
@@ -117,7 +134,7 @@ sub _extract_file_version {
         }
     }
     else {
-        warn("Can't find a \$VERSION definition in file '$_'\n");
+        warn("$_: Can't find a \$VERSION definition\n");
     }
     return undef;
 }

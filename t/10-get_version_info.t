@@ -72,8 +72,8 @@ my $d = 't/data/orig';
 
     my @stderr = $h->stderr;
 
-    like $stderr[0], qr/\$VERSION definition.*No\.pm/, "No.pm croaks about no ver def ok";
-    like $stderr[1], qr/valid version.*Bad\.pm/, "Bad.pm croaks about no valid ver ok";
+    like $stderr[0], qr/No\.pm.*\$VERSION definition/, "No.pm croaks about no ver def ok";
+    like $stderr[1], qr/Bad\.pm.*valid version/, "Bad.pm croaks about no valid ver ok";
 
 }
 
