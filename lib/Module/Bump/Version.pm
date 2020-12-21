@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use version;
 
-use Carp qw(croak);
+use Carp qw(croak cluck);
 use Data::Dumper;
 use File::Find::Rule;
 use PPI;
@@ -28,7 +28,7 @@ use constant {
 my $default_dir = 'lib/';
 
 sub bump_version {
-    my ($version, $dir) = @_;
+    my ($version, $fs_entry) = @_;
 
     my $dry_run = 0;
 
@@ -39,9 +39,9 @@ sub bump_version {
     }
 
     _validate_version($version);
-    _validate_fs_entry($dir);
+    _validate_fs_entry($fs_entry);
 
-    my @module_files = _find_module_files($dir);
+    my @module_files = _find_module_files($fs_entry);
 
     my %files;
 
@@ -63,20 +63,23 @@ sub bump_version {
         open my $wfh, '>', \$mem_file or croak("Can't open mem file!: $!");
 
         for my $line (@file_contents) {
-            chomp $line;
-            if ($line =~ /^$version_line$/) {
+            if ($line =~ /^$version_line/) {
                 $line =~ s/$current_version/$version/;
             }
 
+            # Write out the line to the in-memory temp file
+            print $wfh $line;
+
             if (! $dry_run) {
-                # Write out the line to the in-memory file
-                print $wfh $line;
+                # Write out the actual file
             }
 
             $files{$_}{from}    = $current_version;
             $files{$_}{to}      = $version;
-            $files{$_}{dry_run} = $dry_run;
-    }
+        }
+
+        $files{$_}{dry_run} = $dry_run;
+        $files{$_}{content} = $mem_file;
     }
     return \%files;
 }
@@ -167,7 +170,7 @@ sub _extract_file_version_line {
 sub _validate_fs_entry {
     my ($fs_entry) = @_;
 
-    return if ! defined $_[0];
+    cluck("Need name of dir or file!") if ! defined $fs_entry;
 
     return FSTYPE_IS_DIR    if -d $fs_entry;
     return FSTYPE_IS_FILE   if -f $fs_entry;

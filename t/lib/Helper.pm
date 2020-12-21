@@ -7,9 +7,23 @@ use Carp qw(croak);
 use Exporter qw(import);
 
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(trap_warn);
+our @EXPORT_OK = qw(
+    file_scalar
+    trap_warn
+);
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
+sub file_scalar {
+    my ($fname) = @_;
+    my $contents;
+
+    {
+        local $/;
+        open my $fh, '<', $fname or die $!;
+        $contents = <$fh>;
+    }
+    return $contents;
+}
 sub trap_warn {
     # enable/disable sinking our own internal warnings to prevent
     # cluttered test output

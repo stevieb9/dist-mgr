@@ -6,8 +6,12 @@ use Data::Dumper;
 use Hook::Output::Tiny;
 use Module::Bump::Version qw(:all);
 
+use lib 't/lib';
+use Helper qw(:all);
+
 my $d = 't/data/orig';
 my $f = 't/data/orig/No.pm';
+my @valid = ("$d/One.pm", "$d/Two.pm", "$d/Three.pm");
 
 my $h = Hook::Output::Tiny->new;
 
@@ -67,7 +71,7 @@ my $h = Hook::Output::Tiny->new;
     is $data->{"$d/Three.pm"}{dry_run}, 1, "Three has dry_run set ok";
 
     for (keys %$data) {
-        is keys %{ $data->{$_} }, 3, "Proper key count for $_";
+        is keys %{ $data->{$_} }, 4, "Proper key count for $_";
     }
 }
 
@@ -96,5 +100,21 @@ my $h = Hook::Output::Tiny->new;
     is $data->{"$d/Three.pm"}{to},   '3.77', "Three has proper to ver";
 }
 
+# files & content
+{
+
+    for my $file (@valid) {
+        my $data = bump_version('-9.11', $file);
+
+        is keys %$data, 1, "returned href has proper number of keys ok";
+        is exists $data->{$file}, 1, "$file is a key of the returned href ok";
+        is keys %{ $data->{$file} }, 4, "href $file entry has proper key count ok";
+        is exists $data->{$file}{content}, 1, "$file entry has a 'content' key ok";
+
+        my $c = file_scalar($file);
+
+        is $data->{$file}{content}, $c, "$file content matches original file ok";
+    }
+}
 done_testing();
 
