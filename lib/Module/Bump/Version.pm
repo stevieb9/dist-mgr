@@ -97,35 +97,45 @@ sub _extract_file_version {
 
     my $version_line = _extract_file_version_line($module_file);
 
-    if ($version_line =~ /=(.*)$/) {
-        my $ver = $1;
+    if (defined $version_line) {
 
-        $ver =~ s/\s+//g;
-        $ver =~ s/;//g;
-        $ver =~ s/[a-zA-Z]+//g;
-        $ver =~ s/"//g;
-        $ver =~ s/'//g;
+        if ($version_line =~ /=(.*)$/) {
+            my $ver = $1;
 
-        if (! defined eval { version->parse($ver); 1 }) {
-            croak("Can't find a valid version in file '$_'");
+            $ver =~ s/\s+//g;
+            $ver =~ s/;//g;
+            $ver =~ s/[a-zA-Z]+//g;
+            $ver =~ s/"//g;
+            $ver =~ s/'//g;
+
+            if (! defined eval { version->parse($ver); 1 }) {
+                warn("Can't find a valid version in file '$_'\n");
+                return undef;
+            }
+
+            return $ver;
         }
-
-        return $ver;
     }
+    else {
+        warn("Can't find a \$VERSION definition in file '$_'\n");
+    }
+    return undef;
 }
 sub _extract_file_version_line {
     my ($module_file) = @_;
 
     my $doc = PPI::Document->new($module_file);
 
-    my $version_line = (
-        $doc->find(
-            sub {
-                $_[1]->isa("PPI::Statement::Variable")
-                    and $_[1]->content =~ /\$VERSION/;
-            }
-        )
-    )->[0]->content;
+    my $token = $doc->find(
+        sub {
+            $_[1]->isa("PPI::Statement::Variable")
+                and $_[1]->content =~ /\$VERSION/;
+        }
+    );
+
+    return undef if ref $token ne 'ARRAY';
+
+    my $version_line = $token->[0]->content;
 
     return $version_line;
 }

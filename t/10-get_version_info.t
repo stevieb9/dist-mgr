@@ -3,9 +3,14 @@ use strict;
 use Test::More;
 
 use Data::Dumper;
+use Hook::Output::Tiny;
 use Module::Bump::Version qw(:all);
+use Module::Installed qw(module_installed);
 
 my $f = 't/data/orig/One.pm';
+my $f_bad = 't/data/orig/Bad.pm';
+my $f_no = 't/data/orig/No.pm';
+
 my $d = 't/data/orig';
 
 # bad params
@@ -35,10 +40,37 @@ my $d = 't/data/orig';
 # file
 {
     my $info = get_version_info($f);
-
     is $info->{$f}, '0.01', "with file, info href contains proper data ok";
 }
 
+# dir
+{
+    my $info = get_version_info($d);
+
+    is keys %$info, 5, "proper key count in info href ok";
+
+    is $info->{"$d/One.pm"}, '0.01', "One.pm has proper version ok";
+    is $info->{"$d/Two.pm"}, '2.00', "Two.pm has proper version ok";
+    is $info->{"$d/Three.pm"}, '3.00', "Three.pm has proper version ok";
+    is $info->{"$d/Bad.pm"}, undef, "Bad.pm has undef version ok";
+    is $info->{"$d/No.pm"}, undef, "No.pm has undef version ok";
+
+}
+
+# bad version
+{
+    my $h = Hook::Output::Tiny->new;
+
+    $h->hook('stderr');
+    my $info = get_version_info($d);
+    $h->unhook('stderr');
+
+    my @stderr = $h->stderr;
+
+    like $stderr[0], qr/\$VERSION definition.*No\.pm/, "No.pm croaks about no ver def ok";
+    like $stderr[1], qr/valid version.*Bad\.pm/, "Bad.pm croaks about no valid ver ok";
+
+}
 
 done_testing();
 
