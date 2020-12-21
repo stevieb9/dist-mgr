@@ -38,7 +38,7 @@ my $h = Hook::Output::Tiny->new;
 # Bad/No warnings check
 {
     $h->hook('stderr');
-    bump_version('3.77', $d);
+    my $data = bump_version('3.77', $d);
     $h->unhook('stderr');
 
     my @err = $h->stderr;
@@ -47,6 +47,15 @@ my $h = Hook::Output::Tiny->new;
 
     like $err[0], qr/No\.pm: Can't find a \$V/, "...and warning is sane";
     like $err[1], qr/Bad\.pm: Can't find a valid/, "...and warning is sane";
+
+    is $data->{"$d/One.pm"}{from}, '0.01', "One has proper from ver";
+    is $data->{"$d/One.pm"}{to},   '3.77', "One has proper to ver";
+
+    is $data->{"$d/Two.pm"}{from}, '2.00', "Two has proper from ver";
+    is $data->{"$d/Two.pm"}{to},   '3.77', "Two has proper to ver";
+
+    is $data->{"$d/Three.pm"}{from}, '3.00', "Three has proper from ver";
+    is $data->{"$d/Three.pm"}{to},   '3.77', "Three has proper to ver";
 }
 
 done_testing();

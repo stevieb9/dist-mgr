@@ -67,11 +67,12 @@ sub bump_version {
             if ($line eq $version_line) {
                 $line =~ s/$current_version/$version/;
 
-                $files{$_}{from} = $version;
-                $files{$_}{to}   = $current_version;
+                $files{$_}{from} = $current_version;
+                $files{$_}{to}   = $version;
             }
         }
     }
+    return \%files;
 }
 sub get_version_info {
     my ($fs_entry) = @_;
