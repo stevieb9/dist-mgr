@@ -28,11 +28,12 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => '0',
     },
     BUILD_REQUIRES => {
-        'Test::More' => '0',
+        'Hook::Output::Tiny' => '1.00',
+        'Test::More'         => '0',
     },
     PREREQ_PM => {
-        'PPI'               => 0,
         'File::Find::Rule'  => 0,
+        'PPI'               => 0,
         'version'           => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
