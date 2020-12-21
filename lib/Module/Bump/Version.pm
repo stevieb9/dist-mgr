@@ -30,7 +30,7 @@ my $default_dir = 'lib/';
 sub bump_version {
     my ($version, $dir) = @_;
 
-    my $dry_run;
+    my $dry_run = 0;
 
     if (defined $version && $version =~ /^-/) {
         print "\nDry run\n\n";
@@ -47,8 +47,8 @@ sub bump_version {
 
     for (@module_files) {
         my $current_version = _extract_file_version($_);
-        my $version_line = _extract_file_version_line($_);
-        my @file_contents = _fetch_file_contents($_);
+        my $version_line    = _extract_file_version_line($_);
+        my @file_contents   = _fetch_file_contents($_);
 
         if (! defined $version_line) {
             next;

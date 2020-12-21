@@ -56,12 +56,19 @@ my $h = Hook::Output::Tiny->new;
 
     is $data->{"$d/One.pm"}{from}, '0.01', "One has proper from ver";
     is $data->{"$d/One.pm"}{to},   '3.77', "One has proper to ver";
+    is $data->{"$d/One.pm"}{dry_run}, 1, "One has dry_run set ok";
 
     is $data->{"$d/Two.pm"}{from}, '2.00', "Two has proper from ver";
     is $data->{"$d/Two.pm"}{to},   '3.77', "Two has proper to ver";
+    is $data->{"$d/Two.pm"}{dry_run}, 1, "Two has dry_run set ok";
 
     is $data->{"$d/Three.pm"}{from}, '3.00', "Three has proper from ver";
     is $data->{"$d/Three.pm"}{to},   '3.77', "Three has proper to ver";
+    is $data->{"$d/Three.pm"}{dry_run}, 1, "Three has dry_run set ok";
+
+    for (keys %$data) {
+        is keys %{ $data->{$_} }, 3, "Proper key count for $_";
+    }
 }
 
 # Bad/No warnings check
