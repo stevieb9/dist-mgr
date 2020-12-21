@@ -32,7 +32,7 @@ sub bump_version {
 
     my $dry_run;
 
-    if ($version =~ /^-/) {
+    if (defined $version && $version =~ /^-/) {
         print "\nDry run\n\n";
         $version =~ s/-//;
         $dry_run = 1;
@@ -68,12 +68,14 @@ sub bump_version {
                 $line =~ s/$current_version/$version/;
             }
 
-            # Write out the line to the in-memory file
+            if (! $dry_run) {
+                # Write out the line to the in-memory file
+                print $wfh $line;
+            }
 
-            print $wfh $line;
-
-            $files{$_}{from} = $current_version;
-            $files{$_}{to}   = $version;
+            $files{$_}{from}    = $current_version;
+            $files{$_}{to}      = $version;
+            $files{$_}{dry_run} = $dry_run;
     }
     }
     return \%files;
