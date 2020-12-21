@@ -26,7 +26,7 @@ use Module::Bump::Version qw(:all);
         bump_version('1.00', 'asdf');
         1
     }, undef, "invalid dir croaks ok";
-    like $@, qr/Directory.*invalid/, "...and error is sane";
+    like $@, qr/File system.*invalid/, "...and error is sane";
 }
 
 done_testing();

@@ -7,6 +7,9 @@ use Hook::Output::Tiny;
 use Module::Bump::Version qw(:all);
 use Module::Installed qw(module_installed);
 
+use lib 't/lib';
+use Helper qw(:all);
+
 my $f = 't/data/orig/One.pm';
 my $f_bad = 't/data/orig/Bad.pm';
 my $f_no = 't/data/orig/No.pm';
@@ -45,7 +48,9 @@ my $d = 't/data/orig';
 
 # dir
 {
+    trap_warn(1);
     my $info = get_version_info($d);
+    trap_warn(0);
 
     is keys %$info, 5, "proper key count in info href ok";
 
