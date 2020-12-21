@@ -30,9 +30,6 @@ my $default_dir = 'lib/';
 sub bump_version {
     my ($version, $dir) = @_;
 
-    _validate_version($version);
-    _validate_fs_entry($dir);
-
     my $dry_run;
 
     if ($version =~ /^-/) {
@@ -40,6 +37,9 @@ sub bump_version {
         $version =~ s/-//;
         $dry_run = 1;
     }
+
+    _validate_version($version);
+    _validate_fs_entry($dir);
 
     my @module_files = _find_module_files($dir);
 
@@ -64,13 +64,17 @@ sub bump_version {
 
         for my $line (@file_contents) {
             chomp $line;
-            if ($line eq $version_line) {
+            if ($line =~ /^$version_line$/) {
                 $line =~ s/$current_version/$version/;
-
-                $files{$_}{from} = $current_version;
-                $files{$_}{to}   = $version;
             }
-        }
+
+            # Write out the line to the in-memory file
+
+            print $wfh $line;
+
+            $files{$_}{from} = $current_version;
+            $files{$_}{to}   = $version;
+    }
     }
     return \%files;
 }
