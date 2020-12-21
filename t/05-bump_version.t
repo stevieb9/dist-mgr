@@ -21,11 +21,11 @@ use Module::Bump::Version qw(:all);
     }, undef, "invalid version croaks ok";
     like $@, qr/The version number/, "...and error is sane";
 
-    # invalid dir
+    # invalid fs entry
     is eval {
         bump_version('1.00', 'asdf');
         1
-    }, undef, "invalid dir croaks ok";
+    }, undef, "invalid file system entry croaks ok";
     like $@, qr/File system.*invalid/, "...and error is sane";
 }
 
