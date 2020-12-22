@@ -85,7 +85,7 @@ sub bump_version {
 
         if (! $dry_run) {
             # Write out the actual file
-            _write_file($_, $mem_file);
+            _write_module_file($_, $mem_file);
         }
     }
     return \%files;
@@ -194,7 +194,7 @@ sub _validate_version {
     }
 }
 
-sub _write_file {
+sub _write_module_file {
     my ($module_file, $content) = @_;
 
     open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
