@@ -26,7 +26,6 @@ use constant {
 
     DEFAULT_DIR         => 'lib/',
 };
-my $default_dir = 'lib/';
 
 sub bump_version {
     my ($version, $fs_entry) = @_;
@@ -204,6 +203,7 @@ sub _write_file {
 
     close $wfh or croak("Can't close the temporary memory module file!: $!");
 }
+
 1;
 __END__
 
