@@ -14,6 +14,7 @@ use Tie::File;
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
+    add_bugtracker
     add_repository
     bump_version
     get_version_info
@@ -28,27 +29,31 @@ use constant {
 
     DEFAULT_DIR         => 'lib/',
 };
+sub add_bugtracker {
+    my ($author, $repo, $makefile) = @_;
 
-sub add_repository {
-    my ($makefile) = @_;
+    if (! defined $author || ! defined $repo) {
+        croak("Usage: add_bugtracker(\$author, \$repository_name)\n");
+    }
 
     $makefile //= 'Makefile.PL';
 
-    my ($mf, $tie) = _makefile_load($makefile);
-
-    if (grep ! /META_MERGE/, @$mf) {
-        _makefile_insert_meta_merge($mf);
-    }
-    print Dumper $mf;
-    exit;
-    for (0..$#$mf) {
-        if ($mf->[$_] =~ /MIN_PERL_VERSION/) {
-            print "index: $_\n";
-        }
-    }
-
-    untie $tie;
+    _makefile_insert_bugtracker($author, $repo, $makefile);
 }
+sub add_repository {
+    my ($author, $repo, $makefile) = @_;
+
+    if (! defined $author || ! defined $repo) {
+        croak("Usage: add_repository(\$author, \$repository_name)\n");
+    }
+
+    $makefile //= 'Makefile.PL';
+
+    _makefile_insert_repository($author, $repo, $makefile);
+}
+
+# Public
+
 sub bump_version {
     my ($version, $fs_entry) = @_;
 
@@ -129,6 +134,8 @@ sub get_version_info {
     return \%version_info;
 }
 
+# Module related
+
 sub _find_module_files {
     my ($fs_entry) = @_;
 
@@ -195,18 +202,29 @@ sub _extract_file_version_line {
 
     return $version_line;
 }
+sub _write_module_file {
+    my ($module_file, $content) = @_;
+
+    open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
+
+    print $wfh $content;
+
+    close $wfh or croak("Can't close the temporary memory module file!: $!");
+}
+
+# Makefile related
 
 sub _makefile_load {
     my ($mf) = @_;
-    croak("_load_makefile() needs a Makefile name sent in") if ! defined $mf;
-    my $tie = tie my @mf, 'Tie::File', $mf;
+    croak("_makefile_load() needs a Makefile name sent in") if ! defined $mf;
 
+    my $tie = tie my @mf, 'Tie::File', $mf;
     return (\@mf, $tie);
-}
-sub _makefile_repo_section {
 }
 sub _makefile_insert_meta_merge {
     my ($mf) = @_;
+
+    croak("_makefile_insert_meta_merge() needs a Makefile tie sent in") if ! defined $mf;
 
     # Check to ensure we're not duplicating
     return if grep /META_MERGE/, @$mf;
@@ -217,8 +235,50 @@ sub _makefile_insert_meta_merge {
             last;
         }
     }
-
 }
+sub _makefile_insert_bugtracker {
+    my ($author, $repo, $makefile) = @_;
+
+    if (! defined $makefile) {
+        croak("_makefile_insert_bugtracker() needs author, repo and makefile");
+    }
+
+    my ($mf, $tie) = _makefile_load($makefile);
+
+    if (grep ! /META_MERGE/, @$mf) {
+        _makefile_insert_meta_merge($mf);
+    }
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /resources   => \{/) {
+            splice @$mf, $_+1, 0, _makefile_section_bugtracker($author, $repo);
+            last;
+        }
+    }
+    untie $tie;
+}
+sub _makefile_insert_repository {
+    my ($author, $repo, $makefile) = @_;
+
+    if (! defined $makefile) {
+        croak("_makefile_insert_repository() needs author, repo and makefile");
+    }
+
+    my ($mf, $tie) = _makefile_load($makefile);
+
+    if (grep ! /META_MERGE/, @$mf) {
+        _makefile_insert_meta_merge($mf);
+    }
+
+    for (0..$#$mf) {
+       if ($mf->[$_] =~ /resources   => \{/) {
+           splice @$mf, $_+1, 0, _makefile_section_repo($author, $repo);
+           last;
+       }
+    }
+    untie $tie;
+}
+
 sub _makefile_section_meta_merge {
     my @merge_section = (
         "    META_MERGE => {",
@@ -230,6 +290,30 @@ sub _makefile_section_meta_merge {
 
     return @merge_section;
 }
+sub _makefile_section_bugtracker {
+    my ($author, $repo) = @_;
+
+    return (
+        "            bugtracker => {",
+        "                web => 'https://github.com/$author/$repo/issues',",
+        "            },"
+    );
+
+}
+sub _makefile_section_repo {
+    my ($author, $repo) = @_;
+
+    return (
+    "            repository => {",
+    "                type => 'git',",
+    "                url => 'https://github.com/$author/$repo.git',",
+    "                web => 'https://github.com/$author/$repo',",
+    "            },"
+    );
+
+}
+
+# Validation related
 
 sub _validate_fs_entry {
     my ($fs_entry) = @_;
@@ -249,16 +333,6 @@ sub _validate_version {
     if (! defined eval { version->parse($version); 1 }) {
         croak("The version number '$version' specified is invalid");
     }
-}
-
-sub _write_module_file {
-    my ($module_file, $content) = @_;
-
-    open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
-
-    print $wfh $content;
-
-    close $wfh or croak("Can't close the temporary memory module file!: $!");
 }
 
 sub __placeholder {}

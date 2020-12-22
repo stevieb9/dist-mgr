@@ -14,8 +14,19 @@ copy_makefile();
 
 my $mf = 't/data/work/Makefile.PL';
 
+# bad params
 {
-    add_repository($mf);
+    is eval{add_repository(); 1}, undef, "croak if no params ok";
+    like $@, qr/Usage: add_repository/, "...and error is sane";
+
+    is eval{add_repository('stevieb9'); 1}, undef, "croak if only author param ok";
+    like $@, qr/Usage: add_repository/, "...and error is sane";
+}
+
+# add
+{
+    add_repository('stevieb9', 'add-repo', $mf);
+    add_bugtracker('stevieb9', 'add-repo', $mf);
 }
 
 done_testing();
