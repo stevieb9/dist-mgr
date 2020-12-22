@@ -60,8 +60,8 @@ I<Parameters>:
 
     $fs_entry
 
- I<Optional, String>: The directory or file to operate on. If a directory is
- sent in, we'll iterate over all files in all directories recursively.
+I<Optional, String>: The directory or file to operate on. If a directory is
+sent in, we'll iterate over all files in all directories recursively.
 
 I<Default>: C<lib/>
 
