@@ -1,0 +1,104 @@
+=head1 NAME
+
+STEVEB::Dist::Mgr - My distribution release cycle toolkit
+
+=head1 DESCRIPTION
+
+=head1 SYNOPSIS
+
+    use STEVEB::Dist::Mgr;
+
+=head1 FUNCTIONS
+
+=head2 bump_version
+
+Finds and updates the version number of a Perl module file, or all Perl
+module files in a directory structure.
+
+I<Parameters>:
+
+    $version
+
+I<Mandatory, String>: The new version to update to.
+
+=head3 Dry run mode
+
+The C<$version> parameter can be prepended with an optional dash (C<->), and if
+so, we'll operate in "dry-run" mode, where we'll return the results, but won't
+have written to any files. Eg: C<bump_version('-1.01')>.
+
+    $fs_entry
+
+I<Optional, String>: The directory or file to operate on. If a directory is
+sent in, we'll iterate over all files in all directories recursively.
+
+I<Default>: <c>lib/</c>
+
+I<Returns>: An HoH:
+
+    $VAR1 = {
+        't/data/work/Two.pm' => {
+            'dry_run'   => 0,
+            'from'      => '2.66',
+            'to'        => '2.67',
+            'content'   => '' # Module file code (snipped for brevity)
+        },
+        't/data/work/One.pm' => {
+            'dry_run'   => 0,
+            'from'      => '2.66',
+            'to'        => '2.67',
+            'content'   => '' # Module file code (snipped for brevity)
+        },
+    };
+
+=head2 get_version_info
+
+Fetches the file version information of Perl module files. Can operate on a
+single file, or iterate over a directory structure.
+
+I<Parameters>:
+
+    $fs_entry
+
+ I<Optional, String>: The directory or file to operate on. If a directory is
+ sent in, we'll iterate over all files in all directories recursively.
+
+I<Default>: C<lib/>
+
+I<Returns>: Hash reference:
+
+    $VAR1 = {
+        't/data/orig/One.pm'    => '2.66'
+        't/data/orig/Two.pm'    => '2.66',
+        't/data/orig/Three.pm'  => '2.66',
+        't/data/orig/Bad.pm'    => undef,   # $VERSION can't be parsed
+        't/data/orig/No.pm'     => undef,   # No $VERSION defined
+    };
+
+=head1 AUTHOR
+
+Steve Bertrand, C<< <steveb at cpan.org> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2020 Steve Bertrand.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=head1 AUTHOR
+
+Steve Bertrand, C<< <steveb at cpan.org> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2020 Steve Bertrand.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>

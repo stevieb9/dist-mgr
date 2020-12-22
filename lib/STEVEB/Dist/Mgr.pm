@@ -207,17 +207,19 @@ sub _write_module_file {
 1;
 __END__
 
-=head1 NAME
+=head1 AUTHOR
 
-STEVEB::Dist::Mgr - My distribution release cycle toolkit
+Steve Bertrand, C<< <steveb at cpan.org> >>
 
-=head1 DESCRIPTION
+=head1 LICENSE AND COPYRIGHT
 
-=head1 SYNOPSIS
+Copyright 2020 Steve Bertrand.
 
-    use STEVEB::Dist::Mgr;
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
 
-=head1 FUNCTIONS
+L<http://www.perlfoundation.org/artistic_license_2_0>
 
 =head1 AUTHOR
 
