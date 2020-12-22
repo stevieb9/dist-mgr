@@ -1,4 +1,4 @@
-package Module::Bump::Version;
+package STEVEB::Dist::Mgr;
 
 use strict;
 use warnings;
@@ -209,13 +209,13 @@ __END__
 
 =head1 NAME
 
-Module::Bump::Version - Prepare a Perl distribution for its next release cycle
+STEVEB::Dist::Mgr - My distribution release cycle toolkit
 
 =head1 DESCRIPTION
 
 =head1 SYNOPSIS
 
-    use Module::Bump::Version;
+    use STEVEB::Dist::Mgr;
 
 =head1 FUNCTIONS
 

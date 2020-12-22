@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Module::Bump::Version' ) || print "Bail out!\n";
+    use_ok( 'STEVEB::Dist::Mgr' ) || print "Bail out!\n";
 }
 
-diag( "Testing Module::Bump::Version $Module::Bump::Version::VERSION, Module $], $^X" );
+diag( "Testing STEVEB::Dist::Mgr $STEVEB::Dist::Mgr::VERSION, Module $], $^X" );

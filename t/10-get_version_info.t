@@ -4,7 +4,7 @@ use Test::More;
 
 use Data::Dumper;
 use Hook::Output::Tiny;
-use Module::Bump::Version qw(:all);
+use STEVEB::Dist::Mgr qw(:all);
 use Module::Installed qw(module_installed);
 
 use lib 't/lib';

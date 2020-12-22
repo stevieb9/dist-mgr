@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME             => 'Module::Bump::Version',
+    NAME             => 'STEVEB::Dist::Mgr',
     AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
-    VERSION_FROM     => 'lib/Module/Bump/Version.pm',
-    ABSTRACT_FROM    => 'lib/Module/Bump/Version.pm',
+    VERSION_FROM     => 'lib/STEVEB/Dist/Mgr.pm',
+#    ABSTRACT_FROM    => 'lib/STEVEB/Dist/Mgr.pm',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
     MIN_PERL_VERSION => '5.010',
@@ -15,12 +15,12 @@ WriteMakefile(
         'meta-spec' => { version => 2 },
         resources   => {
             bugtracker => {
-                web => 'https://github.com/stevieb9/module-bump-version/issues',
+                web => 'https://github.com/stevieb9/steveb-dist-mgr/issues',
             },
             repository => {
                 type => 'git',
-                url => 'https://github.com/stevieb9/module-bump-version.git',
-                web => 'https://github.com/stevieb9/module-bump-version',
+                url => 'https://github.com/stevieb9/steveb-dist-mgr.git',
+                web => 'https://github.com/stevieb9/steveb-dist-mgr',
             },
         },
     },
@@ -37,5 +37,5 @@ WriteMakefile(
         'version'           => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Module-Bump-Version-*' },
+    clean => { FILES => 'STEVEB-Dist-Mgr-*' },
 );
