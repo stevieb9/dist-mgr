@@ -32,7 +32,7 @@ have written to any files. Eg: C<bump_version('-1.01')>.
 I<Optional, String>: The directory or file to operate on. If a directory is
 sent in, we'll iterate over all files in all directories recursively.
 
-I<Default>: <c>lib/</c>
+I<Default>: C<lib/>
 
 I<Returns>: An HoH:
 
