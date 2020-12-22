@@ -34,6 +34,7 @@ WriteMakefile(
     PREREQ_PM => {
         'File::Find::Rule'  => 0,
         'PPI'               => 0,
+        'Tie::File'         => 0,
         'version'           => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

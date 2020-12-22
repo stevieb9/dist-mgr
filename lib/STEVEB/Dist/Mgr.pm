@@ -9,10 +9,12 @@ use Data::Dumper;
 use File::Copy;
 use File::Find::Rule;
 use PPI;
+use Tie::File;
 
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
+    add_repository
     bump_version
     get_version_info
 );
@@ -27,6 +29,26 @@ use constant {
     DEFAULT_DIR         => 'lib/',
 };
 
+sub add_repository {
+    my ($makefile) = @_;
+
+    $makefile //= 'Makefile.PL';
+
+    my ($mf, $tie) = _makefile_load($makefile);
+
+    if (grep ! /META_MERGE/, @$mf) {
+        _makefile_insert_meta_merge($mf);
+    }
+    print Dumper $mf;
+    exit;
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /MIN_PERL_VERSION/) {
+            print "index: $_\n";
+        }
+    }
+
+    untie $tie;
+}
 sub bump_version {
     my ($version, $fs_entry) = @_;
 
@@ -174,6 +196,41 @@ sub _extract_file_version_line {
     return $version_line;
 }
 
+sub _makefile_load {
+    my ($mf) = @_;
+    croak("_load_makefile() needs a Makefile name sent in") if ! defined $mf;
+    my $tie = tie my @mf, 'Tie::File', $mf;
+
+    return (\@mf, $tie);
+}
+sub _makefile_repo_section {
+}
+sub _makefile_insert_meta_merge {
+    my ($mf) = @_;
+
+    # Check to ensure we're not duplicating
+    return if grep /META_MERGE/, @$mf;
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /MIN_PERL_VERSION/) {
+            splice @$mf, $_, 0, _makefile_section_meta_merge();
+            last;
+        }
+    }
+
+}
+sub _makefile_section_meta_merge {
+    my @merge_section = (
+        "    META_MERGE => {",
+        "        'meta-spec' => { version => 2 },",
+        "        resources   => {",
+        "        },",
+        "    },"
+    );
+
+    return @merge_section;
+}
+
 sub _validate_fs_entry {
     my ($fs_entry) = @_;
 
@@ -203,6 +260,8 @@ sub _write_module_file {
 
     close $wfh or croak("Can't close the temporary memory module file!: $!");
 }
+
+sub __placeholder {}
 
 1;
 __END__

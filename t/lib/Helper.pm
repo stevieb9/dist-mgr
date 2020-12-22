@@ -10,6 +10,8 @@ use Test::More;
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
+    copy_makefile
+    unlink_makefile
     copy_module_files
     unlink_module_files
     file_scalar
@@ -23,6 +25,9 @@ ok 1;
 my $orig_dir = 't/data/orig';
 my $work_dir = 't/data/work';
 
+sub copy_makefile {
+    copy "$orig_dir/Makefile.PL", $work_dir or die $!;
+}
 sub copy_module_files {
     for (find_module_files($orig_dir)) {
         copy $_, $work_dir or die $!;
@@ -71,6 +76,9 @@ sub trap_warn {
     else {
         $SIG{__WARN__} = sub { warn shift; }
     }
+}
+sub unlink_makefile {
+    unlink "$work_dir/Makefile.PL" or die $!;
 }
 sub unlink_module_files {
     for (find_module_files($work_dir)) {
