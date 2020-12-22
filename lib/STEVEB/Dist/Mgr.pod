@@ -6,7 +6,21 @@ STEVEB::Dist::Mgr - My distribution release cycle toolkit
 
 =head1 SYNOPSIS
 
-    use STEVEB::Dist::Mgr;
+    use STEVEB::Dist::Mgr qw(:all)
+
+    my $results = bump_version('2.02');
+
+    my $file_versions = get_version_info();
+
+=head1 EXPORT_OK
+
+We do not automatically import anything into your namespace, you must request
+functionality explicitly. Available functions are:
+
+    bump_version
+    get_version_info
+
+NOTE: You can auto import everything at once by specifying the C<:all> tag.
 
 =head1 FUNCTIONS
 
