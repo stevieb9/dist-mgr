@@ -6,6 +6,7 @@ use version;
 
 use Carp qw(croak cluck);
 use Data::Dumper;
+use File::Copy;
 use File::Find::Rule;
 use PPI;
 
@@ -63,23 +64,30 @@ sub bump_version {
         open my $wfh, '>', \$mem_file or croak("Can't open mem file!: $!");
 
         for my $line (@file_contents) {
-            if ($line =~ /^$version_line/) {
+            chomp $line;
+
+            if ($line eq $version_line) {
                 $line =~ s/$current_version/$version/;
             }
 
+            $line .= "\n";
+
             # Write out the line to the in-memory temp file
             print $wfh $line;
-
-            if (! $dry_run) {
-                # Write out the actual file
-            }
 
             $files{$_}{from}    = $current_version;
             $files{$_}{to}      = $version;
         }
 
+        close $wfh;
+
         $files{$_}{dry_run} = $dry_run;
         $files{$_}{content} = $mem_file;
+
+        if (! $dry_run) {
+            # Write out the actual file
+            _write_file($_, $mem_file);
+        }
     }
     return \%files;
 }
@@ -187,6 +195,15 @@ sub _validate_version {
     }
 }
 
+sub _write_file {
+    my ($module_file, $content) = @_;
+
+    open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
+
+    print $wfh $content;
+
+    close $wfh or croak("Can't close the temporary memory module file!: $!");
+}
 1;
 __END__
 

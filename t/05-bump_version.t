@@ -9,11 +9,14 @@ use Module::Bump::Version qw(:all);
 use lib 't/lib';
 use Helper qw(:all);
 
-my $d = 't/data/orig';
+my $d = 't/data/work';
 my $f = 't/data/orig/No.pm';
+
 my @valid = ("$d/One.pm", "$d/Two.pm", "$d/Three.pm");
 
 my $h = Hook::Output::Tiny->new;
+
+copy_module_files();
 
 # bad params
 {
@@ -80,7 +83,7 @@ my $h = Hook::Output::Tiny->new;
     $h->flush;
 
     $h->hook('stderr');
-    my $data = bump_version('3.77', $d);
+    my $data = bump_version('-3.77', $d);
     $h->unhook('stderr');
 
     my @err = $h->stderr;
@@ -100,7 +103,7 @@ my $h = Hook::Output::Tiny->new;
     is $data->{"$d/Three.pm"}{to},   '3.77', "Three has proper to ver";
 }
 
-# files & content
+# files (dry run)
 {
 
     for my $file (@valid) {
@@ -110,11 +113,33 @@ my $h = Hook::Output::Tiny->new;
         is exists $data->{$file}, 1, "$file is a key of the returned href ok";
         is keys %{ $data->{$file} }, 4, "href $file entry has proper key count ok";
         is exists $data->{$file}{content}, 1, "$file entry has a 'content' key ok";
-
-        my $c = file_scalar($file);
-
-        is $data->{$file}{content}, $c, "$file content matches original file ok";
     }
 }
+
+# files & content (live run)
+{
+
+    my $data = bump_version(9.12, $d);
+
+    for my $file (@valid) {
+        is keys %$data, 3, "returned href has proper number of keys ok";
+        is exists $data->{$file}, 1, "$file is a key of the returned href ok";
+        is keys %{$data->{$file}}, 4, "href $file entry has proper key count ok";
+        is exists $data->{$file}{content}, 1, "$file entry has a 'content' key ok";
+        is $data->{$file}{dry_run}, 0, "$file has dry_run disabled ok";
+        is $data->{$file}{to}, '9.12', "$file has proper ver set ok";
+
+        my $c = file_scalar($file);
+        is $data->{$file}{content}, $c, "$file content matches updated file ok";
+    }
+
+    is $data->{'t/data/work/One.pm'}{from}, '0.01', "One.pm from ver ok";
+    is $data->{'t/data/work/Two.pm'}{from}, '2.00', "Two.pm from ver ok";
+    is $data->{'t/data/work/Three.pm'}{from}, '3.00', "Three.pm from ver ok";
+}
+
+unlink_module_files();
+verify_clean();
+
 done_testing();
 
