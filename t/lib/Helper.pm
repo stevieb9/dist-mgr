@@ -78,14 +78,21 @@ sub trap_warn {
     }
 }
 sub unlink_makefile {
-    unlink "$work_dir/Makefile.PL" or die $!;
+    if (-e "$work_dir/Makefile.PL") {
+        unlink "$work_dir/Makefile.PL" or die $!;
+    }
+    is -e "$work_dir/Makefile.PL", undef, "temp makefile deleted ok";
 }
 sub unlink_module_files {
     for (find_module_files($work_dir)) {
-        unlink $_ or die $!;
+        if (-e $_) {
+            unlink $_ or die $!;
+        }
+        is -e $_, undef, "unlinked $_ file ok";
     }
 }
 sub verify_clean {
     is(scalar(find_module_files($work_dir)), 0, "all work module files unlinked ok");
 }
+
 1;

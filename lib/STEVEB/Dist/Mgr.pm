@@ -29,6 +29,16 @@ use constant {
 
     DEFAULT_DIR         => 'lib/',
 };
+
+# Public
+
+#TODO:
+# unlink unwanted files & dirs (xt/, ignore.txt, README)
+# travis-ci
+# appveyor
+# MANIFEST.SKIP
+# .gitignore
+
 sub add_bugtracker {
     my ($author, $repo, $makefile) = @_;
 
@@ -51,9 +61,6 @@ sub add_repository {
 
     _makefile_insert_repository($author, $repo, $makefile);
 }
-
-# Public
-
 sub bump_version {
     my ($version, $fs_entry) = @_;
 
@@ -231,7 +238,7 @@ sub _makefile_insert_meta_merge {
 
     for (0..$#$mf) {
         if ($mf->[$_] =~ /MIN_PERL_VERSION/) {
-            splice @$mf, $_, 0, _makefile_section_meta_merge();
+            splice @$mf, $_+1, 0, _makefile_section_meta_merge();
             last;
         }
     }
@@ -256,6 +263,8 @@ sub _makefile_insert_bugtracker {
         }
     }
     untie $tie;
+
+    return 0;
 }
 sub _makefile_insert_repository {
     my ($author, $repo, $makefile) = @_;
@@ -277,6 +286,8 @@ sub _makefile_insert_repository {
        }
     }
     untie $tie;
+
+    return 0;
 }
 
 sub _makefile_section_meta_merge {

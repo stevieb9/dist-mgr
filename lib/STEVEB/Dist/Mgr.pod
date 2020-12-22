@@ -17,12 +17,71 @@ STEVEB::Dist::Mgr - My distribution release cycle toolkit
 We do not automatically import anything into your namespace, you must request
 functionality explicitly. Available functions are:
 
+    # Makefile.PL functions
+
+    add_bugtracker
+    add_repository
+
+    # Module file functions
+
     bump_version
     get_version_info
 
 NOTE: You can auto import everything at once by specifying the C<:all> tag.
 
 =head1 FUNCTIONS
+
+=head2 add_bugtracker
+
+Adds bugtracker information to the C<Makefile.PL> file. If the required
+C<META_MERGE> section doesn't exist, we'll create it.
+
+Currently, only Github is supported.
+
+I<Parameters>:
+
+    $author
+
+I<Mandatory, String>: The Github username of the software author. For example,
+mine is C<stevieb9>.
+
+    $repository
+
+I<Mandatory, String>: The name of the repository. For example, the repository
+name for this distribution is C<steveb-dist-mgr>.
+
+    $makefile
+
+I<Optional, String>: The path and name of the C<Makefile.PL> file to use. We
+default to C<./Makefile.PL>.
+
+I<Returns>: C<0> upon success.
+
+=head2 add_repository
+
+Adds repository information to the C<Makefile.PL> file. If the required
+C<META_MERGE> section doesn't exist, we'll create it.
+
+Currently, only Github is supported.
+
+I<Parameters>:
+
+    $author
+
+I<Mandatory, String>: The Github username of the software author. For example,
+mine is C<stevieb9>.
+
+    $repository
+
+I<Mandatory, String>: The name of the repository. For example, the repository
+name for this distribution is C<steveb-dist-mgr>.
+
+    $makefile
+
+I<Optional, String>: The path and name of the C<Makefile.PL> file to use. We
+default to C<./Makefile.PL>.
+
+I<Returns>: C<0> upon success.
 
 =head2 bump_version
 

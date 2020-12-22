@@ -8,7 +8,9 @@ MANIFEST.SKIP
 t/00-load.t
 t/05-bump_version.t
 t/10-get_version_info.t
+t/15-add_repo_add_bugtrack.t
 t/data/orig/Bad.pm
+t/data/orig/Makefile.PL
 t/data/orig/No.pm
 t/data/orig/One.pm
 t/data/orig/Three.pm
