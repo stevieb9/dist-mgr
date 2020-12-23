@@ -19,13 +19,13 @@ copy_ci_files();
 # bad params
 {
     for ({}, sub {}, \'string') {
-        is eval{github_ci($_); 1}, undef, "github_ci() croaks with param ref " . ref $_;
+        is eval{ci_github($_); 1}, undef, "ci_github() croaks with param ref " . ref $_;
     }
 }
 
 # no params (default: linux, windows)
 {
-    my @ci = github_ci();
+    my @ci = ci_github();
 
     is grep(/ubuntu-latest/, @ci), 1, "no param linux included ok";
     is grep (/windows-latest/, @ci), 1, "no param windows included ok";
@@ -38,7 +38,7 @@ copy_ci_files();
 
 # windows
 {
-    my @ci = github_ci([qw(w)]);
+    my @ci = ci_github([qw(w)]);
 
     is grep(/ubuntu-latest/, @ci), 0, "no param no linux included ok";
     is grep (/windows-latest/, @ci), 1, "no param windows included ok";
@@ -51,7 +51,7 @@ copy_ci_files();
 
 # linux
 {
-    my @ci = github_ci([qw(l)]);
+    my @ci = ci_github([qw(l)]);
 
     is grep(/ubuntu-latest/, @ci), 1, "no param linux included ok";
     is grep (/windows-latest/, @ci), 0, "no param no windows included ok";
@@ -64,7 +64,7 @@ copy_ci_files();
 
 # macos
 {
-    my @ci = github_ci([qw(m)]);
+    my @ci = ci_github([qw(m)]);
 
     is grep(/ubuntu-latest/, @ci), 0, "no param no linux included ok";
     is grep (/windows-latest/, @ci), 0, "no param no windows included ok";
@@ -77,7 +77,7 @@ copy_ci_files();
 
 # linux, windows, macos
 {
-    my @ci = github_ci([qw(l w m)]);
+    my @ci = ci_github([qw(l w m)]);
 
     is grep(/ubuntu-latest/, @ci), 1, "no param linux included ok";
     is grep (/windows-latest/, @ci), 1, "no param windows included ok";
@@ -92,7 +92,7 @@ unlink_ci_files();
 
 # Let's put back a file for production, shall we? ;)
 
-github_ci([qw(l w m)]);
+ci_github([qw(l m)]);
 
 sub clean {
     is -e $live_file, 1, "CI file created ok";
