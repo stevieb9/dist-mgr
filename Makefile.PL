@@ -33,6 +33,7 @@ WriteMakefile(
     },
     PREREQ_PM => {
         'File::Find::Rule'  => 0,
+        'File::Path'        => 0,
         'PPI'               => 0,
         'Tie::File'         => 0,
         'version'           => 0,

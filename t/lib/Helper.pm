@@ -10,10 +10,14 @@ use Test::More;
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
+    copy_ci_files
     copy_makefile
-    unlink_makefile
     copy_module_files
+
+    unlink_ci_files
+    unlink_makefile
     unlink_module_files
+
     file_scalar
     trap_warn
     verify_clean
@@ -25,6 +29,9 @@ ok 1;
 my $orig_dir = 't/data/orig';
 my $work_dir = 't/data/work';
 
+sub copy_ci_files {
+    copy "$orig_dir/github_actions_default.yml", $work_dir or die $!;
+}
 sub copy_makefile {
     copy "$orig_dir/Makefile.PL", $work_dir or die $!;
 }
@@ -33,6 +40,28 @@ sub copy_module_files {
         copy $_, $work_dir or die $!;
     }
 }
+
+sub unlink_ci_files {
+    if (-e "$work_dir/github_actions_default.yml") {
+        unlink "$work_dir/github_actions_default.yml" or die $!;
+    }
+    is -e "$work_dir/github_actions_default.yml", undef, "temp github actions file deleted ok";
+}
+sub unlink_makefile {
+    if (-e "$work_dir/Makefile.PL") {
+        unlink "$work_dir/Makefile.PL" or die $!;
+    }
+    is -e "$work_dir/Makefile.PL", undef, "temp makefile deleted ok";
+}
+sub unlink_module_files {
+    for (find_module_files($work_dir)) {
+        if (-e $_) {
+            unlink $_ or die $!;
+        }
+        is -e $_, undef, "unlinked $_ file ok";
+    }
+}
+
 sub file_scalar {
     my ($fname) = @_;
     my $contents;
@@ -77,20 +106,7 @@ sub trap_warn {
         $SIG{__WARN__} = sub { warn shift; }
     }
 }
-sub unlink_makefile {
-    if (-e "$work_dir/Makefile.PL") {
-        unlink "$work_dir/Makefile.PL" or die $!;
-    }
-    is -e "$work_dir/Makefile.PL", undef, "temp makefile deleted ok";
-}
-sub unlink_module_files {
-    for (find_module_files($work_dir)) {
-        if (-e $_) {
-            unlink $_ or die $!;
-        }
-        is -e $_, undef, "unlinked $_ file ok";
-    }
-}
+
 sub verify_clean {
     is(scalar(find_module_files($work_dir)), 0, "all work module files unlinked ok");
 }

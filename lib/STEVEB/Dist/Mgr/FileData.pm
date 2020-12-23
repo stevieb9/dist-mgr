@@ -6,45 +6,13 @@ use strict;
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
+    _github_ci_file
     _makefile_section_meta_merge
     _makefile_section_bugtracker
     _makefile_section_repo
-    _github_ci
 );
 
-sub _makefile_section_meta_merge {
-    return (
-        "    META_MERGE => {",
-        "        'meta-spec' => { version => 2 },",
-        "        resources   => {",
-        "        },",
-        "    },"
-    );
-}
-sub _makefile_section_bugtracker {
-    my ($author, $repo) = @_;
-
-    return (
-        "            bugtracker => {",
-        "                web => 'https://github.com/$author/$repo/issues',",
-        "            },"
-    );
-
-}
-sub _makefile_section_repo {
-    my ($author, $repo) = @_;
-
-    return (
-        "            repository => {",
-        "                type => 'git',",
-        "                url => 'https://github.com/$author/$repo.git',",
-        "                web => 'https://github.com/$author/$repo',",
-        "            },"
-    );
-
-}
-
-sub _github_ci {
+sub _github_ci_file {
     my ($os) = @_;
 
     if (! defined $os) {
@@ -88,6 +56,38 @@ sub _github_ci {
         "      - run: cpanm --installdeps .",
         "      - run: prove -lv t",
     );
+}
+
+sub _makefile_section_meta_merge {
+    return (
+        "    META_MERGE => {",
+        "        'meta-spec' => { version => 2 },",
+        "        resources   => {",
+        "        },",
+        "    },"
+    );
+}
+sub _makefile_section_bugtracker {
+    my ($author, $repo) = @_;
+
+    return (
+        "            bugtracker => {",
+        "                web => 'https://github.com/$author/$repo/issues',",
+        "            },"
+    );
+
+}
+sub _makefile_section_repo {
+    my ($author, $repo) = @_;
+
+    return (
+        "            repository => {",
+        "                type => 'git',",
+        "                url => 'https://github.com/$author/$repo.git',",
+        "                web => 'https://github.com/$author/$repo',",
+        "            },"
+    );
+
 }
 
 1;

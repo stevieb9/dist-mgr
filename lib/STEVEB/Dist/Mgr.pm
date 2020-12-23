@@ -7,6 +7,7 @@ use version;
 use Carp qw(croak cluck);
 use Data::Dumper;
 use File::Copy;
+use File::Path qw(make_path);
 use File::Find::Rule;
 use PPI;
 use STEVEB::Dist::Mgr::FileData;
@@ -26,9 +27,10 @@ our %EXPORT_TAGS = (all => \@EXPORT_OK);
 our $VERSION = '0.03';
 
 use constant {
+    GITHUB_CI_FILE      => 'github_ci_default.yml',
+    GITHUB_CI_PATH      => '.github/workflow/',
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
-
     DEFAULT_DIR         => 'lib/',
 };
 
@@ -36,6 +38,8 @@ use constant {
 
 #TODO:
 # Github workflows (dynamically add badges depending on what OSs were selected)
+
+# *** check if in root of distribution
 
 # module-starter
 # git init or pull manually created new repo?
@@ -152,7 +156,31 @@ sub github_ci {
         croak("\$os parameter to github_ci() must be an array ref");
     }
 
-    return _github_ci($os);
+    my @contents = _github_ci_file($os);
+    _write_github_ci_file(\@contents);
+
+    return @contents;
+}
+
+# CI related
+
+sub _github_ci_badges {
+
+}
+sub _write_github_ci_file {
+    my ($contents) = @_;
+
+    if (! ref $contents eq 'ARRAY') {
+        croak("_write_github_ci_file() requires an array ref of contents");
+    }
+
+    my $ci_file //= GITHUB_CI_PATH . GITHUB_CI_FILE;
+
+    make_path(GITHUB_CI_PATH) if ! -d GITHUB_CI_PATH;
+
+    open my $fh, '>', $ci_file or die $!;
+
+    print $fh "$_\n" for @$contents;
 }
 
 # Module related
