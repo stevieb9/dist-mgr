@@ -19,6 +19,7 @@ our @EXPORT_OK = qw(
     add_repository
     bump_version
     get_version_info
+    github_ci
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -143,6 +144,15 @@ sub get_version_info {
     }
 
     return \%version_info;
+}
+sub github_ci {
+    my ($os) = @_;
+
+    if (defined $os && ref $os ne 'ARRAY') {
+        croak("\$os parameter to github_ci() must be an array ref");
+    }
+
+    return _github_ci($os);
 }
 
 # Module related
