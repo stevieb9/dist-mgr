@@ -22,6 +22,7 @@ our @EXPORT_OK = qw(
     get_version_info
     ci_github
     ci_badges
+    manifest_skip
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -177,6 +178,17 @@ sub ci_github {
 
     return @contents;
 }
+sub manifest_skip {
+    my ($dir) = @_;
+
+    $dir //= '.';
+
+    my @content = _manifest_skip_file();
+
+    _manifest_skip_write_file($dir, \@content);
+
+    return @content;
+}
 
 # CI related
 
@@ -303,6 +315,20 @@ sub _module_write_file {
     print $wfh $content;
 
     close $wfh or croak("Can't close the temporary memory module file!: $!");
+}
+
+# MANIFEST.SKIP related
+
+sub _manifest_skip_write_file {
+    my ($dir, $content) = @_;
+
+    open my $fh, '>', "$dir/MANIFEST.SKIP" or die $!;
+
+    for (@$content) {
+        print $fh "$_\n"
+    }
+
+    return 0;
 }
 
 # Makefile related

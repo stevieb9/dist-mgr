@@ -13,10 +13,12 @@ our @EXPORT_OK = qw(
     copy_ci_files
     copy_makefile
     copy_module_files
+    copy_manifest_skip
 
     unlink_ci_files
     unlink_makefile
     unlink_module_files
+    unlink_manifest_skip
 
     file_scalar
     trap_warn
@@ -40,6 +42,9 @@ sub copy_module_files {
         copy $_, $work_dir or die $!;
     }
 }
+sub copy_manifest_skip {
+    copy "$orig_dir/MANIFEST.SKIP", $work_dir or die $!;
+}
 
 sub unlink_ci_files {
     if (-e "$work_dir/github_ci_default.yml") {
@@ -60,6 +65,12 @@ sub unlink_module_files {
         }
         is -e $_, undef, "unlinked $_ file ok";
     }
+}
+sub unlink_manifest_skip {
+    if (-e "$work_dir/MANIFEST.SKIP") {
+        unlink "$work_dir/MANIFEST.SKIP" or die $!;
+    }
+    is -e "$work_dir/MANIFEST.SKIP", undef, "temp MANIFEST.SKIP deleted ok";
 }
 
 sub file_scalar {

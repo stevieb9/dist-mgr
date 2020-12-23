@@ -7,10 +7,14 @@ use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
     _ci_github_file
+
     _module_section_ci_badges
+
     _makefile_section_meta_merge
     _makefile_section_bugtracker
     _makefile_section_repo
+
+    _manifest_skip_file
 );
 
 sub _ci_github_file {
@@ -103,6 +107,46 @@ sub _makefile_section_repo {
 
 }
 
+sub _manifest_skip_file {
+    return (
+        q{~$},
+        q{^blib/},
+        q{^pm_to_blib/},
+        q{.old$},
+        q{.orig$},
+        q{.tar.gz$},
+        q{.bak$},
+        q{.swp$},
+        q{^test/},
+        q{.hg/},
+        q{.hgignore$},
+        q{^_build/},
+        q{^Build$},
+        q{^MYMETA\.yml$},
+        q{^MYMETA\.json$},
+        q{^README.bak$},
+        q{^Makefile$},
+        q{.metadata/},
+        q{.idea/},
+        q{pm_to_blib$},
+        q{.git/},
+        q{.debug$},
+        q{.gitignore$},
+        q{^\w+.pl$},
+        q{.ignore.txt$},
+        q{.travis.yml$},
+        q{.iml$},
+        q{examples/},
+        q{build/},
+        q{^\w+.list$},
+        q{.bblog$},
+        q{.base$},
+        q{BB-Pass/},
+        q{BB-Fail/},
+        q{cover_db/},
+        q{scrap\.pl},
+    );
+}
 
 
 1;

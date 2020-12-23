@@ -201,6 +201,16 @@ recursively.
 
 I<Returns>: C<0> upon success.
 
+=head2 manifest_skip
+
+Generates a C<MANIFEST.SKIP> file.
+
+I<Parameters>:
+
+    $directory
+
+I<Optional, String>: The directory where we'll create the file. If not
+specified, we'll create it in the current directory, C<.>.
 
 =head1 AUTHOR
 
