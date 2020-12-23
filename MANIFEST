@@ -14,9 +14,11 @@ t/10-get_version_info.t
 t/15-add_repo_add_bugtrack.t
 t/20-ci_config_files.t
 t/25-ci_badges.t
+t/30-manifest_skip.t
 t/data/orig/Bad.pm
 t/data/orig/github_ci_default.yml
 t/data/orig/Makefile.PL
+t/data/orig/MANIFEST.SKIP
 t/data/orig/No.pm
 t/data/orig/One.pm
 t/data/orig/Three.pm
