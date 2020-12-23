@@ -1,6 +1,6 @@
 =head1 NAME
 
-STEVEB::Dist::Mgr - My distribution release cycle toolkit
+STEVEB::Dist::Mgr - My distribution development cycle toolkit
 
 =head1 DESCRIPTION
 
