@@ -28,7 +28,7 @@ our $VERSION = '0.03';
 
 use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
-    GITHUB_CI_PATH      => '.github/workflow/',
+    GITHUB_CI_PATH      => '.github/workflows/',
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',

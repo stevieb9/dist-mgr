@@ -27,7 +27,7 @@ sub _github_ci_file {
 
     my $os_matrix = "[ ";
     $os_matrix .= join(', ', map { $os_matrix_map{$_} } @$os);
-    $os_matrix .= " ]\n";
+    $os_matrix .= " ]";
 
     return (
         "name: CI",

@@ -11,7 +11,7 @@ use Helper qw(:all);
 my $work = 't/data/work';
 my $orig = 't/data/orig';
 
-my $live_file = ".github/workflow/github_ci_default.yml";
+my $live_file = ".github/workflows/github_ci_default.yml";
 
 unlink_ci_files();
 copy_ci_files();
@@ -87,6 +87,8 @@ copy_ci_files();
     compare_contents('l w m', $os_line, @ci);
     clean();
 }
+
+unlink_ci_files();
 
 # Let's put back a file for production, shall we? ;)
 
