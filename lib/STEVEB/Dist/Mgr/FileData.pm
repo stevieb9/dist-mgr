@@ -10,7 +10,7 @@ our @EXPORT = qw(
     _makefile_section_bugtracker
     _makefile_section_repo
 
-    _travis_ci
+    _github_actions_ci
 );
 
 sub _makefile_section_meta_merge {
@@ -45,50 +45,9 @@ sub _makefile_section_repo {
 
 }
 
-sub _travis_ci {
+sub _github_actions_ci {
+    my ($os) = @_;
     return (
-        'language: perl',
-        'perl:',
-        '    - "5.32"',
-        '    - "5.30"',
-        '    - "5.24"',
-        '    - "5.20"',
-        '    - "5.18"',
-        '    - "5.14"',
-        '    - "5.12"',
-        '    - "5.10"',
-        '',
-        'os:',
-        '   - linux',
-        '',
-        'before_install:',
-        '  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers',
-        '  - source ~/travis-perl-helpers/init',
-        '  - build-perl',
-        '  - perl -V',
-        '  - build-dist',
-        '  - cd $BUILD_DIR             # $BUILD_DIR is set by the build-dist command',
-        '',
-        'install:',
-        '  - cpan-install Devel::Cover',
-        '  - cpan-install --deps       # installs prereqs, including recommends',
-        '  - cpan-install --coverage   # installs converage prereqs, if enabled',
-        '',
-        'before_script:',
-        '  - coverage-setup',
-        '',
-        'script:',
-        '  - PERL5OPT=-MDevel::Cover=-coverage,statement,branch,condition,path,subroutine prove -lrv t',
-        '  - cover',
-        '',
-        'after_success:',
-        '  - cover -report coveralls',
-        '  - coverage-report',
-        '',
-        'matrix:',
-        '  include:',
-        '    - perl: 5.20',
-        '      env: COVERAGE=1',
     );
 }
 
