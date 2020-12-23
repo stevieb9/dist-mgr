@@ -6,13 +6,14 @@ use strict;
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
-    _github_ci_file
+    _ci_github_file
+    _ci_github_section_badge
     _makefile_section_meta_merge
     _makefile_section_bugtracker
     _makefile_section_repo
 );
 
-sub _github_ci_file {
+sub _ci_github_file {
     my ($os) = @_;
 
     if (! defined $os) {
@@ -57,6 +58,17 @@ sub _github_ci_file {
         "      - run: prove -lv t",
     );
 }
+sub _ci_github_section_badge {
+    my ($author, $repo);
+
+    return(
+        qq{},
+        qq{=for html},
+        qq{<a href="https://github.com/$author/$repo/actions"><img src="https://github.com/$author/$repo/workflows/CI/badge.svg"/></a>},
+        qq{<a href='https://coveralls.io/github/$author/$repo?branch=master'><img src='https://coveralls.io/repos/$author/$repo/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>},
+        qq{},
+    );
+}
 
 sub _makefile_section_meta_merge {
     return (
@@ -89,6 +101,8 @@ sub _makefile_section_repo {
     );
 
 }
+
+
 
 1;
 __END__

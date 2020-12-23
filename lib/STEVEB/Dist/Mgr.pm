@@ -20,7 +20,7 @@ our @EXPORT_OK = qw(
     add_repository
     bump_version
     get_version_info
-    github_ci
+    ci_github
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -37,14 +37,13 @@ use constant {
 # Public
 
 #TODO:
-# Github workflows (dynamically add badges depending on what OSs were selected)
-
+# CI badges
 # *** check if in root of distribution
 
 # module-starter
+# coveralls
 # git init or pull manually created new repo?
 # unlink unwanted files & dirs (xt/, ignore.txt, README)
-# appveyor
 # MANIFEST.SKIP
 # .gitignore
 
@@ -149,22 +148,33 @@ sub get_version_info {
 
     return \%version_info;
 }
-sub github_ci {
+sub ci_badges {
+    if (scalar @_ != 3) {
+        croak("ci_badges() needs \$author, \$repo and \$module sent in");
+    }
+
+    my ($author, $repo, $fs_entry) = @_;
+
+    for (_module_find_files($fs_entry)) {
+        _module_insert_github_ci_badges($author, $repo, $_);
+    }
+}
+sub ci_github {
     my ($os) = @_;
 
     if (defined $os && ref $os ne 'ARRAY') {
         croak("\$os parameter to github_ci() must be an array ref");
     }
 
-    my @contents = _github_ci_file($os);
-    _write_github_ci_file(\@contents);
+    my @contents = _ci_github_file($os);
+    _ci_github_write_file(\@contents);
 
     return @contents;
 }
 
 # CI related
 
-sub _write_github_ci_file {
+sub _ci_github_write_file {
     my ($contents) = @_;
 
     if (! ref $contents eq 'ARRAY') {
@@ -183,13 +193,29 @@ sub _write_github_ci_file {
 # Module related
 
 sub _module_find_files {
-    my ($fs_entry) = @_;
+    my ($fs_entry, $module) = @_;
 
     $fs_entry //= DEFAULT_DIR;
 
+    if (defined $module) {
+        $module =~ s/::/\//g;
+        $module .= '.pm';
+    }
+    else {
+        $module = '*.pm';
+    }
+
+
     return File::Find::Rule->file()
-        ->name('*.pm')
+        ->name($module)
         ->in($fs_entry);
+}
+sub _module_load {
+    my ($mod_file) = @_;
+    croak("_module_load() needs a module file name sent in") if ! defined $mod_file;
+
+    my $tie = tie my @mf, 'Tie::File', $mod_file;
+    return (\@mf, $tie);
 }
 sub _module_fetch_file_contents {
     my ($file) = @_;
@@ -248,15 +274,20 @@ sub _module_extract_file_version_line {
 
     return $version_line;
 }
-sub _module_insert_github_ci_badge {
-#    ![CI](https://github.com/stevieb9/steveb-dist-mgr/workflows/CI/badge.svg)
+sub _module_insert_github_ci_badges {
+    my ($author, $repo, $module_file) = @_;
 
-#=for html
-#<a href="http://travis-ci.com/stevieb9/word-rhymes"><img src="https://www.travi$
-#<a href="https://ci.appveyor.com/project/stevieb9/word-rhymes"><img src="https:$
-#<a href='https://coveralls.io/github/stevieb9/word-rhymes?branch=master'><img s$
+    my ($mf, $tie) = _module_load($module_file);
 
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /^=head1 NAME/) {
+            splice @$mf, $_+1, 0, _ci_github_badge_section($author, $repo);
+            last;
+        }
+    }
+    untie $tie;
 
+    return 0;
 }
 sub _module_write_file {
     my ($module_file, $content) = @_;

@@ -32,6 +32,11 @@ functionality explicitly. Available functions are:
     bump_version
     get_version_info
 
+    # CI functions
+
+    ci_github
+    ci_badges
+
 NOTE: You can auto import everything at once by specifying the C<:all> tag.
 
 =head1 FUNCTIONS
@@ -152,6 +157,26 @@ I<Returns>: Hash reference:
         't/data/orig/Bad.pm'    => undef,   # $VERSION can't be parsed
         't/data/orig/No.pm'     => undef,   # No $VERSION defined
     };
+
+=head2 ci_github
+
+Installs a Github Actions configuration file into C<.github/workflows>. We'll
+create the directory if it doesn't exist.
+
+I<Parameters>:
+
+    $os
+
+I<Optional, Array Reference>: A list of the Operating Systems you want to run
+your tests on.
+
+I<Valid values>: C<l>, C<w>, C<m>, where:
+
+    l == Linux (Ubuntu to be specific)
+    w == Windows
+    m == MacOS
+
+I<Returns>: An array of the contents of the generated file.
 
 =head1 AUTHOR
 
