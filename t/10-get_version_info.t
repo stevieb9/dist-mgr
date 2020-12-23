@@ -67,7 +67,7 @@ my $d = 't/data/orig';
     my $h = Hook::Output::Tiny->new;
 
     $h->hook('stderr');
-    my $info = get_version_info($d);
+    get_version_info($d);
     $h->unhook('stderr');
 
     my @stderr = $h->stderr;
