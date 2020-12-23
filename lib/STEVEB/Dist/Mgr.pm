@@ -26,7 +26,7 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
