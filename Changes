@@ -1,7 +1,7 @@
 Revision history for STEVEB-Dist-Mgr
 
 0.04 UNREL
-        -
+        - Added git_ignore()
 
 0.03    2020-12-22
         - Test release

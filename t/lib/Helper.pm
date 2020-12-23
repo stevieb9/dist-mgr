@@ -14,11 +14,13 @@ our @EXPORT_OK = qw(
     copy_makefile
     copy_module_files
     copy_manifest_skip
+    copy_git_ignore
 
     unlink_ci_files
     unlink_makefile
     unlink_module_files
     unlink_manifest_skip
+    unlink_git_ignore
 
     file_scalar
     trap_warn
@@ -44,6 +46,9 @@ sub copy_module_files {
 }
 sub copy_manifest_skip {
     copy "$orig_dir/MANIFEST.SKIP", $work_dir or die $!;
+}
+sub copy_git_ignore {
+    copy "$orig_dir/.gitignore", $work_dir or die $!;
 }
 
 sub unlink_ci_files {
@@ -71,6 +76,12 @@ sub unlink_manifest_skip {
         unlink "$work_dir/MANIFEST.SKIP" or die $!;
     }
     is -e "$work_dir/MANIFEST.SKIP", undef, "temp MANIFEST.SKIP deleted ok";
+}
+sub unlink_git_ignore {
+    if (-e "$work_dir/.gitignore") {
+        unlink "$work_dir/.gitignore" or die $!;
+    }
+    is -e "$work_dir/.gitignore", undef, "temp .gitignore deleted ok";
 }
 
 sub file_scalar {

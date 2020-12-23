@@ -7,7 +7,7 @@ use version;
 use Carp qw(croak cluck);
 use Data::Dumper;
 use File::Copy;
-use File::Path qw(make_path);
+use File::Path qw(make_path rmtree);
 use File::Find::Rule;
 use PPI;
 use STEVEB::Dist::Mgr::FileData;
@@ -23,6 +23,7 @@ our @EXPORT_OK = qw(
     ci_github
     ci_badges
     manifest_skip
+    git_ignore
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -36,13 +37,9 @@ use constant {
     DEFAULT_DIR         => 'lib/',
 };
 
-# Public
-
 #TODO:
 # *** check if in root of distribution
 # *** ci_badges() should also be able to work on *.pod files
-
-# .gitignore
 
 # re-create the module-starter version of the module file to conform
 # with layout
@@ -51,6 +48,8 @@ use constant {
 # coveralls
 # git init or pull manually created new repo?
 # unlink unwanted files & dirs (xt/, ignore.txt, README)
+
+# Public
 
 sub add_bugtracker {
     my ($author, $repo, $makefile) = @_;
@@ -178,6 +177,17 @@ sub ci_github {
 
     return @contents;
 }
+sub git_ignore {
+    my ($dir) = @_;
+
+    $dir //= '.';
+
+    my @content = _git_ignore_file();
+
+    _git_ignore_write_file($dir, \@content);
+
+    return @content;
+}
 sub manifest_skip {
     my ($dir) = @_;
 
@@ -188,6 +198,17 @@ sub manifest_skip {
     _manifest_skip_write_file($dir, \@content);
 
     return @content;
+}
+sub remove_unwanted_files {
+    my ($dir) = @_;
+
+    $dir //= '.';
+
+    for (_unwanted_filesystem_entries()) {
+        rmtree $_;
+    }
+
+    return 0;
 }
 
 # CI related
@@ -206,6 +227,20 @@ sub _ci_github_write_file {
     open my $fh, '>', $ci_file or die $!;
 
     print $fh "$_\n" for @$contents;
+}
+
+# Git related
+
+sub _git_ignore_write_file {
+    my ($dir, $content) = @_;
+
+    open my $fh, '>', "$dir/.gitignore" or die $!;
+
+    for (@$content) {
+        print $fh "$_\n"
+    }
+
+    return 0;
 }
 
 # Module related

@@ -8,6 +8,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(
     _ci_github_file
 
+    _git_ignore_file
+
     _module_section_ci_badges
 
     _makefile_section_meta_merge
@@ -15,6 +17,8 @@ our @EXPORT = qw(
     _makefile_section_repo
 
     _manifest_skip_file
+
+    _unwanted_filesystem_entries
 );
 
 sub _ci_github_file {
@@ -60,6 +64,35 @@ sub _ci_github_file {
         "      - run: perl -V",
         "      - run: cpanm --installdeps .",
         "      - run: prove -lv t",
+    );
+}
+
+sub _git_ignore_file {
+    return (
+        q{Makefile},
+        q{*~},
+        q{*.bak},
+        q{*.swp},
+        q{*.bak},
+        q{.hg/},
+        q{.git/},
+        q{MYMETA.*},
+        q{*.tar.gz},
+        q{_build/},
+        q{blib/},
+        q{Build/},
+        q{META.json},
+        q{META.yml},
+        q{*.old},
+        q{*.orig},
+        q{pm_to_blib},
+        q{.metadata/},
+        q{.idea/},
+        q{*.debug},
+        q{*.iml},
+        q{*.bblog},
+        q{BB-Pass/},
+        q{BB-Fail/},
     );
 }
 
@@ -148,6 +181,15 @@ sub _manifest_skip_file {
     );
 }
 
+sub _unwanted_filesystem_entries {
+    return qw(
+        xt/
+        ignore.txt
+        README
+    );
+}
+
+sub __placeholder {}
 
 1;
 __END__

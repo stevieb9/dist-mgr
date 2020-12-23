@@ -41,6 +41,10 @@ functionality explicitly. Available functions are:
 
     manifest_skip
 
+    # Git functions
+
+    git_ignore
+
 NOTE: You can auto import everything at once by specifying the C<:all> tag.
 
 =head1 FUNCTIONS
@@ -216,19 +220,20 @@ I<Parameters>:
 I<Optional, String>: The directory where we'll create the file. If not
 specified, we'll create it in the current directory, C<.>.
 
-=head1 AUTHOR
+I<Returns>: An array of the file's contents.
 
-Steve Bertrand, C<< <steveb at cpan.org> >>
+=head2 git_ignore
 
-=head1 LICENSE AND COPYRIGHT
+Generates a C<.gitignore> file.
 
-Copyright 2020 Steve Bertrand.
+I<Parameters>:
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
+    $directory
 
-L<http://www.perlfoundation.org/artistic_license_2_0>
+I<Optional, String>: The directory where we'll create the file. If not
+specified, we'll create it in the current directory, C<.>.
+
+I<Returns>: An array of the file's contents.
 
 =head1 AUTHOR
 
