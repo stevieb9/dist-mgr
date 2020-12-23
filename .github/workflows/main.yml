@@ -1,0 +1,30 @@
+# Optional, but good to give a name
+name: CI
+ 
+# This means the workflow will be triggered
+#    on push to master branch
+#    when a pull request arrives to the master branch. (The source branch does not matter)
+#    workflow_dispatch to trigger manually or via API call
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        perl: [ '5.32', '5.30', '5.28' ]
+    name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+      - run: perl -V
+      - run: cpanm --installdeps .
+      - run: prove -lv t
