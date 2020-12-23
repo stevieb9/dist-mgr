@@ -24,6 +24,7 @@ our @EXPORT_OK = qw(
     ci_badges
     manifest_skip
     git_ignore
+    remove_unwanted_files
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -200,10 +201,6 @@ sub manifest_skip {
     return @content;
 }
 sub remove_unwanted_files {
-    my ($dir) = @_;
-
-    $dir //= '.';
-
     for (_unwanted_filesystem_entries()) {
         rmtree $_;
     }

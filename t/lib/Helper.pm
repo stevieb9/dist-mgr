@@ -6,6 +6,7 @@ use strict;
 use Carp qw(croak);
 use Exporter qw(import);
 use File::Copy;
+use File::Path qw(rmtree);
 use Test::More;
 
 our @ISA = qw(Exporter);
@@ -22,6 +23,7 @@ our @EXPORT_OK = qw(
     unlink_manifest_skip
     unlink_git_ignore
 
+    remove_unwanted
     file_scalar
     trap_warn
     verify_clean
@@ -30,8 +32,9 @@ our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 ok 1;
 
-my $orig_dir = 't/data/orig';
-my $work_dir = 't/data/work';
+my $orig_dir        = 't/data/orig/';
+my $work_dir        = 't/data/work/';
+my $unwanted_dir    =  't/data/work/unwanted/';
 
 sub copy_ci_files {
     copy "$orig_dir/github_ci_default.yml", $work_dir or die $!;
@@ -129,6 +132,12 @@ sub trap_warn {
     }
 }
 
+sub remove_unwanted {
+    if (-e $unwanted_dir) {
+        is rmtree("$work_dir/unwanted") > 1, 1, "removed unwanted dir structure ok";
+    }
+    is -e $unwanted_dir, undef, "unwanted dir removed ok";
+}
 sub verify_clean {
     is(scalar(find_module_files($work_dir)), 0, "all work module files unlinked ok");
 }

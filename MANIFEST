@@ -16,6 +16,7 @@ t/20-ci_config_files.t
 t/25-ci_badges.t
 t/30-manifest_skip.t
 t/35-git_ignore.t
+t/40-remove_unwanted_files.t
 t/data/orig/Bad.pm
 t/data/orig/github_ci_default.yml
 t/data/orig/Makefile.PL

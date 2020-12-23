@@ -45,6 +45,10 @@ functionality explicitly. Available functions are:
 
     git_ignore
 
+    # Maintenance functions
+
+    remove_unwanted_files
+
 NOTE: You can auto import everything at once by specifying the C<:all> tag.
 
 =head1 FUNCTIONS
@@ -234,6 +238,11 @@ I<Optional, String>: The directory where we'll create the file. If not
 specified, we'll create it in the current directory, C<.>.
 
 I<Returns>: An array of the file's contents.
+
+=head2 remove_unwanted_files
+
+Removes unwanted file system entries. We always operate from the perspective of
+the current working directory (C<.>).
 
 =head1 AUTHOR
 
