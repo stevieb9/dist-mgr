@@ -11,13 +11,9 @@ use Helper qw(:all);
 my $work = 't/data/work';
 my $orig = 't/data/orig';
 
-my @travis_ci_config = _travis_ci();
+my @github_ci_config = _github_ci();
 
-open my $fh, '>', "$orig/.travis.yml" or die $!;
-
-for (@travis_ci_config) {
-    print $fh "$_\n";
-}
+print "$_\n" for @github_ci_config;
 
 done_testing;
 

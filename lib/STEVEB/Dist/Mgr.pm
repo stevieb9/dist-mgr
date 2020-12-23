@@ -34,10 +34,11 @@ use constant {
 # Public
 
 #TODO:
+# Github workflows (dynamically add badges depending on what OSs were selected)
+
 # module-starter
 # git init or pull manually created new repo?
 # unlink unwanted files & dirs (xt/, ignore.txt, README)
-# Github workflows
 # appveyor
 # MANIFEST.SKIP
 # .gitignore
