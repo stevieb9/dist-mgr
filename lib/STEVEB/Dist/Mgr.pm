@@ -9,6 +9,7 @@ use Data::Dumper;
 use File::Copy;
 use File::Find::Rule;
 use PPI;
+use STEVEB::Dist::Mgr::FileData;
 use Tie::File;
 
 use Exporter qw(import);
@@ -33,6 +34,8 @@ use constant {
 # Public
 
 #TODO:
+# module-starter
+# git init or pull manually created new repo?
 # unlink unwanted files & dirs (xt/, ignore.txt, README)
 # travis-ci
 # appveyor
@@ -288,40 +291,6 @@ sub _makefile_insert_repository {
     untie $tie;
 
     return 0;
-}
-
-sub _makefile_section_meta_merge {
-    my @merge_section = (
-        "    META_MERGE => {",
-        "        'meta-spec' => { version => 2 },",
-        "        resources   => {",
-        "        },",
-        "    },"
-    );
-
-    return @merge_section;
-}
-sub _makefile_section_bugtracker {
-    my ($author, $repo) = @_;
-
-    return (
-        "            bugtracker => {",
-        "                web => 'https://github.com/$author/$repo/issues',",
-        "            },"
-    );
-
-}
-sub _makefile_section_repo {
-    my ($author, $repo) = @_;
-
-    return (
-    "            repository => {",
-    "                type => 'git',",
-    "                url => 'https://github.com/$author/$repo.git',",
-    "                web => 'https://github.com/$author/$repo',",
-    "            },"
-    );
-
 }
 
 # Validation related
