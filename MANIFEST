@@ -1,5 +1,7 @@
+.github/workflows/github_ci_default.yml
 appveyor.yml
 Changes
+dev/quote_file_contents.pl
 lib/STEVEB/Dist/Mgr.pm
 lib/STEVEB/Dist/Mgr.pod
 lib/STEVEB/Dist/Mgr/FileData.pm
@@ -11,7 +13,9 @@ t/05-bump_version.t
 t/10-get_version_info.t
 t/15-add_repo_add_bugtrack.t
 t/20-ci_config_files.t
+t/25-ci_badges.t
 t/data/orig/Bad.pm
+t/data/orig/github_ci_default.yml
 t/data/orig/Makefile.PL
 t/data/orig/No.pm
 t/data/orig/One.pm

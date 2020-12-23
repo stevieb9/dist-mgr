@@ -7,7 +7,7 @@ use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
     _ci_github_file
-    _ci_github_section_badge
+    _module_section_ci_badges
     _makefile_section_meta_merge
     _makefile_section_bugtracker
     _makefile_section_repo
@@ -58,10 +58,11 @@ sub _ci_github_file {
         "      - run: prove -lv t",
     );
 }
-sub _ci_github_section_badge {
-    my ($author, $repo);
 
-    return(
+sub _module_section_ci_badges {
+    my ($author, $repo) = @_;
+
+    return (
         qq{},
         qq{=for html},
         qq{<a href="https://github.com/$author/$repo/actions"><img src="https://github.com/$author/$repo/workflows/CI/badge.svg"/></a>},

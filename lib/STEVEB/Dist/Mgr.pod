@@ -178,6 +178,30 @@ I<Valid values>: C<l>, C<w>, C<m>, where:
 
 I<Returns>: An array of the contents of the generated file.
 
+=head2 ci_badges
+
+Inserts various CI and coverage badges into module files.
+
+I<Parameters>:
+
+    $author
+
+I<Mandatory, String>: The repository owner (eg. mine is 'stevieb9').
+
+    $repository
+
+I<Mandatory, String>: The name of the repository (eg. this one is
+'steveb-dist-mgr').
+
+    $fs_entry
+
+I<Optional, String>: The path and name of a Perl module file, or a directory
+that contains Perl module files. If a directory is sent in, we'll operate
+recursively.
+
+I<Returns>: C<0> upon success.
+
+
 =head1 AUTHOR
 
 Steve Bertrand, C<< <steveb at cpan.org> >>

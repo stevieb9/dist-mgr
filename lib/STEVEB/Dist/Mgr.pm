@@ -21,6 +21,7 @@ our @EXPORT_OK = qw(
     bump_version
     get_version_info
     ci_github
+    ci_badges
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -37,6 +38,9 @@ use constant {
 # Public
 
 #TODO:
+# re-create the module-starter version of the module file to conform
+# with layout
+
 # CI badges
 # *** check if in root of distribution
 
@@ -150,14 +154,16 @@ sub get_version_info {
 }
 sub ci_badges {
     if (scalar @_ != 3) {
-        croak("ci_badges() needs \$author, \$repo and \$module sent in");
+        croak("ci_badges() needs \$author, \$repo and \$fs_entry sent in");
     }
 
     my ($author, $repo, $fs_entry) = @_;
 
     for (_module_find_files($fs_entry)) {
-        _module_insert_github_ci_badges($author, $repo, $_);
+        _module_insert_ci_badges($author, $repo, $_);
     }
+
+    return 0;
 }
 sub ci_github {
     my ($os) = @_;
@@ -274,14 +280,14 @@ sub _module_extract_file_version_line {
 
     return $version_line;
 }
-sub _module_insert_github_ci_badges {
+sub _module_insert_ci_badges {
     my ($author, $repo, $module_file) = @_;
 
     my ($mf, $tie) = _module_load($module_file);
 
     for (0..$#$mf) {
         if ($mf->[$_] =~ /^=head1 NAME/) {
-            splice @$mf, $_+1, 0, _ci_github_badge_section($author, $repo);
+            splice @$mf, $_+3, 0, _module_section_ci_badges($author, $repo);
             last;
         }
     }
