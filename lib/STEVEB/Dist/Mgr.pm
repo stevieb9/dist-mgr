@@ -84,14 +84,14 @@ sub bump_version {
     _validate_version($version);
     _validate_fs_entry($fs_entry);
 
-    my @module_files = _find_module_files($fs_entry);
+    my @module_files = _module_find_files($fs_entry);
 
     my %files;
 
     for (@module_files) {
-        my $current_version = _extract_file_version($_);
-        my $version_line    = _extract_file_version_line($_);
-        my @file_contents   = _fetch_file_contents($_);
+        my $current_version = _module_extract_file_version($_);
+        my $version_line    = _module_extract_file_version_line($_);
+        my @file_contents   = _module_fetch_file_contents($_);
 
         if (! defined $version_line) {
             next;
@@ -128,7 +128,7 @@ sub bump_version {
 
         if (! $dry_run) {
             # Write out the actual file
-            _write_module_file($_, $mem_file);
+            _module_write_file($_, $mem_file);
         }
     }
     return \%files;
@@ -138,12 +138,12 @@ sub get_version_info {
 
     _validate_fs_entry($fs_entry);
 
-    my @module_files = _find_module_files($fs_entry);
+    my @module_files = _module_find_files($fs_entry);
 
     my %version_info;
 
     for (@module_files) {
-        my $version = _extract_file_version($_);
+        my $version = _module_extract_file_version($_);
         $version_info{$_} = $version;
     }
 
@@ -164,9 +164,6 @@ sub github_ci {
 
 # CI related
 
-sub _github_ci_badges {
-
-}
 sub _write_github_ci_file {
     my ($contents) = @_;
 
@@ -185,7 +182,7 @@ sub _write_github_ci_file {
 
 # Module related
 
-sub _find_module_files {
+sub _module_find_files {
     my ($fs_entry) = @_;
 
     $fs_entry //= DEFAULT_DIR;
@@ -194,7 +191,7 @@ sub _find_module_files {
         ->name('*.pm')
         ->in($fs_entry);
 }
-sub _fetch_file_contents {
+sub _module_fetch_file_contents {
     my ($file) = @_;
 
     open my $fh, '<', $file
@@ -204,10 +201,10 @@ sub _fetch_file_contents {
     close $fh;
     return @contents;
 }
-sub _extract_file_version {
+sub _module_extract_file_version {
     my ($module_file) = @_;
 
-    my $version_line = _extract_file_version_line($module_file);
+    my $version_line = _module_extract_file_version_line($module_file);
 
     if (defined $version_line) {
 
@@ -233,7 +230,7 @@ sub _extract_file_version {
     }
     return undef;
 }
-sub _extract_file_version_line {
+sub _module_extract_file_version_line {
     my ($module_file) = @_;
 
     my $doc = PPI::Document->new($module_file);
@@ -251,7 +248,17 @@ sub _extract_file_version_line {
 
     return $version_line;
 }
-sub _write_module_file {
+sub _module_insert_github_ci_badge {
+#    ![CI](https://github.com/stevieb9/steveb-dist-mgr/workflows/CI/badge.svg)
+
+#=for html
+#<a href="http://travis-ci.com/stevieb9/word-rhymes"><img src="https://www.travi$
+#<a href="https://ci.appveyor.com/project/stevieb9/word-rhymes"><img src="https:$
+#<a href='https://coveralls.io/github/stevieb9/word-rhymes?branch=master'><img s$
+
+
+}
+sub _module_write_file {
     my ($module_file, $content) = @_;
 
     open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
