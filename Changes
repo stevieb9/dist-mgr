@@ -1,5 +1,12 @@
 Revision history for STEVEB-Dist-Mgr
 
+0.03 UNREL
+        -
+
+0.02    2020-12-22
+        - Added add_repository() and add_bugtracker()
+        - This is another formatting check on MetaCPAN
+
 0.01    2020-12-22
         - Initial release; Much more to add, just checking POD formatting etc.
 
