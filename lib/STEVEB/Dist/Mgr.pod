@@ -37,6 +37,10 @@ functionality explicitly. Available functions are:
     ci_github
     ci_badges
 
+    # MANIFEST.SKIP functions
+
+    manifest_skip
+
 NOTE: You can auto import everything at once by specifying the C<:all> tag.
 
 =head1 FUNCTIONS
