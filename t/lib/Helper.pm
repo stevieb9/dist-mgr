@@ -30,7 +30,7 @@ my $orig_dir = 't/data/orig';
 my $work_dir = 't/data/work';
 
 sub copy_ci_files {
-    copy "$orig_dir/github_actions_default.yml", $work_dir or die $!;
+    copy "$orig_dir/github_ci_default.yml", $work_dir or die $!;
 }
 sub copy_makefile {
     copy "$orig_dir/Makefile.PL", $work_dir or die $!;
@@ -42,10 +42,10 @@ sub copy_module_files {
 }
 
 sub unlink_ci_files {
-    if (-e "$work_dir/github_actions_default.yml") {
-        unlink "$work_dir/github_actions_default.yml" or die $!;
+    if (-e "$work_dir/github_ci_default.yml") {
+        unlink "$work_dir/github_ci_default.yml" or die $!;
     }
-    is -e "$work_dir/github_actions_default.yml", undef, "temp github actions file deleted ok";
+    is -e "$work_dir/github_ci_default.yml", undef, "temp github actions file deleted ok";
 }
 sub unlink_makefile {
     if (-e "$work_dir/Makefile.PL") {
