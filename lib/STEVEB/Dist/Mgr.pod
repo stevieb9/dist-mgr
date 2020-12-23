@@ -5,7 +5,7 @@ STEVEB::Dist::Mgr - My distribution development cycle toolkit
 =head1 DESCRIPTION
 
 This distribution is for my personal development cycle. At this time, is relies
-on using <c>module-starter</c> for initial distribution creation, Github for
+on using L<Module::Starter> for initial distribution creation, Github for
 repository and bugtracker, and the L<ExtUtils::MakeMaker> build system, which
 utilizes C<Makefile.PL> files.
 

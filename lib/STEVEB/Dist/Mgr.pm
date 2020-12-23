@@ -39,18 +39,18 @@ use constant {
 # Public
 
 #TODO:
+# *** check if in root of distribution
+# *** ci_badges() should also be able to work on *.pod files
+
+# .gitignore
+
 # re-create the module-starter version of the module file to conform
 # with layout
-
-# CI badges
-# *** check if in root of distribution
 
 # module-starter
 # coveralls
 # git init or pull manually created new repo?
 # unlink unwanted files & dirs (xt/, ignore.txt, README)
-# MANIFEST.SKIP
-# .gitignore
 
 sub add_bugtracker {
     my ($author, $repo, $makefile) = @_;
