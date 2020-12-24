@@ -27,7 +27,7 @@ copy_ci_files();
 {
     my @ci = ci_github();
 
-    is grep(/ubuntu-latest/, @ci), 1, "no param linux included ok";
+    is grep(/ubuntu-latest/, @ci), 3, "no param linux included ok";
     is grep (/windows-latest/, @ci), 1, "no param windows included ok";
     is grep (/macos-latest/, @ci), 0, "no param no macos included ok";
 
@@ -40,9 +40,9 @@ copy_ci_files();
 {
     my @ci = ci_github([qw(w)]);
 
-    is grep(/ubuntu-latest/, @ci), 0, "no param no linux included ok";
-    is grep (/windows-latest/, @ci), 1, "no param windows included ok";
-    is grep (/macos-latest/, @ci), 0, "no param no macos included ok";
+    is grep(/ubuntu-latest/, @ci), 2, "w param no linux included ok";
+    is grep (/windows-latest/, @ci), 1, "w param windows included ok";
+    is grep (/macos-latest/, @ci), 0, "w param no macos included ok";
 
     my $os_line = "        os: [ 'windows-latest' ]";
     compare_contents('w', $os_line, @ci);
@@ -53,22 +53,23 @@ copy_ci_files();
 {
     my @ci = ci_github([qw(l)]);
 
-    is grep(/ubuntu-latest/, @ci), 1, "no param linux included ok";
-    is grep (/windows-latest/, @ci), 0, "no param no windows included ok";
-    is grep (/macos-latest/, @ci), 0, "no param no macos included ok";
+    is grep(/ubuntu-latest/, @ci), 3, "l param linux included ok";
+    is grep (/windows-latest/, @ci), 0, "l param no windows included ok";
+    is grep (/macos-latest/, @ci), 0, "l param no macos included ok";
 
     my $os_line = "        os: [ 'ubuntu-latest' ]";
     compare_contents('l', $os_line, @ci);
     clean();
+    print "$_\n" for @ci;
 }
 
 # macos
 {
     my @ci = ci_github([qw(m)]);
 
-    is grep(/ubuntu-latest/, @ci), 0, "no param no linux included ok";
-    is grep (/windows-latest/, @ci), 0, "no param no windows included ok";
-    is grep (/macos-latest/, @ci), 1, "no param macos included ok";
+    is grep(/ubuntu-latest/, @ci), 2, "m param no linux included ok";
+    is grep (/windows-latest/, @ci), 0, "m param no windows included ok";
+    is grep (/macos-latest/, @ci), 1, "m param macos included ok";
 
     my $os_line = "        os: [ 'macos-latest' ]";
     compare_contents('m', $os_line, @ci);
@@ -79,7 +80,7 @@ copy_ci_files();
 {
     my @ci = ci_github([qw(l w m)]);
 
-    is grep(/ubuntu-latest/, @ci), 1, "no param linux included ok";
+    is grep(/ubuntu-latest/, @ci), 3, "no param linux included ok";
     is grep (/windows-latest/, @ci), 1, "no param windows included ok";
     is grep (/macos-latest/, @ci), 1, "no param macos included ok";
 

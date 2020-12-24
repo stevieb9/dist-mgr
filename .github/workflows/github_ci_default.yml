@@ -11,8 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        perl-version: [ '5.32', '5.30' ]
+        os: [ ubuntu-latest ]
+        perl-version: [ 'ubuntu-latest' ]
         include:
           - perl-version: '5.30'
             os: ubuntu-latest
@@ -33,3 +33,4 @@ jobs:
         run: |
           cpanm -n Devel::Cover::Report::Coveralls
           cover -test -report Coveralls
+
