@@ -23,6 +23,7 @@ our @EXPORT_OK = qw(
     unlink_manifest_skip
     unlink_git_ignore
 
+    remove_ci
     remove_init
     remove_unwanted
     file_scalar
@@ -37,10 +38,8 @@ my $orig_dir        = 't/data/orig/';
 my $work_dir        = 't/data/work/';
 my $unwanted_dir    = 't/data/work/unwanted/';
 my $init_dir        = 't/data/work/init/';
+my $ci_dir          = 't/data/work/ci/';
 
-sub copy_ci_files {
-    copy "$orig_dir/github_ci_default.yml", $work_dir or die $!;
-}
 sub copy_makefile {
     copy "$orig_dir/Makefile.PL", $work_dir or die $!;
 }
@@ -134,6 +133,12 @@ sub trap_warn {
     }
 }
 
+sub remove_ci {
+    if (-e $ci_dir) {
+        is rmtree("$work_dir/ci") >= 1, 1, "removed ci dir structure ok";
+    }
+    is -e $ci_dir, undef, "init dir removed ok";
+}
 sub remove_init {
     if (-e $init_dir) {
         is rmtree("$work_dir/init") >= 1, 1, "removed init dir structure ok";

@@ -2,19 +2,29 @@ use warnings;
 use strict;
 use Test::More;
 
+use Cwd qw(getcwd);
 use Data::Dumper;
 use STEVEB::Dist::Mgr qw(:all);
 
 use lib 't/lib';
 use Helper qw(:all);
 
-my $work = 't/data/work';
-my $orig = 't/data/orig';
+my $cwd  = getcwd();
+my $work = "$cwd/t/data/work";
+my $orig = "$cwd/t/data/orig";
+my $orig_file = "$orig/github_ci_default.yml";
 
-my $live_file = ".github/workflows/github_ci_default.yml";
+my $ci_dir = "$work/ci";
+my $ci_file = "$ci_dir/.github/workflows/github_ci_default.yml";
 
+remove_ci();
 unlink_ci_files();
-copy_ci_files();
+
+mkdir $ci_dir or die $!;
+chdir $ci_dir or die $!;
+
+like getcwd(), qr/$ci_dir$/, "changed to $ci_dir ok";
+die "We're not in the $ci_dir!" if getcwd() !~ /$ci_dir$/;
 
 # bad params
 {
@@ -40,6 +50,7 @@ copy_ci_files();
 {
     my @ci = ci_github([qw(w)]);
 
+    done_testing(); exit;
     is grep(/ubuntu-latest/, @ci), 1, "w param no linux included ok";
     is grep (/\s+windows-latest\s+/, @ci), 1, "w param windows included ok";
     is grep (/macos-latest/, @ci), 0, "w param no macos included ok";
@@ -88,19 +99,19 @@ copy_ci_files();
     clean();
 }
 
+chdir $cwd or die $!;
+is getcwd(), $cwd, "back in '$cwd' directory ok";
+
 unlink_ci_files();
-
-# Let's put back a file for production, shall we? ;)
-
-ci_github([qw(l m)]);
+remove_ci();
 
 sub clean {
-    is -e $live_file, 1, "CI file created ok";
-    unlink $live_file or die $!;
-    is -e $live_file, undef, "CI file removed ok";
+    is -e $ci_file, 1, "CI file created ok";
+    unlink $ci_file or die $!;
+    is -e $ci_file, undef, "CI file removed ok";
 }
 sub contents {
-    open my $fh, '<', $orig or die $!;
+    open my $fh, '<', $orig_file or die $!;
     my @contents = <$fh>;
     return @contents;
 }

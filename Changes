@@ -3,6 +3,8 @@ Revision history for STEVEB-Dist-Mgr
 1.00 UNREL
         - Fix issue where ABSTRACT was being pulled from one of the test
           modules. We now pull it from the proper POD file (fixes #4)
+        - t/20-ci_config_files.t no longer overwrites this distribution's
+          production CI config file (fixes #3)
 
 0.04    - Last test CPAN release
         - Added git_ignore()
