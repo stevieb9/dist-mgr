@@ -16,17 +16,13 @@ jobs:
         include:
           - perl-version: '5.30'
             os: ubuntu-latest
+            release-test: false
             coverage: true
     container: perl:${{ matrix.perl-version }}
     steps:
       - uses: actions/checkout@v2
       - run: cpanm -n --installdeps .
       - run: perl -V
-        env:
-          RELEASE_TESTING: 1
-        run: |
-          cpanm -n --installdeps --with-develop .
-          prove -lr xt
       - name: Run tests (no coverage)
         if: ${{ !matrix.coverage }}
         run: prove -l t
