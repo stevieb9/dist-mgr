@@ -118,29 +118,10 @@ remove_init();
         "$new_ver is greater than $orig_ver ok"
     );
 
-    #
-    # move_distribution_files() edge testing
-    #
-
-    # Bad param check
-
-    is
-        eval { move_distribution_files(); 1 },
-        undef,
-        "move_distribution_files() needs a module name sent in";
-    like $@, qr/requires a module name/, "...and error is sane";
-
-    # Invalid source dir check (Not a directory)
-
-    is
-        eval { move_distribution_files('Test/Module'); 1 },
-        undef,
-        "move_distribution_files() croaks with bad source dir";
-    like $@, qr/move files from the/, "...and error is sane";
 
     # Cleanup
 
-    after();
+#    after();
 }
 
 remove_init() if getcwd() !~ /init$/;
