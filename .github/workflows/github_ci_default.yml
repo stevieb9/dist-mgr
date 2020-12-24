@@ -32,7 +32,6 @@ jobs:
         run: prove -lv t
       - name: Run tests (with coverage)
         if: ${{ matrix.coverage }}
-        flag-name: cover-${{ matrix.perl }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
