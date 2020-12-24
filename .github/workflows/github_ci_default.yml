@@ -16,16 +16,12 @@ jobs:
         include:
           - perl-version: '5.30'
             os: ubuntu-latest
-            release-test: false
             coverage: true
     container: perl:${{ matrix.perl-version }}
     steps:
       - uses: actions/checkout@v2
-      # do other stuff like installing external deps here
       - run: cpanm -n --installdeps .
       - run: perl -V
-      - name: Run release tests # before others as may install useful stuff
-        if: ${{ matrix.release-test }}
         env:
           RELEASE_TESTING: 1
         run: |
@@ -36,8 +32,8 @@ jobs:
         run: prove -l t
       - name: Run tests (with coverage)
         if: ${{ matrix.coverage }}
-        #env:
-            #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cpanm -n Devel::Cover::Report::Coveralls
           cover -test -report Coveralls
