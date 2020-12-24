@@ -154,6 +154,49 @@ I<Returns>: An HoH:
         },
     };
 
+=head2 ci_badges
+
+Inserts various CI and coverage badges into module files.
+
+I<Parameters>:
+
+    $author
+
+I<Mandatory, String>: The repository owner (eg. mine is 'stevieb9').
+
+    $repository
+
+I<Mandatory, String>: The name of the repository (eg. this one is
+'steveb-dist-mgr').
+
+    $fs_entry
+
+I<Optional, String>: The path and name of a Perl module file, or a directory
+that contains Perl module files. If a directory is sent in, we'll operate
+recursively.
+
+I<Returns>: C<0> upon success.
+
+=head2 ci_github
+
+Installs a Github Actions configuration file into C<.github/workflows>. We'll
+create the directory if it doesn't exist.
+
+I<Parameters>:
+
+    $os
+
+I<Optional, Array Reference>: A list of the Operating Systems you want to run
+your tests on.
+
+I<Valid values>: C<l>, C<w>, C<m>, where:
+
+    l == Linux (Ubuntu to be specific)
+    w == Windows
+    m == MacOS
+
+I<Returns>: An array of the contents of the generated file.
+
 =head2 get_version_info
 
 Fetches the file version information of Perl module files. Can operate on a
@@ -178,62 +221,6 @@ I<Returns>: Hash reference:
         't/data/orig/No.pm'     => undef,   # No $VERSION defined
     };
 
-=head2 ci_github
-
-Installs a Github Actions configuration file into C<.github/workflows>. We'll
-create the directory if it doesn't exist.
-
-I<Parameters>:
-
-    $os
-
-I<Optional, Array Reference>: A list of the Operating Systems you want to run
-your tests on.
-
-I<Valid values>: C<l>, C<w>, C<m>, where:
-
-    l == Linux (Ubuntu to be specific)
-    w == Windows
-    m == MacOS
-
-I<Returns>: An array of the contents of the generated file.
-
-=head2 ci_badges
-
-Inserts various CI and coverage badges into module files.
-
-I<Parameters>:
-
-    $author
-
-I<Mandatory, String>: The repository owner (eg. mine is 'stevieb9').
-
-    $repository
-
-I<Mandatory, String>: The name of the repository (eg. this one is
-'steveb-dist-mgr').
-
-    $fs_entry
-
-I<Optional, String>: The path and name of a Perl module file, or a directory
-that contains Perl module files. If a directory is sent in, we'll operate
-recursively.
-
-I<Returns>: C<0> upon success.
-
-=head2 manifest_skip
-
-Generates a C<MANIFEST.SKIP> file.
-
-I<Parameters>:
-
-    $directory
-
-I<Optional, String>: The directory where we'll create the file. If not
-specified, we'll create it in the current directory, C<.>.
-
-I<Returns>: An array of the file's contents.
-
 =head2 git_ignore
 
 Generates a C<.gitignore> file.
@@ -246,11 +233,6 @@ I<Optional, String>: The directory where we'll create the file. If not
 specified, we'll create it in the current directory, C<.>.
 
 I<Returns>: An array of the file's contents.
-
-=head2 remove_unwanted_files
-
-Removes unwanted file system entries. We always operate from the perspective of
-the current working directory (C<.>).
 
 =head2 init
 
@@ -275,6 +257,24 @@ I<Mandatory, String>: The email address of the author.
 
 I<Optional, String>: The license to apply to the new distribution. Defaults to
 C<artistic2>. See L<Module::Starter> for valid entries.
+
+=head2 manifest_skip
+
+Generates a C<MANIFEST.SKIP> file.
+
+I<Parameters>:
+
+    $directory
+
+I<Optional, String>: The directory where we'll create the file. If not
+specified, we'll create it in the current directory, C<.>.
+
+I<Returns>: An array of the file's contents.
+
+=head2 remove_unwanted_files
+
+Removes unwanted file system entries. We always operate from the perspective of
+the current working directory (C<.>).
 
 =head1 AUTHOR
 

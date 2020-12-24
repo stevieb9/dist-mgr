@@ -21,13 +21,13 @@ our @EXPORT_OK = qw(
     add_bugtracker
     add_repository
     bump_version
-    get_version_info
-    ci_github
     ci_badges
-    manifest_skip
+    ci_github
+    get_version_info
     git_ignore
-    remove_unwanted_files
     init
+    manifest_skip
+    remove_unwanted_files
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -40,10 +40,6 @@ use constant {
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
 };
-
-#TODO:
-# coveralls
-# git init or pull manually created new repo?
 
 # Public
 
@@ -132,22 +128,6 @@ sub bump_version {
     }
     return \%files;
 }
-sub get_version_info {
-    my ($fs_entry) = @_;
-
-    _validate_fs_entry($fs_entry);
-
-    my @module_files = _module_find_files($fs_entry);
-
-    my %version_info;
-
-    for (@module_files) {
-        my $version = _module_extract_file_version($_);
-        $version_info{$_} = $version;
-    }
-
-    return \%version_info;
-}
 sub ci_badges {
     if (scalar @_ != 3) {
         croak("ci_badges() needs \$author, \$repo and \$fs_entry sent in");
@@ -173,6 +153,22 @@ sub ci_github {
 
     return @contents;
 }
+sub get_version_info {
+    my ($fs_entry) = @_;
+
+    _validate_fs_entry($fs_entry);
+
+    my @module_files = _module_find_files($fs_entry);
+
+    my %version_info;
+
+    for (@module_files) {
+        my $version = _module_extract_file_version($_);
+        $version_info{$_} = $version;
+    }
+
+    return \%version_info;
+}
 sub git_ignore {
     my ($dir) = @_;
 
@@ -183,24 +179,6 @@ sub git_ignore {
     _git_ignore_write_file($dir, \@content);
 
     return @content;
-}
-sub manifest_skip {
-    my ($dir) = @_;
-
-    $dir //= '.';
-
-    my @content = _manifest_skip_file();
-
-    _manifest_skip_write_file($dir, \@content);
-
-    return @content;
-}
-sub remove_unwanted_files {
-    for (_unwanted_filesystem_entries()) {
-        rmtree $_;
-    }
-
-    return 0;
 }
 sub init {
     my (%args) = @_;
@@ -239,16 +217,36 @@ sub init {
     }
 
     unlink $module_file
-      or croak("Can't delete the Module::Starter module '$module_file': $!");
+        or croak("Can't delete the Module::Starter module '$module_file': $!");
 
     _module_write_template($module_file, $args{author}, $args{email});
 
     chdir '..' or die "Can't change into original directory";
 }
+sub manifest_skip {
+    my ($dir) = @_;
+
+    $dir //= '.';
+
+    my @content = _manifest_skip_file();
+
+    _manifest_skip_write_file($dir, \@content);
+
+    return @content;
+}
+sub remove_unwanted_files {
+    for (_unwanted_filesystem_entries()) {
+        rmtree $_;
+    }
+
+    return 0;
+}
 
 # CI related
 
 sub _ci_github_write_file {
+    # Writes out the Github Actions config file
+
     my ($contents) = @_;
 
     if (! ref $contents eq 'ARRAY') {
@@ -267,6 +265,8 @@ sub _ci_github_write_file {
 # Git related
 
 sub _git_ignore_write_file {
+    # Writes out the .gitignore file
+
     my ($dir, $content) = @_;
 
     open my $fh, '>', "$dir/.gitignore" or die $!;
@@ -278,44 +278,106 @@ sub _git_ignore_write_file {
     return 0;
 }
 
-# Module related
+# Makefile related
 
-sub _module_find_files {
-    my ($fs_entry, $module) = @_;
+sub _makefile_load {
+    # Ties the Makefile.PL file to an array
 
-    $fs_entry //= DEFAULT_DIR;
+    my ($mf) = @_;
+    croak("_makefile_load() needs a Makefile name sent in") if ! defined $mf;
 
-    if (defined $module) {
-        $module =~ s/::/\//g;
-        $module .= '.pm';
-    }
-    else {
-        $module = '*.pm';
-    }
-
-
-    return File::Find::Rule->file()
-        ->name($module)
-        ->in($fs_entry);
-}
-sub _module_load {
-    my ($mod_file) = @_;
-    croak("_module_load() needs a module file name sent in") if ! defined $mod_file;
-
-    my $tie = tie my @mf, 'Tie::File', $mod_file;
+    my $tie = tie my @mf, 'Tie::File', $mf;
     return (\@mf, $tie);
 }
-sub _module_fetch_file_contents {
-    my ($file) = @_;
+sub _makefile_insert_meta_merge {
+    # Inserts the META_MERGE section into Makefile.PL
 
-    open my $fh, '<', $file
-      or croak("Can't open file '$file' for reading!: $!");
+    my ($mf) = @_;
 
-    my @contents = <$fh>;
-    close $fh;
-    return @contents;
+    croak("_makefile_insert_meta_merge() needs a Makefile tie sent in") if ! defined $mf;
+
+    # Check to ensure we're not duplicating
+    return if grep /META_MERGE/, @$mf;
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /MIN_PERL_VERSION/) {
+            splice @$mf, $_+1, 0, _makefile_section_meta_merge();
+            last;
+        }
+    }
 }
+sub _makefile_insert_bugtracker {
+    # Inserts bugtracker information into Makefile.PL
+
+    my ($author, $repo, $makefile) = @_;
+
+    if (! defined $makefile) {
+        croak("_makefile_insert_bugtracker() needs author, repo and makefile");
+    }
+
+    my ($mf, $tie) = _makefile_load($makefile);
+
+    if (grep ! /META_MERGE/, @$mf) {
+        _makefile_insert_meta_merge($mf);
+    }
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /resources   => \{/) {
+            splice @$mf, $_+1, 0, _makefile_section_bugtracker($author, $repo);
+            last;
+        }
+    }
+    untie $tie;
+
+    return 0;
+}
+sub _makefile_insert_repository {
+    # Inserts repository information to Makefile.PL
+
+    my ($author, $repo, $makefile) = @_;
+
+    if (! defined $makefile) {
+        croak("_makefile_insert_repository() needs author, repo and makefile");
+    }
+
+    my ($mf, $tie) = _makefile_load($makefile);
+
+    if (grep ! /META_MERGE/, @$mf) {
+        _makefile_insert_meta_merge($mf);
+    }
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /resources   => \{/) {
+            splice @$mf, $_+1, 0, _makefile_section_repo($author, $repo);
+            last;
+        }
+    }
+    untie $tie;
+
+    return 0;
+}
+
+# MANIFEST.SKIP related
+
+sub _manifest_skip_write_file {
+    # Writes out the MANIFEST.SKIP file
+
+    my ($dir, $content) = @_;
+
+    open my $fh, '>', "$dir/MANIFEST.SKIP" or die $!;
+
+    for (@$content) {
+        print $fh "$_\n"
+    }
+
+    return 0;
+}
+
+# Module related
+
 sub _module_extract_file_version {
+    # Extracts the version number from a module's $VERSION definition line
+
     my ($module_file) = @_;
 
     my $version_line = _module_extract_file_version_line($module_file);
@@ -345,6 +407,8 @@ sub _module_extract_file_version {
     return undef;
 }
 sub _module_extract_file_version_line {
+    # Extracts the $VERSION definition line from a module file
+
     my ($module_file) = @_;
 
     my $doc = PPI::Document->new($module_file);
@@ -362,7 +426,41 @@ sub _module_extract_file_version_line {
 
     return $version_line;
 }
+sub _module_fetch_file_contents {
+    # Fetches the file contents of a module file
+
+    my ($file) = @_;
+
+    open my $fh, '<', $file
+      or croak("Can't open file '$file' for reading!: $!");
+
+    my @contents = <$fh>;
+    close $fh;
+    return @contents;
+}
+sub _module_find_files {
+    # Finds module files
+
+    my ($fs_entry, $module) = @_;
+
+    $fs_entry //= DEFAULT_DIR;
+
+    if (defined $module) {
+        $module =~ s/::/\//g;
+        $module .= '.pm';
+    }
+    else {
+        $module = '*.pm';
+    }
+
+
+    return File::Find::Rule->file()
+        ->name($module)
+        ->in($fs_entry);
+}
 sub _module_insert_ci_badges {
+    # Inserts the CI and Coveralls badges into POD
+
     my ($author, $repo, $module_file) = @_;
 
     my ($mf, $tie) = _module_load($module_file);
@@ -377,7 +475,18 @@ sub _module_insert_ci_badges {
 
     return 0;
 }
+sub _module_load {
+    # Ties a module file to an array
+
+    my ($mod_file) = @_;
+    croak("_module_load() needs a module file name sent in") if ! defined $mod_file;
+
+    my $tie = tie my @mf, 'Tie::File', $mod_file;
+    return (\@mf, $tie);
+}
 sub _module_write_file {
+    # Writes out a Perl module file
+
     my ($module_file, $content) = @_;
 
     open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
@@ -387,6 +496,8 @@ sub _module_write_file {
     close $wfh or croak("Can't close the temporary memory module file!: $!");
 }
 sub _module_write_template {
+    # Writes out our custom module template after init()
+
     my ($module_file, $author, $email) = @_;
 
     if (! defined $module_file) {
@@ -400,94 +511,11 @@ sub _module_write_template {
     print $wfh "$_\n" for @content;
 }
 
-# MANIFEST.SKIP related
-
-sub _manifest_skip_write_file {
-    my ($dir, $content) = @_;
-
-    open my $fh, '>', "$dir/MANIFEST.SKIP" or die $!;
-
-    for (@$content) {
-        print $fh "$_\n"
-    }
-
-    return 0;
-}
-
-# Makefile related
-
-sub _makefile_load {
-    my ($mf) = @_;
-    croak("_makefile_load() needs a Makefile name sent in") if ! defined $mf;
-
-    my $tie = tie my @mf, 'Tie::File', $mf;
-    return (\@mf, $tie);
-}
-sub _makefile_insert_meta_merge {
-    my ($mf) = @_;
-
-    croak("_makefile_insert_meta_merge() needs a Makefile tie sent in") if ! defined $mf;
-
-    # Check to ensure we're not duplicating
-    return if grep /META_MERGE/, @$mf;
-
-    for (0..$#$mf) {
-        if ($mf->[$_] =~ /MIN_PERL_VERSION/) {
-            splice @$mf, $_+1, 0, _makefile_section_meta_merge();
-            last;
-        }
-    }
-}
-sub _makefile_insert_bugtracker {
-    my ($author, $repo, $makefile) = @_;
-
-    if (! defined $makefile) {
-        croak("_makefile_insert_bugtracker() needs author, repo and makefile");
-    }
-
-    my ($mf, $tie) = _makefile_load($makefile);
-
-    if (grep ! /META_MERGE/, @$mf) {
-        _makefile_insert_meta_merge($mf);
-    }
-
-    for (0..$#$mf) {
-        if ($mf->[$_] =~ /resources   => \{/) {
-            splice @$mf, $_+1, 0, _makefile_section_bugtracker($author, $repo);
-            last;
-        }
-    }
-    untie $tie;
-
-    return 0;
-}
-sub _makefile_insert_repository {
-    my ($author, $repo, $makefile) = @_;
-
-    if (! defined $makefile) {
-        croak("_makefile_insert_repository() needs author, repo and makefile");
-    }
-
-    my ($mf, $tie) = _makefile_load($makefile);
-
-    if (grep ! /META_MERGE/, @$mf) {
-        _makefile_insert_meta_merge($mf);
-    }
-
-    for (0..$#$mf) {
-       if ($mf->[$_] =~ /resources   => \{/) {
-           splice @$mf, $_+1, 0, _makefile_section_repo($author, $repo);
-           last;
-       }
-    }
-    untie $tie;
-
-    return 0;
-}
-
 # Validation related
 
 sub _validate_fs_entry {
+    # Validates a file system entry as valid
+
     my ($fs_entry) = @_;
 
     cluck("Need name of dir or file!") if ! defined $fs_entry;
@@ -498,6 +526,8 @@ sub _validate_fs_entry {
     croak("File system entry '$fs_entry' is invalid");
 }
 sub _validate_version {
+    # Parses a version number to ensure it is valid
+
     my ($version) = @_;
 
     croak("version parameter must be supplied!") if ! defined $version;
