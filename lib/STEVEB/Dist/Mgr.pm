@@ -282,11 +282,11 @@ sub _git_ignore_write_file {
 
 # Makefile related
 
-sub _makefile_load {
+sub _makefile_tie {
     # Ties the Makefile.PL file to an array
 
     my ($mf) = @_;
-    croak("_makefile_load() needs a Makefile name sent in") if ! defined $mf;
+    croak("_makefile_tie() needs a Makefile name sent in") if ! defined $mf;
 
     my $tie = tie my @mf, 'Tie::File', $mf;
     return (\@mf, $tie);
@@ -317,7 +317,7 @@ sub _makefile_insert_bugtracker {
         croak("_makefile_insert_bugtracker() needs author, repo and makefile");
     }
 
-    my ($mf, $tie) = _makefile_load($makefile);
+    my ($mf, $tie) = _makefile_tie($makefile);
 
     if (grep ! /META_MERGE/, @$mf) {
         _makefile_insert_meta_merge($mf);
@@ -342,7 +342,7 @@ sub _makefile_insert_repository {
         croak("_makefile_insert_repository() needs author, repo and makefile");
     }
 
-    my ($mf, $tie) = _makefile_load($makefile);
+    my ($mf, $tie) = _makefile_tie($makefile);
 
     if (grep ! /META_MERGE/, @$mf) {
         _makefile_insert_meta_merge($mf);
@@ -465,7 +465,7 @@ sub _module_insert_ci_badges {
 
     my ($author, $repo, $module_file) = @_;
 
-    my ($mf, $tie) = _module_load($module_file);
+    my ($mf, $tie) = _module_tie($module_file);
 
     for (0..$#$mf) {
         if ($mf->[$_] =~ /^=head1 NAME/) {
@@ -477,11 +477,11 @@ sub _module_insert_ci_badges {
 
     return 0;
 }
-sub _module_load {
+sub _module_tie {
     # Ties a module file to an array
 
     my ($mod_file) = @_;
-    croak("_module_load() needs a module file name sent in") if ! defined $mod_file;
+    croak("Test::Module() needs a module file name sent in") if ! defined $mod_file;
 
     my $tie = tie my @mf, 'Tie::File', $mod_file;
     return (\@mf, $tie);

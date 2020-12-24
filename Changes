@@ -11,6 +11,8 @@ Revision history for STEVEB-Dist-Mgr
           Test::Module and Test-Module
         - We now send in all of the proper variables to the module template
           (fixes #11)
+        - Renamed _makefile_load() and _module_load() to _makefile_tie() and
+          _module_tie(), which are by far more appropriate names
 
 0.04    2020-12-23
         - Last test CPAN release
