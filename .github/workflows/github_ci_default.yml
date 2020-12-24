@@ -21,9 +21,9 @@ jobs:
     container: perl:${{ matrix.perl-version }}
     steps:
       - uses: actions/checkout@v2
-      - run: cpanm --installdeps .
       - run: cpanm ExtUtils::MakeMaker
-      - run: perl Makefile.PL
+      - run: cpanm --installdeps .
+        #- run: perl Makefile.PL
       - run: perl -V
       - name: Run tests (no coverage)
         if: ${{ !matrix.coverage }}
