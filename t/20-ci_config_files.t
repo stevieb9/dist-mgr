@@ -50,7 +50,6 @@ die "We're not in the $ci_dir!" if getcwd() !~ /$ci_dir$/;
 {
     my @ci = ci_github([qw(w)]);
 
-    done_testing(); exit;
     is grep(/ubuntu-latest/, @ci), 1, "w param no linux included ok";
     is grep (/\s+windows-latest\s+/, @ci), 1, "w param windows included ok";
     is grep (/macos-latest/, @ci), 0, "w param no macos included ok";
@@ -106,7 +105,7 @@ unlink_ci_files();
 remove_ci();
 
 sub clean {
-    is -e $ci_file, 1, "CI file created ok";
+    is -e $ci_file, 1, "CI file exists ok";
     unlink $ci_file or die $!;
     is -e $ci_file, undef, "CI file removed ok";
 }
@@ -128,7 +127,6 @@ sub compare_contents {
 
         if ($new[$i] =~ /^\s+os: \[/) {
             is $new[$i], $os_line, "OS matrix ok for params '$params'";
-            is $orig[$i], $os_line, "OS matrix ok for params '$params'";
             next;
         }
         is $new[$i], $orig[$i], "CI file line '$i' with params '$params' matches ok";
