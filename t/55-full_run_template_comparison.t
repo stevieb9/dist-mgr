@@ -3,6 +3,7 @@ use strict;
 
 use Cwd qw(getcwd);
 use Data::Dumper;
+use File::Find::Rule;
 use File::Find;
 use Test::More;
 use Hook::Output::Tiny;
@@ -118,6 +119,38 @@ remove_init();
         "$new_ver is greater than $orig_ver ok"
     );
 
+    # Compare all files against the saved template
+
+    my $template_dir = "$cwd/t/data/module_template/";
+
+    my @template_files = File::Find::Rule->file()
+        ->name('*')
+        ->in($template_dir);
+
+    my $file_count = 0;
+
+    for my $tf (@template_files) {
+        (my $nf = $tf) =~ s/$template_dir//;
+
+        if (-f $nf) {
+            open my $tfh, '<', $tf or die $!;
+            open my $nfh, '<', $nf or die $!;
+
+            my @tf = <$tfh>;
+            my @nf = <$nfh>;
+
+            close $tfh;
+            close $nfh;
+
+            for (0 .. $#tf) {
+                is $tf[$_], $nf[$_], "$nf file matches the template ok";
+            }
+            $file_count++;
+        }
+    }
+
+    is scalar @template_files, $file_count, "file count matches number of files in template";
+
     # Cleanup
 
     after();
@@ -145,8 +178,6 @@ sub before {
 sub after {
     chdir $cwd or die $!;
     like getcwd(), qr/steveb-dist-mgr/, "back in root directory ok";
-}
-sub check_and_change_into_module_dir {
 }
 sub file_count {
     my ($expected_count) = @_;

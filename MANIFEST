@@ -19,7 +19,7 @@ t/35-git_ignore.t
 t/40-remove_unwanted_files.t
 t/45-init.t
 t/50-move_distribution_files.t
-t/55-full_run.t
+t/55-full_run_template_comparison.t
 t/data/module_template/.github/workflows/github_ci_default.yml
 t/data/module_template/Changes
 t/data/module_template/lib/Test/Module.pm
