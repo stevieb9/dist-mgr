@@ -19,7 +19,8 @@ jobs:
             coverage: true
     container: perl:${{ matrix.perl-version }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3.6.0- uses: actions/checkout@v2
       - run: perl -V
       - run: cpanm -n --installdeps --with-develop .
       - name: Run tests (no coverage)
