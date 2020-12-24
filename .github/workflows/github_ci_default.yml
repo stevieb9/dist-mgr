@@ -22,7 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cpanm --installdeps .
-      - name: Installing ExtUtils::MakeMaker
       - run: cpanm ExtUtils::MakeMaker
       - run: perl -V
       - name: Run tests (no coverage)
