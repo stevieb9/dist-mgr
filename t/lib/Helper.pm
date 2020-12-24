@@ -135,7 +135,6 @@ sub trap_warn {
 }
 
 sub remove_ci {
-    print "$ci_dir\n";
     if (-e $ci_dir) {
         is rmtree("$work_dir/ci") >= 1, 1, "removed ci dir structure ok";
     }

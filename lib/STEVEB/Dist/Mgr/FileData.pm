@@ -26,7 +26,7 @@ sub _ci_github_file {
     my ($os) = @_;
 
     if (! defined $os) {
-        $os = [qw(l w)];
+        $os = [qw(l w m)];
     }
 
     my %os_matrix_map = (
@@ -48,26 +48,30 @@ sub _ci_github_file {
         qq{    branches: [ master ]},
         qq{  workflow_dispatch:},
         qq{jobs:},
-        qq{  ubuntu:},
+        qq{  build:},
         qq{    runs-on: \${{ matrix.os }}},
         qq{    strategy:},
-        qq{      fail-fast: false},
         qq{      matrix:},
         qq{        os: $os_matrix},
-        qq{        perl-version: [ '5.32', '5.30' ]},
+        qq{        perl: [ '5.32', '5.24', '5.18', '5.14', '5.10' ]},
         qq{        include:},
-        qq{          - perl-version: '5.30'},
+        qq{          - perl: '5.32'},
         qq{            os: ubuntu-latest},
-        qq{            release-test: false},
         qq{            coverage: true},
-        qq{    container: perl:\${{ matrix.perl-version }}},
+        qq{    name: Perl \${{ matrix.perl }} on \${{ matrix.os }}},
         qq{    steps:},
         qq{      - uses: actions/checkout\@v2},
-        qq{      - run: cpanm -n --installdeps .},
+        qq{      - name: Set up perl},
+        qq{        uses: shogo82148/actions-setup-perl\@v1},
+        qq{        with:},
+        qq{          perl-version: \${{ matrix.perl }}},
         qq{      - run: perl -V},
+        qq{      - run: cpanm ExtUtils::PL2Bat},
+        qq{      - run: cpanm ExtUtils::MakeMaker},
+        qq{      - run: cpanm --installdeps .},
         qq{      - name: Run tests (no coverage)},
         qq{        if: \${{ !matrix.coverage }}},
-        qq{        run: prove -l t},
+        qq{        run: prove -lv t},
         qq{      - name: Run tests (with coverage)},
         qq{        if: \${{ matrix.coverage }}},
         qq{        env:},

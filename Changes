@@ -17,6 +17,8 @@ Revision history for STEVEB-Dist-Mgr
           fixing an issue where prereqs weren't being installed (fixes #9)
         - Remove container from CI config, as containers only work on ubuntu
           (fixes #10)
+        - Updated CI template, enabled ubuntu-latest, windows-latest and
+          macos-latest, with coveralls.io support (closes #12)
 
 0.04    2020-12-23
         - Last test CPAN release

@@ -33,15 +33,15 @@ die "We're not in the $ci_dir!" if getcwd() !~ /$ci_dir$/;
     }
 }
 
-# no params (default: linux, windows)
+# no params (default: linux, windows, macos)
 {
     my @ci = ci_github();
 
     is grep(/\s+ubuntu-latest,/, @ci), 1, "no param linux included ok";
-    is grep (/\s+windows-latest\s+/, @ci), 1, "no param windows included ok";
-    is grep (/\s+macos-latest/, @ci), 0, "no param no macos included ok";
+    is grep (/\s+windows-latest,/, @ci), 1, "no param windows included ok";
+    is grep (/\s+macos-latest/, @ci), 1, "no param macos included ok";
 
-    my $os_line = "        os: [ ubuntu-latest, windows-latest ]";
+    my $os_line = "        os: [ ubuntu-latest, windows-latest, macos-latest ]";
     compare_contents('none', $os_line, @ci);
     clean();
 }
