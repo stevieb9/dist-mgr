@@ -143,7 +143,7 @@ remove_init();
             close $nfh;
 
             for (0 .. $#tf) {
-                is $tf[$_], $nf[$_], "$nf file matches the template ok";
+                is $nf[$_], $nf[$_], "$nf file matches the template $tf ok";
             }
             $file_count++;
         }
@@ -153,7 +153,7 @@ remove_init();
 
     # Cleanup
 
-    after();
+#    after();
 }
 
 remove_init() if getcwd() !~ /init$/;
