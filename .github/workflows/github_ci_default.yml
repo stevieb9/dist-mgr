@@ -20,5 +20,6 @@ jobs:
         with:
           perl-version: ${{ matrix.perl }}
       - run: perl -V
-      - run: cpanm --installdeps --with-develop .
+      - run: cpanm ExtUtils::MakeMaker
+      - run: cpanm --installdeps .
       - run: prove -lv t
