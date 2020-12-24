@@ -118,10 +118,9 @@ remove_init();
         "$new_ver is greater than $orig_ver ok"
     );
 
-
     # Cleanup
 
-#    after();
+    after();
 }
 
 remove_init() if getcwd() !~ /init$/;
