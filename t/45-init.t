@@ -68,6 +68,34 @@ remove_init();
         "croaks if 'module' not an aref ok";
     like $@, qr/parameter must be an array ref/, "...and error is sane";
     after();
+
+    # _module_write_template() no module file param
+    is
+        eval { STEVEB::Dist::Mgr::_module_write_template(); 1 },
+        undef,
+        "_module_write_template() croaks if no 'module_file' param ok";
+    like $@, qr/file name sent in/, "...and error is sane";
+
+    # _module_write_template() no module param
+    is
+        eval { STEVEB::Dist::Mgr::_module_write_template('module_file'); 1 },
+        undef,
+        "_module_write_template() croaks if no 'module' param ok";
+    like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
+
+    # _module_write_template() no author param
+    is
+        eval { STEVEB::Dist::Mgr::_module_write_template('module_file', 'module'); 1 },
+        undef,
+        "_module_write_template() croaks if no 'author' param ok";
+    like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
+
+    # _module_write_template() no email param
+    is
+        eval { STEVEB::Dist::Mgr::_module_write_template('module_file', 'module', 'author'); 1 },
+        undef,
+        "_module_write_template() croaks if no 'email' param ok";
+    like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
 }
 
 # good init

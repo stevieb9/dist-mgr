@@ -138,6 +138,13 @@ copy_module_files();
     is $data->{'t/data/work/Three.pm'}{from}, '3.00', "Three.pm from ver ok";
 }
 
+# _module_find_files()
+{
+    my @files = STEVEB::Dist::Mgr::_module_find_files('t/data/work', 'One');
+    is scalar @files, 1, "_module_find_files() with 'module' param ok";
+    is $files[0], 't/data/work/One.pm', "...and the file name is ok";
+}
+
 unlink_module_files();
 verify_clean();
 

@@ -31,6 +31,13 @@ die "We're not in the $ci_dir!" if getcwd() !~ /$ci_dir$/;
     for ({}, sub {}, \'string') {
         is eval{ci_github($_); 1}, undef, "ci_github() croaks with param ref " . ref $_;
     }
+
+    is
+        eval {STEVEB::Dist::Mgr::_ci_github_write_file({}); 1 },
+        undef,
+        "_ci_github_write_file() croaks if not sent in an array ref";
+
+    like $@, qr/Not an ARRAY reference/, "...and error is sane";
 }
 
 # no params (default: linux, windows, macos)

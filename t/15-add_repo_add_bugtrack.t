@@ -23,6 +23,11 @@ my $mf_work = 't/data/work/Makefile.PL';
 
     is eval{add_repository('stevieb9'); 1}, undef, "repo croak if only author param ok";
     like $@, qr/Usage: add_repository/, "...and error is sane";
+
+    is
+        eval { STEVEB::Dist::Mgr::_makefile_insert_repository('a', 'r'); 1 },
+        undef,
+        "_makefile_insert_repository() croaks if no makefile sent in";
 }
 
 # bad params (bugtrack)
@@ -32,6 +37,11 @@ my $mf_work = 't/data/work/Makefile.PL';
 
     is eval{add_bugtracker('stevieb9'); 1}, undef, "bugtracker croak if only author param ok";
     like $@, qr/Usage: add_bugtracker/, "...and error is sane";
+
+    is
+        eval { STEVEB::Dist::Mgr::_makefile_insert_bugtracker('a', 'r'); 1 },
+        undef,
+        "_makefile_insert_bugtracker() croaks if no makefile sent in";
 }
 
 # add_repository
