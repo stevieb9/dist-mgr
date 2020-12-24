@@ -13,7 +13,7 @@ use Helper qw(:all);
 my $work = 't/data/work';
 my $orig = 't/data/orig';
 
-my $mods = [qw(Acme::STEVEB)];
+my $mods = [qw(Test::Module)];
 my $cwd = getcwd();
 
 my %module_args = (
@@ -54,7 +54,7 @@ sub before {
         mkdir 'init' or die $!;
     }
 
-    is -d 'init', 1, "'init' dir created ok";
+    is -d 'init', 1, "'init' dir created ok`";
 
     chdir 'init' or die $!;
     like getcwd(), qr/$work\/init$/, "in $work/init directory ok";
@@ -64,9 +64,9 @@ sub after {
     like getcwd(), qr/steveb-dist-mgr/, "back in root directory ok";
 }
 sub check {
-    is -d 'Acme-STEVEB', 1, "Test-Module directory created ok";
+    is -d 'Test-Module', 1, "Test-Module directory created ok";
 
-    chdir 'Acme-STEVEB' or die $!;
-    like getcwd(), qr/Acme-STEVEB/, "in Test-Module dir ok";
+    chdir 'Test-Module' or die $!;
+    like getcwd(), qr/Test-Module/, "in Test-Module dir ok";
 }
 

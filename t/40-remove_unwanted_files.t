@@ -20,7 +20,7 @@ my @unwanted_entries = _unwanted_filesystem_entries();
 my %module_args = (
     author  => 'Steve Bertrand',
     email   => 'steveb@cpan.org',
-    modules => [ qw(Acme::STEVEB) ],
+    modules => [ qw(Test::Module) ],
     license => 'artistic2',
     builder => 'ExtUtils::MakeMaker',
 );
@@ -46,10 +46,10 @@ $h->hook('stderr');
 Module::Starter->create_distro(%module_args);
 $h->unhook('stderr');
 
-is -d 'Acme-STEVEB', 1, "Acme::STEVEB directory created ok";
+is -d 'Test-Module', 1, "Test-Module directory created ok";
 
-chdir 'Acme-STEVEB' or die $!;
-like getcwd(), qr/Acme-STEVEB/, "in Acme-STEVEB dir ok";
+chdir 'Test-Module' or die $!;
+like getcwd(), qr/Test-Module/, "in Test-Module dir ok";
 
 # do stuff
 {

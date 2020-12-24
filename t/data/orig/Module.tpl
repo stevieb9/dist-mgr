@@ -1,4 +1,4 @@
-#package Acme::STEVEB;
+#package Test::Module;
 
 use strict;
 use warnings;
@@ -12,7 +12,7 @@ __END__
 
 =head1 NAME
 
-Acme::STEVEB - One line description
+Test::Module - One line description
 
 =head1 SYNOPSIS
 
