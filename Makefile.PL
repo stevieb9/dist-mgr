@@ -7,7 +7,7 @@ WriteMakefile(
     NAME             => 'STEVEB::Dist::Mgr',
     AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
     VERSION_FROM     => 'lib/STEVEB/Dist/Mgr.pm',
-#    ABSTRACT_FROM    => 'lib/STEVEB/Dist/Mgr.pm',
+    ABSTRACT_FROM    => 'lib/STEVEB/Dist/Mgr.pod',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
     MIN_PERL_VERSION => '5.010',
