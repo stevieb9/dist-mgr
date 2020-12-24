@@ -1,5 +1,8 @@
 Revision history for STEVEB-Dist-Mgr
 
+1.00 UNREL
+        -
+
 0.04    - Last test CPAN release
         - Added git_ignore()
         - Added remove_unwanted_files()
