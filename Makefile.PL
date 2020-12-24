@@ -25,7 +25,7 @@ WriteMakefile(
         },
     },
     CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => '7.58',
+        'ExtUtils::MakeMaker' => '0',
     },
     BUILD_REQUIRES => {
         'Hook::Output::Tiny' => '1.00',
