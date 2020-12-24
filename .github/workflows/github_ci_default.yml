@@ -22,7 +22,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cpanm --installdeps .
-      - run: cpanm ExtUtils::MakeMaker
+#      - run: cpanm ExtUtils::MakeMaker
+      - run: perl Makefile.PL
       - run: perl -V
       - name: Run tests (no coverage)
         if: ${{ !matrix.coverage }}
