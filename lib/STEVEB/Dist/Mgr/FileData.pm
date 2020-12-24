@@ -135,7 +135,7 @@ sub _module_template_file {
     my $year = (localtime)[5] + 1900;
 
     return (
-        qq{package Test::Module;},
+        qq{package Acme::STEVEB;},
         qq{},
         qq{use strict;},
         qq{use warnings;},
@@ -149,7 +149,7 @@ sub _module_template_file {
         qq{},
         qq{=head1 NAME},
         qq{},
-        qq{Test::Module - One line description},
+        qq{Acme::STEVEB - One line description},
         qq{},
         qq{=head1 SYNOPSIS},
         qq{},

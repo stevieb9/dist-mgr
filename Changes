@@ -5,7 +5,9 @@ Revision history for STEVEB-Dist-Mgr
           modules. We now pull it from the proper POD file (fixes #4)
         - t/20-ci_config_files.t no longer overwrites this distribution's
           production CI config file (fixes #3)
-
+        - Commented out package statement in test module template so it doesn't
+          get indexed on the CPAN (fixes #7)
+        -
 0.04    - Last test CPAN release
         - Added git_ignore()
         - Added remove_unwanted_files()
