@@ -54,7 +54,7 @@ sub _ci_github_file {
         qq{      fail-fast: false},
         qq{      matrix:},
         qq{        os: $os_matrix},
-        qq{        perl-version: [ '5.32', '5.30 ]},
+        qq{        perl-version: [ '5.32', '5.30' ]},
         qq{        include:},
         qq{          - perl-version: '5.30'},
         qq{            os: ubuntu-latest},

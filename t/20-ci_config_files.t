@@ -60,6 +60,9 @@ copy_ci_files();
     my $os_line = "        os: [ 'ubuntu-latest' ]";
     compare_contents('l', $os_line, @ci);
     clean();
+
+    print "$_\n" for @ci;
+
 }
 
 # macos
