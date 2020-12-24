@@ -23,6 +23,7 @@ our @EXPORT_OK = qw(
     unlink_manifest_skip
     unlink_git_ignore
 
+    remove_init
     remove_unwanted
     file_scalar
     trap_warn
@@ -34,7 +35,8 @@ ok 1;
 
 my $orig_dir        = 't/data/orig/';
 my $work_dir        = 't/data/work/';
-my $unwanted_dir    =  't/data/work/unwanted/';
+my $unwanted_dir    = 't/data/work/unwanted/';
+my $init_dir        = 't/data/work/init/';
 
 sub copy_ci_files {
     copy "$orig_dir/github_ci_default.yml", $work_dir or die $!;
@@ -132,12 +134,19 @@ sub trap_warn {
     }
 }
 
+sub remove_init {
+    if (-e $init_dir) {
+        is rmtree("$work_dir/init") >= 1, 1, "removed init dir structure ok";
+    }
+    is -e $init_dir, undef, "init dir removed ok";
+}
 sub remove_unwanted {
     if (-e $unwanted_dir) {
-        is rmtree("$work_dir/unwanted") > 1, 1, "removed unwanted dir structure ok";
+        is rmtree("$work_dir/unwanted") >= 1, 1, "removed unwanted dir structure ok";
     }
     is -e $unwanted_dir, undef, "unwanted dir removed ok";
 }
+
 sub verify_clean {
     is(scalar(find_module_files($work_dir)), 0, "all work module files unlinked ok");
 }

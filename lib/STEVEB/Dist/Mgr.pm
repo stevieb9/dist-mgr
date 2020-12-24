@@ -5,10 +5,12 @@ use warnings;
 use version;
 
 use Carp qw(croak cluck);
+use Cwd qw(getcwd);
 use Data::Dumper;
 use File::Copy;
 use File::Path qw(make_path rmtree);
 use File::Find::Rule;
+use Module::Starter;
 use PPI;
 use STEVEB::Dist::Mgr::FileData;
 use Tie::File;
@@ -25,6 +27,7 @@ our @EXPORT_OK = qw(
     manifest_skip
     git_ignore
     remove_unwanted_files
+    init
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -206,6 +209,30 @@ sub remove_unwanted_files {
     }
 
     return 0;
+}
+sub init {
+    my (%args) = @_;
+
+    my $cwd = getcwd();
+
+    if ($cwd =~ /steveb-dist-mgr$/) {
+        croak "Can't run init() while in the '$cwd' directory";
+    }
+
+    $args{license} = 'artistic2' if ! exists $args{license};
+    $args{builder} = 'ExtUtils::MakeMaker' if ! exists $args{builder};
+
+    for (qw(modules author email)) {
+        if (! exists $args{$_}) {
+            croak("init() requires '$_' in the parameter hash");
+        }
+    }
+
+    if (ref $args{modules} ne 'ARRAY') {
+        croak("init()'s 'modules' parameter must be an array reference");
+    }
+
+    Module::Starter->create_distro(%args);
 }
 
 # CI related
