@@ -214,10 +214,6 @@ sub init {
 
     chdir $module_dir or croak("Can't change into directory '$module_dir'");
 
-    if (getcwd() !~ /$module_dir/) {
-        die "Failed to change into directory '$module_dir'";
-    }
-
     unlink $module_file
         or croak("Can't delete the Module::Starter module '$module_file': $!");
 
