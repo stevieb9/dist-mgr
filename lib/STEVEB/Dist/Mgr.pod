@@ -22,6 +22,10 @@ utilizes C<Makefile.PL> files.
 We do not automatically import anything into your namespace, you must request
 functionality explicitly. Available functions are:
 
+    # Create a new distribution
+
+    init
+
     # Makefile.PL functions
 
     add_bugtracker
@@ -243,6 +247,30 @@ I<Returns>: An array of the file's contents.
 
 Removes unwanted file system entries. We always operate from the perspective of
 the current working directory (C<.>).
+
+=head2 init
+
+Initializes a new distribution using L<Module::Starter>. The new directory will
+be placed into the current working directory (C<.>).
+
+I<Parameters>:
+
+    module  => "Test::Module"
+
+I<Mandatory, String>: The name of the main module of the distribution.
+
+    author  => "Steve Bertrand"
+
+I<Mandatory, String>: The name of the distribution's author.
+
+    email  => "steveb@cpan.org"
+
+I<Mandatory, String>: The email address of the author.
+
+    license  => "artistic2"
+
+I<Optional, String>: The license to apply to the new distribution. Defaults to
+C<artistic2>. See L<Module::Starter> for valid entries.
 
 =head1 AUTHOR
 

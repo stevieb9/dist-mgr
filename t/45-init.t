@@ -52,6 +52,12 @@ remove_init();
     is eval { init(modules => $mods); 1 }, undef, "need author param ok";
     like $@, qr/requires 'author'/, "...and error is sane";
     after();
+
+    # no email
+    before();
+    is eval { init(modules => $mods, author => 'stevieb9'); 1 }, undef, "need email param ok";
+    like $@, qr/requires 'email'/, "...and error is sane";
+    after();
 }
 
 # good init
@@ -62,7 +68,20 @@ remove_init();
     init(%module_args);
     $h->unhook('stderr');
 
-    #TODO: Add check of stderr here
+    my @e = $h->stderr;
+
+    is $e[0], 'Added to MANIFEST: Changes', "line 0 of stderr ok";
+    is $e[1], 'Added to MANIFEST: ignore.txt', "line 1 of stderr ok";
+    is $e[2], 'Added to MANIFEST: lib/Test/Module.pm', "line 2 of stderr ok";
+    is $e[3], 'Added to MANIFEST: Makefile.PL', "line 3 of stderr ok";
+    is $e[4], 'Added to MANIFEST: MANIFEST', "line 4 of stderr ok";
+    is $e[5], 'Added to MANIFEST: README', "line 5 of stderr ok";
+    is $e[6], 'Added to MANIFEST: t/00-load.t', "line 6 of stderr ok";
+    is $e[7], 'Added to MANIFEST: t/manifest.t', "line 7 of stderr ok";
+    is $e[8], 'Added to MANIFEST: t/pod-coverage.t', "line 8 of stderr ok";
+    is $e[9], 'Added to MANIFEST: t/pod.t', "line 9 of stderr ok";
+    is $e[10], 'Added to MANIFEST: xt/boilerplate.t', "line 10 of stderr ok";
+    is defined $e[11], '', "...and that's all folks!";
 
     check();
     after();

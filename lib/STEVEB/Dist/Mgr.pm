@@ -48,7 +48,6 @@ use constant {
 # re-create the module-starter version of the module file to conform
 # with layout
 
-# module-starter
 # coveralls
 # git init or pull manually created new repo?
 # unlink unwanted files & dirs (xt/, ignore.txt, README)
@@ -220,7 +219,7 @@ sub init {
     }
 
     $args{license} = 'artistic2' if ! exists $args{license};
-    $args{builder} = 'ExtUtils::MakeMaker' if ! exists $args{builder};
+    $args{builder} = 'ExtUtils::MakeMaker';
 
     for (qw(modules author email)) {
         if (! exists $args{$_}) {
