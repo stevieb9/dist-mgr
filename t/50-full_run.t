@@ -13,7 +13,7 @@ use Helper qw(:all);
 my $work = 't/data/work';
 my $orig = 't/data/orig';
 
-my $mods = [qw(Test::Module)];
+my $mods = [qw(Acme::STEVEB)];
 my $cwd = getcwd();
 
 my %module_args = (
