@@ -1,9 +1,10 @@
 Revision history for STEVEB-Dist-Mgr
 
-0.04 UNREL
+0.04    - Last test CPAN release
         - Added git_ignore()
         - Added remove_unwanted_files()
         - Added init(), creates the actual distribution directory structure
+        - Added support for Coveralls.io test coverage testing for ci_github()
 
 0.03    2020-12-22
         - Test release

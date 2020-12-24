@@ -64,9 +64,9 @@ sub after {
     like getcwd(), qr/steveb-dist-mgr/, "back in root directory ok";
 }
 sub check {
-    is -d 'Test-Module', 1, "Test-Module directory created ok";
+    is -d 'Acme-STEVEB', 1, "Test-Module directory created ok";
 
-    chdir 'Test-Module' or die $!;
-    like getcwd(), qr/Test-Module/, "in Test-Module dir ok";
+    chdir 'Acme-STEVEB' or die $!;
+    like getcwd(), qr/Acme-STEVEB/, "in Test-Module dir ok";
 }
 
