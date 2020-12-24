@@ -35,7 +35,7 @@ WriteMakefile(
         'File::Find::Rule'      => 0,
         'File::Copy::Recursive' => 0,
         'File::Path'            => 0,
-        'Module::Starter'       => 0,
+        'Module::Starter'       => 1.77,
         'PPI'                   => 0,
         'Tie::File'             => 0,
         'version'               => 0,

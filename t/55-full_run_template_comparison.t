@@ -121,6 +121,11 @@ remove_init();
 
     # Compare all files against the saved template
 
+    is
+        getcwd(),
+        '/home/spek/repos/steveb-dist-mgr/t/data/work/init',
+        "in the init dir ok";
+
     my $template_dir = "$cwd/t/data/module_template/";
 
     my @template_files = File::Find::Rule->file()
@@ -143,7 +148,7 @@ remove_init();
             close $nfh;
 
             for (0 .. $#tf) {
-                is $nf[$_], $nf[$_], "$nf file matches the template $tf ok";
+                is $nf[$_], $tf[$_], "$nf file matches the template $tf ok";
             }
             $file_count++;
         }
@@ -153,7 +158,7 @@ remove_init();
 
     # Cleanup
 
-#    after();
+    after();
 }
 
 remove_init() if getcwd() !~ /init$/;
