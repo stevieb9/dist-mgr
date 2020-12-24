@@ -19,6 +19,7 @@ t/35-git_ignore.t
 t/40-remove_unwanted_files.t
 t/45-init.t
 t/50-full_run.t
+t/55-move_distribution_files.t
 t/data/orig/Bad.pm
 t/data/orig/github_ci_default.yml
 t/data/orig/Makefile.PL

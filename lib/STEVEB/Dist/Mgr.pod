@@ -24,40 +24,8 @@ utilizes C<Makefile.PL> files.
 =head1 EXPORT_OK
 
 We do not automatically import anything into your namespace, you must request
-functionality explicitly. Available functions are:
-
-    # Create a new distribution
-
-    init
-
-    # Makefile.PL functions
-
-    add_bugtracker
-    add_repository
-
-    # Module file functions
-
-    bump_version
-    get_version_info
-
-    # CI functions
-
-    ci_github
-    ci_badges
-
-    # MANIFEST.SKIP functions
-
-    manifest_skip
-
-    # Git functions
-
-    git_ignore
-
-    # Maintenance functions
-
-    remove_unwanted_files
-
-NOTE: You can auto import everything at once by specifying the C<:all> tag.
+functionality explicitly. Use the C<:all> tag, or have a peruse through the
+L</FUNCTIONS> section for what's available.
 
 =head1 FUNCTIONS
 
@@ -270,6 +238,21 @@ I<Optional, String>: The directory where we'll create the file. If not
 specified, we'll create it in the current directory, C<.>.
 
 I<Returns>: An array of the file's contents.
+
+=head2 move_distribution_files
+
+After an L</init>, this method will scoop up all of the files and directories
+from within the newly created temp module directory into the current working
+dir, then remove the temp module directory.
+
+I<Parameters>:
+
+    $module
+
+I<Mandatory, String>: The name of the module that was created with L</init>, eg.
+C<Test::Module>.
+
+I<Returns>: C<0> upon success.
 
 =head2 remove_unwanted_files
 

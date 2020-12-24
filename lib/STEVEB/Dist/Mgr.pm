@@ -8,6 +8,7 @@ use Carp qw(croak cluck);
 use Cwd qw(getcwd);
 use Data::Dumper;
 use File::Copy;
+use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
 use File::Find::Rule;
 use Module::Starter;
@@ -27,6 +28,7 @@ our @EXPORT_OK = qw(
     git_ignore
     init
     manifest_skip
+    move_distribution_files
     remove_unwanted_files
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
@@ -232,6 +234,37 @@ sub manifest_skip {
 
     return @content;
 }
+sub move_distribution_files {
+    my ($module) = @_;
+
+    if (! defined $module) {
+        croak("_move_distribution_files() requires a module name sent in");
+    }
+
+    my $module_dir = $module;
+    $module_dir =~ s/::/-/g;
+
+    my @move_count = rmove_glob("$module_dir/*", '.')
+        or croak("Can't move files from the '$module_dir' directory: $!");
+
+    my $dist_count = _default_distribution_file_count();
+
+    for my $outer_idx (0..$#move_count) {
+        my $outer = $move_count[$outer_idx];
+        for my $inner_idx (0..$#$outer) {
+            my $inner = $move_count[$outer_idx][$inner_idx];
+            for (0..$#$inner) {
+                if ($inner->[$_] != $dist_count->[$outer_idx][$inner_idx][$_]) {
+                    croak("Results from the move are mismatched... bailing out");
+                }
+            }
+        }
+    }
+
+    rmtree $module_dir or croak("Couldn't remove the '$module_dir' directory");
+
+    return 0;
+}
 sub remove_unwanted_files {
     for (_unwanted_filesystem_entries()) {
         rmtree $_;
@@ -258,6 +291,24 @@ sub _ci_github_write_file {
     open my $fh, '>', $ci_file or die $!;
 
     print $fh "$_\n" for @$contents;
+}
+
+# Distribution related
+
+sub _default_distribution_file_count {
+    # Returns the file count in a distribution
+    # This is used to ensure everything moved OK
+
+    return [
+        [ [1, 0, 0] ],
+        [ [1, 0, 0] ],
+        [ [3, 2, 0] ],
+        [ [1, 0, 0] ],
+        [ [1, 0, 0] ],
+        [ [1, 0, 0] ],
+        [ [5, 1, 0] ],
+        [ [2, 1, 0] ],
+    ];
 }
 
 # Git related

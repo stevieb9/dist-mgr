@@ -20,6 +20,10 @@ Revision history for STEVEB-Dist-Mgr
         - Updated CI template, enabled ubuntu-latest, windows-latest and
           macos-latest, with coveralls.io support (closes #12)
         - 100% test coverage
+        - Added move_distribution_files()
+        - Finished t/50-full_run.t, goes through every function to create an
+          entire distribution with all customizations in place. Can be used as a
+          roadmap for a binary script
 
 0.04    2020-12-23
         - Last test CPAN release
