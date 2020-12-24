@@ -118,7 +118,6 @@ copy_module_files();
 
 # files & content (live run)
 {
-
     my $data = bump_version(9.12, $d);
 
     for my $file (@valid) {
@@ -136,6 +135,15 @@ copy_module_files();
     is $data->{'t/data/work/One.pm'}{from}, '0.01', "One.pm from ver ok";
     is $data->{'t/data/work/Two.pm'}{from}, '2.00', "Two.pm from ver ok";
     is $data->{'t/data/work/Three.pm'}{from}, '3.00', "Three.pm from ver ok";
+}
+
+# new version <= old version
+{
+    is
+        eval { bump_version('0.01', $valid[2]); 1 },
+        undef,
+        "new version <= old version croaks ok";
+    like $@, qr/must be greater than/, "...and error is sane";
 }
 
 # _module_find_files()

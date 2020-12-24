@@ -98,6 +98,13 @@ sub bump_version {
             next;
         }
 
+        if (version->parse($current_version) >= version->parse($version)) {
+            croak(
+                "Your new version $version must be greater than the current " .
+                "one, $current_version"
+            );
+        }
+
         my $mem_file;
 
         open my $wfh, '>', \$mem_file or croak("Can't open mem file!: $!");

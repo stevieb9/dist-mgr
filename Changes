@@ -24,6 +24,8 @@ Revision history for STEVEB-Dist-Mgr
         - Finished t/50-full_run.t, goes through every function to create an
           entire distribution with all customizations in place. Can be used as a
           roadmap for a binary script
+        - We now croak() if the new version sent into bump_version() is less
+          than or equal to the current version (closes #14)
 
 0.04    2020-12-23
         - Last test CPAN release
