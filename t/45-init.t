@@ -59,6 +59,15 @@ remove_init();
     is eval { init(modules => $mods, author => 'stevieb9'); 1 }, undef, "need email param ok";
     like $@, qr/requires 'email'/, "...and error is sane";
     after();
+
+    # module not an array ref
+    before();
+    is
+        eval { init(modules => {}, author => 'stevieb9', email => 'steveb@cpan.org'); 1 },
+        undef,
+        "croaks if 'module' not an aref ok";
+    like $@, qr/parameter must be an array ref/, "...and error is sane";
+    after();
 }
 
 # good init
