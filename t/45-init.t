@@ -6,6 +6,7 @@ use Data::Dumper;
 use Test::More;
 use Hook::Output::Tiny;
 use STEVEB::Dist::Mgr qw(:all);
+use STEVEB::Dist::Mgr::FileData;
 
 use lib 't/lib';
 use Helper qw(:all);
@@ -95,6 +96,27 @@ remove_init();
         eval { STEVEB::Dist::Mgr::_module_write_template('module_file', 'module', 'author'); 1 },
         undef,
         "_module_write_template() croaks if no 'email' param ok";
+    like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
+
+    # _module_template_file() no module param
+    is
+        eval { _module_template_file(); 1 },
+        undef,
+        "_module_template_file() croaks if no 'module' param ok";
+    like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
+
+    # _module_template_file() no author param
+    is
+        eval { _module_template_file('module'); 1 },
+        undef,
+        "_module_template_file() croaks if no 'author' param ok";
+    like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
+
+    # _module_template_file() no email param
+    is
+        eval { _module_template_file('module', 'author'); 1 },
+        undef,
+        "_module_template_file() croaks if no 'email' param ok";
     like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
 }
 
