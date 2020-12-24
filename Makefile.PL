@@ -8,7 +8,7 @@ WriteMakefile(
     AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
     VERSION_FROM     => 'lib/STEVEB/Dist/Mgr.pm',
     ABSTRACT_FROM    => 'lib/STEVEB/Dist/Mgr.pod',
-    LICENSE          => 'artistic_2',
+    LICENSE          => 'perl_5',
     PL_FILES         => {},
     CONFIGURE_REQUIRES => {
         'ExtUtils::MakeMaker' => '0',
@@ -29,7 +29,7 @@ WriteMakefile(
     },
     BUILD_REQUIRES => {
         'Hook::Output::Tiny' => '1.00',
-        'Test::More'         => '0',
+        'Test::More'         => 0,
     },
     PREREQ_PM => {
         'File::Find::Rule'  => 0,
