@@ -247,8 +247,8 @@ sub _ci_github_write_file {
 
     my ($contents) = @_;
 
-    if (! ref $contents eq 'ARRAY') {
-        croak("_write_github_ci_file() requires an array ref of contents");
+    if (ref $contents ne 'ARRAY') {
+        croak("_ci_github_write_file() requires an array ref of contents");
     }
 
     my $ci_file //= GITHUB_CI_PATH . GITHUB_CI_FILE;
