@@ -16,6 +16,7 @@ jobs:
           - perl: '5.32'
             os: ubuntu-latest
             coverage: true
+      fast-fail: false
     name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
