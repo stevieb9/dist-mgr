@@ -74,6 +74,7 @@ remove_init();
 {
     before();
 
+    $h->flush;
     $h->hook('stderr');
     init(%module_args);
     $h->unhook('stderr');
@@ -136,7 +137,7 @@ sub before {
         mkdir 'init' or die $!;
     }
 
-    is -d 'init', 1, "'init' dir created ok";
+    is -d 'init', 1, "'init' dir exists ok";
 
     chdir 'init' or die $!;
     like getcwd(), qr/$work\/init$/, "in $work/init directory ok";
@@ -144,6 +145,9 @@ sub before {
 sub after {
     chdir $cwd or die $!;
     like getcwd(), qr/steveb-dist-mgr/, "back in root directory ok";
+    remove_init();
+
+    is -e "$work/init", undef, "'init' dir removed ok";
 }
 sub check {
     is -d 'Test-Module', 1, "Test-Module directory created ok";
