@@ -30,9 +30,9 @@ sub _ci_github_file {
     }
 
     my %os_matrix_map = (
-        l => qq{'ubuntu-latest'},
-        w => qq{'windows-latest'},
-        m => qq{'macos-latest'},
+        l => qq{ubuntu-latest},
+        w => qq{windows-latest},
+        m => qq{macos-latest},
     );
 
     my $os_matrix = "[ ";
