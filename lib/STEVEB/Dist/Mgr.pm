@@ -41,8 +41,9 @@ use constant {
     DEFAULT_DIR         => 'lib/',
 };
 
+my $cwd = getcwd();
+
 #TODO:
-# *** check if in root of distribution
 # *** ci_badges() should also be able to work on *.pod files
 
 # re-create the module-starter version of the module file to conform
@@ -232,6 +233,25 @@ sub init {
     }
 
     Module::Starter->create_distro(%args);
+
+    my ($module_file) = (@{ $args{modules} })[0];
+    my $module_dir = $module_file;
+    $module_dir =~ s/::/-/g;
+    $module_file =~ s/::/\//g;
+    $module_file = "lib/$module_file.pm";
+
+    chdir $module_dir or croak("Can't change into directory '$module_dir'");
+
+    if (getcwd() !~ /$module_dir/) {
+        die "Failed to change into directory '$module_dir'";
+    }
+
+    unlink $module_file
+      or croak("Can't delete the Module::Starter module '$module_file': $!");
+
+    _module_write_template($module_file, $args{author}, $args{email});
+
+    chdir '..' or die "Can't change into original directory";
 }
 
 # CI related
@@ -373,6 +393,19 @@ sub _module_write_file {
     print $wfh $content;
 
     close $wfh or croak("Can't close the temporary memory module file!: $!");
+}
+sub _module_write_template {
+    my ($module_file, $author, $email) = @_;
+
+    if (! defined $module_file) {
+        croak("_module_write_template() needs the module's file name sent in");
+    }
+
+    my @content = _module_template_file($author, $email);
+
+    open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
+
+    print $wfh "$_\n" for @content;
 }
 
 # MANIFEST.SKIP related

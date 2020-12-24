@@ -16,6 +16,8 @@ my $orig = 't/data/orig';
 my $mods = [qw(Test::Module)];
 my $cwd = getcwd();
 
+my $new_mod_file = "lib/Test/Module.pm";
+
 my %module_args = (
     author  => 'Steve Bertrand',
     email   => 'steveb@cpan.org',
@@ -30,7 +32,6 @@ remove_init();
 
 # bad directory
 {
-    #before();
     is eval {
         init();
         1
@@ -82,6 +83,27 @@ remove_init();
     is $e[9], 'Added to MANIFEST: t/pod.t', "line 9 of stderr ok";
     is $e[10], 'Added to MANIFEST: xt/boilerplate.t', "line 10 of stderr ok";
     is defined $e[11], '', "...and that's all folks!";
+
+    # check that the new module file is the same as our baseline template
+
+    chdir 'Test-Module' or die $!;
+    like getcwd(), qr/Test-Module$/, "in new module directory ok";
+
+    open my $orig_fh, '<', "$cwd/$orig/Module.tpl" or die $!;
+    open my $new_fh, '<', $new_mod_file or die $!;
+
+    my @orig_tpl = <$orig_fh>;
+    my @new_tpl  = <$new_fh>;
+
+    close $orig_fh;
+    close $new_fh;
+
+    for (0..$#new_tpl) {
+        is $new_tpl[$_], $orig_tpl[$_], "module template line $_ matches ok";
+    }
+
+    chdir '..' or die $!;
+    like getcwd(), qr/init$/, "back in 'init' directory ok";
 
     check();
     after();

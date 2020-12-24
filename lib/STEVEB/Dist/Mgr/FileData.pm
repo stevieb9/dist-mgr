@@ -11,6 +11,7 @@ our @EXPORT = qw(
     _git_ignore_file
 
     _module_section_ci_badges
+    _module_template_file
 
     _makefile_section_meta_merge
     _makefile_section_bugtracker
@@ -105,6 +106,72 @@ sub _module_section_ci_badges {
         qq{<a href="https://github.com/$author/$repo/actions"><img src="https://github.com/$author/$repo/workflows/CI/badge.svg"/></a>},
         qq{<a href='https://coveralls.io/github/$author/$repo?branch=master'><img src='https://coveralls.io/repos/$author/$repo/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>},
         qq{},
+    );
+}
+sub _module_template_file {
+    my ($author, $email) = @_;
+
+    if (! defined $author || ! defined $email) {
+        croak("_module_template_file() requires 'author' and 'email' parameters");
+    }
+
+    my ($email_user, $email_domain);
+
+    if ($email =~ /(.*)\@(.*)/) {
+        $email_user   = $1;
+        $email_domain = $2;
+    }
+
+    my $year = (localtime)[5] + 1900;
+
+    return (
+        qq{package Test::Module;},
+        qq{},
+        qq{use strict;},
+        qq{use warnings;},
+        qq{},
+        qq{our \$VERSION = '0.01';},
+        qq{},
+        qq{__placeholder {}},
+        qq{},
+        qq{1;},
+        qq{__END__},
+        qq{},
+        qq{=head1 NAME},
+        qq{},
+        qq{Test::Module - One line description},
+        qq{},
+        qq{=head1 SYNOPSIS},
+        qq{},
+        qq{=head1 DESCRIPTION},
+        qq{},
+        qq{=head1 METHODS},
+        qq{},
+        qq{=head2 name},
+        qq{},
+        qq{Description.},
+        qq{},
+        qq{I<Parameters>:},
+        qq{},
+        qq{    \$bar},
+        qq{},
+        qq{I<Mandatory, String>: The name of the thing with the guy and the place.},
+        qq{},
+        qq{I<Returns>: C<0> upon success.},
+        qq{},
+        qq{=head1 AUTHOR},
+        qq{},
+        qq{$author, C<< <$email_user at $email_domain> >>},
+        qq{},
+        qq{=head1 LICENSE AND COPYRIGHT},
+        qq{},
+        qq{Copyright $year $author.},
+        qq{},
+        qq{This program is free software; you can redistribute it and/or modify it},
+        qq{under the terms of the the Artistic License (2.0). You may obtain a},
+        qq{copy of the full license at:},
+        qq{},
+        qq{L<http://www.perlfoundation.org/artistic_license_2_0>},
     );
 }
 
