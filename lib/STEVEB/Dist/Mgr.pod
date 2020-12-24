@@ -2,6 +2,10 @@
 
 STEVEB::Dist::Mgr - My distribution development cycle toolkit
 
+=for html
+<a href="https://github.com/stevieb9/steveb-dist-mgr/actions"><img src="https://github.com/stevieb9/steveb-dist-mgr/workflows/CI/badge.svg"/></a>
+<a href='https://coveralls.io/github/stevieb9/steveb-dist-mgr?branch=master'><img src='https://coveralls.io/repos/stevieb9/steveb-dist-mgr/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
+
 =head1 DESCRIPTION
 
 This distribution is for my personal development cycle. At this time, is relies

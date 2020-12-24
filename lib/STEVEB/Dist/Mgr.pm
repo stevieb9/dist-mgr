@@ -41,17 +41,9 @@ use constant {
     DEFAULT_DIR         => 'lib/',
 };
 
-my $cwd = getcwd();
-
 #TODO:
-# *** ci_badges() should also be able to work on *.pod files
-
-# re-create the module-starter version of the module file to conform
-# with layout
-
 # coveralls
 # git init or pull manually created new repo?
-# unlink unwanted files & dirs (xt/, ignore.txt, README)
 
 # Public
 
