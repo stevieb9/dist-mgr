@@ -10,7 +10,10 @@ WriteMakefile(
     ABSTRACT_FROM    => 'lib/STEVEB/Dist/Mgr.pod',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
-    MIN_PERL_VERSION => '5.10.0',
+    CONFIGURE_REQUIRES => {
+        'ExtUtils::MakeMaker' => '0',
+    },
+    MIN_PERL_VERSION => '5.006',
     META_MERGE => {
         'meta-spec' => { version => 2 },
         resources   => {
@@ -23,9 +26,6 @@ WriteMakefile(
                 web => 'https://github.com/stevieb9/steveb-dist-mgr',
             },
         },
-    },
-    CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => '0',
     },
     BUILD_REQUIRES => {
         'Hook::Output::Tiny' => '1.00',

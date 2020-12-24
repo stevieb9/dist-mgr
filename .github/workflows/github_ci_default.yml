@@ -21,7 +21,7 @@ jobs:
     container: perl:${{ matrix.perl-version }}
     steps:
       - uses: actions/checkout@v2
-      - run: cpan-install --deps       # installs prereqs, including recommends
+      - run: cpanm --installdeps .
       - run: perl -V
       - name: Run tests (no coverage)
         if: ${{ !matrix.coverage }}
