@@ -119,10 +119,10 @@ sub _module_section_ci_badges {
     );
 }
 sub _module_template_file {
-    my ($author, $email) = @_;
+    my ($module, $author, $email) = @_;
 
-    if (! defined $author || ! defined $email) {
-        croak("_module_template_file() requires 'author' and 'email' parameters");
+    if (! defined $module || ! defined $author || ! defined $email) {
+        die "_module_template_file() requires 'module', 'author' and 'email' parameters";
     }
 
     my ($email_user, $email_domain);
@@ -135,7 +135,7 @@ sub _module_template_file {
     my $year = (localtime)[5] + 1900;
 
     return (
-        qq{package Test::Module;},
+        qq{package $module;},
         qq{},
         qq{use strict;},
         qq{use warnings;},
@@ -149,7 +149,7 @@ sub _module_template_file {
         qq{},
         qq{=head1 NAME},
         qq{},
-        qq{Test::Module - One line description},
+        qq{$module - One line description},
         qq{},
         qq{=head1 SYNOPSIS},
         qq{},

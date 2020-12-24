@@ -7,8 +7,13 @@ Revision history for STEVEB-Dist-Mgr
           production CI config file (fixes #3)
         - Commented out package statement in test module template so it doesn't
           get indexed on the CPAN (fixes #7)
-        -
-0.04    - Last test CPAN release
+        - Renamed all instances of Acme::STEVEB and Acme-STEVEB with
+          Test::Module and Test-Module
+        - We now send in all of the proper variables to the module template
+          (fixes #11)
+
+0.04    2020-12-23
+        - Last test CPAN release
         - Added git_ignore()
         - Added remove_unwanted_files()
         - Added init(), creates the actual distribution directory structure

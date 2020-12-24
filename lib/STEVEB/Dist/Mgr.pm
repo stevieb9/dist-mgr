@@ -204,11 +204,13 @@ sub init {
 
     Module::Starter->create_distro(%args);
 
-    my ($module_file) = (@{ $args{modules} })[0];
-    my $module_dir = $module_file;
-    $module_dir =~ s/::/-/g;
+    my ($module) = (@{ $args{modules} })[0];
+    my $module_file = $module;
     $module_file =~ s/::/\//g;
     $module_file = "lib/$module_file.pm";
+
+    my $module_dir = $module;
+    $module_dir =~ s/::/-/g;
 
     chdir $module_dir or croak("Can't change into directory '$module_dir'");
 
@@ -219,7 +221,7 @@ sub init {
     unlink $module_file
         or croak("Can't delete the Module::Starter module '$module_file': $!");
 
-    _module_write_template($module_file, $args{author}, $args{email});
+    _module_write_template($module_file, $module, $args{author}, $args{email});
 
     chdir '..' or die "Can't change into original directory";
 }
@@ -498,13 +500,17 @@ sub _module_write_file {
 sub _module_write_template {
     # Writes out our custom module template after init()
 
-    my ($module_file, $author, $email) = @_;
+    my ($module_file, $module, $author, $email) = @_;
 
     if (! defined $module_file) {
         croak("_module_write_template() needs the module's file name sent in");
     }
 
-    my @content = _module_template_file($author, $email);
+    if (! defined $module || ! defined $author || ! defined $email) {
+        croak("_module_template_file() requires 'module', 'author' and 'email' parameters");
+    }
+
+    my @content = _module_template_file($module, $author, $email);
 
     open my $wfh, '>', $module_file or croak("Can't open '$module_file' for writing!: $!");
 
