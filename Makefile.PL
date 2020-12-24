@@ -10,7 +10,7 @@ WriteMakefile(
     ABSTRACT_FROM    => 'lib/STEVEB/Dist/Mgr.pod',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
-    MIN_PERL_VERSION => '5.010',
+    MIN_PERL_VERSION => '5.10.0',
     META_MERGE => {
         'meta-spec' => { version => 2 },
         resources   => {
@@ -25,7 +25,7 @@ WriteMakefile(
         },
     },
     CONFIGURE_REQUIRES => {
-        'ExtUtils::MakeMaker' => '0',
+        'ExtUtils::MakeMaker' => '7.58',
     },
     BUILD_REQUIRES => {
         'Hook::Output::Tiny' => '1.00',
