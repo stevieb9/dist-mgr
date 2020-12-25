@@ -7,7 +7,7 @@ use File::Find::Rule;
 use File::Find;
 use Test::More;
 use Hook::Output::Tiny;
-use STEVEB::Dist::Mgr qw(:all);
+use Dist::Mgr qw(:all);
 use version;
 
 use lib 't/lib';
@@ -123,7 +123,7 @@ remove_init();
 
     is
         getcwd(),
-        '/home/spek/repos/steveb-dist-mgr/t/data/work/init',
+        '/home/spek/repos/dist-mgr/t/data/work/init',
         "in the init dir ok";
 
     my $template_dir = "$cwd/t/data/module_template/";
@@ -166,7 +166,7 @@ remove_init() if getcwd() !~ /init$/;
 done_testing;
 
 sub before {
-    like $cwd, qr/steveb-dist-mgr/, "in proper directory ok";
+    like $cwd, qr/dist-mgr/, "in proper directory ok";
 
     chdir $work or die $!;
     like getcwd(), qr/$work$/, "in $work directory ok";
@@ -182,7 +182,7 @@ sub before {
 }
 sub after {
     chdir $cwd or die $!;
-    like getcwd(), qr/steveb-dist-mgr/, "back in root directory ok";
+    like getcwd(), qr/dist-mgr/, "back in root directory ok";
 }
 sub file_count {
     my ($expected_count) = @_;

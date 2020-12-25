@@ -1,4 +1,4 @@
-package STEVEB::Dist::Mgr::FileData;
+package Dist::Mgr::FileData;
 
 use warnings;
 use strict;

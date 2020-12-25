@@ -4,7 +4,7 @@ use Test::More;
 
 use Cwd qw(getcwd);
 use Data::Dumper;
-use STEVEB::Dist::Mgr qw(:all);
+use Dist::Mgr qw(:all);
 
 use lib 't/lib';
 use Helper qw(:all);
@@ -33,7 +33,7 @@ die "We're not in the $ci_dir!" if getcwd() !~ /$ci_dir$/;
     }
 
     is
-        eval {STEVEB::Dist::Mgr::_ci_github_write_file({}); 1 },
+        eval {Dist::Mgr::_ci_github_write_file({}); 1 },
         undef,
         "_ci_github_write_file() croaks if not sent in an array ref";
 

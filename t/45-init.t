@@ -5,8 +5,8 @@ use Cwd qw(getcwd);
 use Data::Dumper;
 use Test::More;
 use Hook::Output::Tiny;
-use STEVEB::Dist::Mgr qw(:all);
-use STEVEB::Dist::Mgr::FileData;
+use Dist::Mgr qw(:all);
+use Dist::Mgr::FileData;
 
 use lib 't/lib';
 use Helper qw(:all);
@@ -72,28 +72,28 @@ remove_init();
 
     # _module_write_template() no module file param
     is
-        eval { STEVEB::Dist::Mgr::_module_write_template(); 1 },
+        eval { Dist::Mgr::_module_write_template(); 1 },
         undef,
         "_module_write_template() croaks if no 'module_file' param ok";
     like $@, qr/file name sent in/, "...and error is sane";
 
     # _module_write_template() no module param
     is
-        eval { STEVEB::Dist::Mgr::_module_write_template('module_file'); 1 },
+        eval { Dist::Mgr::_module_write_template('module_file'); 1 },
         undef,
         "_module_write_template() croaks if no 'module' param ok";
     like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
 
     # _module_write_template() no author param
     is
-        eval { STEVEB::Dist::Mgr::_module_write_template('module_file', 'module'); 1 },
+        eval { Dist::Mgr::_module_write_template('module_file', 'module'); 1 },
         undef,
         "_module_write_template() croaks if no 'author' param ok";
     like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
 
     # _module_write_template() no email param
     is
-        eval { STEVEB::Dist::Mgr::_module_write_template('module_file', 'module', 'author'); 1 },
+        eval { Dist::Mgr::_module_write_template('module_file', 'module', 'author'); 1 },
         undef,
         "_module_write_template() croaks if no 'email' param ok";
     like $@, qr/'module', 'author' and 'email'/, "...and error is sane";
@@ -178,7 +178,7 @@ remove_init();
 done_testing;
 
 sub before {
-    like $cwd, qr/steveb-dist-mgr/, "in proper directory ok";
+    like $cwd, qr/dist-mgr/, "in proper directory ok";
 
     chdir $work or die $!;
     like getcwd(), qr/$work$/, "in $work directory ok";
@@ -194,7 +194,7 @@ sub before {
 }
 sub after {
     chdir $cwd or die $!;
-    like getcwd(), qr/steveb-dist-mgr/, "back in root directory ok";
+    like getcwd(), qr/dist-mgr/, "back in root directory ok";
     remove_init();
 
     is -e "$work/init", undef, "'init' dir removed ok";

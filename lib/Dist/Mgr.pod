@@ -1,10 +1,10 @@
 =head1 NAME
 
-STEVEB::Dist::Mgr - My distribution development cycle toolkit
+Dist::Mgr - My distribution development cycle toolkit
 
 =for html
-<a href="https://github.com/stevieb9/steveb-dist-mgr/actions"><img src="https://github.com/stevieb9/steveb-dist-mgr/workflows/CI/badge.svg"/></a>
-<a href='https://coveralls.io/github/stevieb9/steveb-dist-mgr?branch=master'><img src='https://coveralls.io/repos/stevieb9/steveb-dist-mgr/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
+<a href="https://github.com/stevieb9/dist-mgr/actions"><img src="https://github.com/stevieb9/dist-mgr/workflows/CI/badge.svg"/></a>
+<a href='https://coveralls.io/github/stevieb9/dist-mgr?branch=master'><img src='https://coveralls.io/repos/stevieb9/dist-mgr/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
 
 =head1 DESCRIPTION
 
@@ -15,7 +15,7 @@ utilizes C<Makefile.PL> files.
 
 =head1 SYNOPSIS
 
-    use STEVEB::Dist::Mgr qw(:all)
+    use Dist::Mgr qw(:all)
 
     my $results = bump_version('2.02');
 
@@ -46,7 +46,7 @@ mine is C<stevieb9>.
     $repository
 
 I<Mandatory, String>: The name of the repository. For example, the repository
-name for this distribution is C<steveb-dist-mgr>.
+name for this distribution is C<dist-mgr>.
 
     $makefile
 
@@ -72,7 +72,7 @@ mine is C<stevieb9>.
     $repository
 
 I<Mandatory, String>: The name of the repository. For example, the repository
-name for this distribution is C<steveb-dist-mgr>.
+name for this distribution is C<dist-mgr>.
 
     $makefile
 
@@ -135,7 +135,7 @@ I<Mandatory, String>: The repository owner (eg. mine is 'stevieb9').
     $repository
 
 I<Mandatory, String>: The name of the repository (eg. this one is
-'steveb-dist-mgr').
+'dist-mgr').
 
     $fs_entry
 

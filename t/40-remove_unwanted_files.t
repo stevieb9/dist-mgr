@@ -6,8 +6,8 @@ use Test::More;
 use Data::Dumper;
 use Hook::Output::Tiny;
 use Module::Starter;
-use STEVEB::Dist::Mgr qw(:all);
-use STEVEB::Dist::Mgr::FileData;
+use Dist::Mgr qw(:all);
+use Dist::Mgr::FileData;
 
 use lib 't/lib';
 use Helper qw(:all);
@@ -31,7 +31,7 @@ remove_unwanted();
 
 my $cwd = getcwd();
 
-like $cwd, qr/steveb-dist-mgr/, "in proper directory ok";
+like $cwd, qr/dist-mgr/, "in proper directory ok";
 
 chdir $work or die $!;
 like getcwd(), qr/$work$/, "in $work directory ok";
@@ -65,7 +65,7 @@ like getcwd(), qr/Test-Module/, "in Test-Module dir ok";
 }
 
 chdir $cwd or die $!;
-like getcwd(), qr/steveb-dist-mgr/, "back in root directory ok";
+like getcwd(), qr/dist-mgr/, "back in root directory ok";
 
 remove_unwanted();
 

@@ -3,7 +3,7 @@ use strict;
 use Test::More;
 
 use Data::Dumper;
-use STEVEB::Dist::Mgr qw(:all);
+use Dist::Mgr qw(:all);
 
 use lib '.';
 use lib 't/lib';
@@ -25,7 +25,7 @@ my $mf_work = 't/data/work/Makefile.PL';
     like $@, qr/Usage: add_repository/, "...and error is sane";
 
     is
-        eval { STEVEB::Dist::Mgr::_makefile_insert_repository('a', 'r'); 1 },
+        eval { Dist::Mgr::_makefile_insert_repository('a', 'r'); 1 },
         undef,
         "_makefile_insert_repository() croaks if no makefile sent in";
 }
@@ -39,7 +39,7 @@ my $mf_work = 't/data/work/Makefile.PL';
     like $@, qr/Usage: add_bugtracker/, "...and error is sane";
 
     is
-        eval { STEVEB::Dist::Mgr::_makefile_insert_bugtracker('a', 'r'); 1 },
+        eval { Dist::Mgr::_makefile_insert_bugtracker('a', 'r'); 1 },
         undef,
         "_makefile_insert_bugtracker() croaks if no makefile sent in";
 }

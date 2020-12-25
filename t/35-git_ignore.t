@@ -3,7 +3,7 @@ use strict;
 use Test::More;
 
 use Data::Dumper;
-use STEVEB::Dist::Mgr qw(:all);
+use Dist::Mgr qw(:all);
 
 use lib 't/lib';
 use Helper qw(:all);

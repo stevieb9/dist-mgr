@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME             => 'STEVEB::Dist::Mgr',
+    NAME             => 'Dist::Mgr',
     AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
-    VERSION_FROM     => 'lib/STEVEB/Dist/Mgr.pm',
-    ABSTRACT_FROM    => 'lib/STEVEB/Dist/Mgr.pod',
+    VERSION_FROM     => 'lib/Dist/Mgr.pm',
+    ABSTRACT_FROM    => 'lib/Dist/Mgr.pod',
     LICENSE          => 'perl_5',
     PL_FILES         => {},
     MIN_PERL_VERSION => '5.006',
@@ -15,12 +15,12 @@ WriteMakefile(
         'meta-spec' => { version => 2 },
         resources   => {
             bugtracker => {
-                web => 'https://github.com/stevieb9/steveb-dist-mgr/issues',
+                web => 'https://github.com/stevieb9/dist-mgr/issues',
             },
             repository => {
                 type => 'git',
-                url => 'https://github.com/stevieb9/steveb-dist-mgr.git',
-                web => 'https://github.com/stevieb9/steveb-dist-mgr',
+                url => 'https://github.com/stevieb9/dist-mgr.git',
+                web => 'https://github.com/stevieb9/dist-mgr',
             },
         },
     },
@@ -41,5 +41,5 @@ WriteMakefile(
         'version'               => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'STEVEB-Dist-Mgr-*' },
+    clean => { FILES => 'Dist-Mgr-*' },
 );

@@ -1,4 +1,4 @@
-Revision history for STEVEB-Dist-Mgr
+Revision history for Dist-Mgr
 
 1.00 UNREL
         - Fix issue where ABSTRACT was being pulled from one of the test
@@ -28,6 +28,7 @@ Revision history for STEVEB-Dist-Mgr
           than or equal to the current version (closes #14)
         - Add tests that compare a full run against a saved template
           distribution (closes #17)
+        - Renamed distribution to Dst::Mgr and repo to dist-mgr (closes #18)
 
 0.04    2020-12-23
         - Last test CPAN release

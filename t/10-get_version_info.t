@@ -5,7 +5,7 @@ use Test::More;
 
 use Data::Dumper;
 use Hook::Output::Tiny;
-use STEVEB::Dist::Mgr qw(:all);
+use Dist::Mgr qw(:all);
 
 use lib 't/lib';
 use Helper qw(:all);

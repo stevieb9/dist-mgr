@@ -4,7 +4,7 @@ use Test::More;
 
 use Data::Dumper;
 use Hook::Output::Tiny;
-use STEVEB::Dist::Mgr qw(:all);
+use Dist::Mgr qw(:all);
 
 use lib 't/lib';
 use Helper qw(:all);
@@ -148,7 +148,7 @@ copy_module_files();
 
 # _module_find_files()
 {
-    my @files = STEVEB::Dist::Mgr::_module_find_files('t/data/work', 'One');
+    my @files = Dist::Mgr::_module_find_files('t/data/work', 'One');
     is scalar @files, 1, "_module_find_files() with 'module' param ok";
     is $files[0], 't/data/work/One.pm', "...and the file name is ok";
 }

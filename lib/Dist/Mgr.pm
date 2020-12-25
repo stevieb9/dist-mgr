@@ -1,4 +1,4 @@
-package STEVEB::Dist::Mgr;
+package Dist::Mgr;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ use File::Path qw(make_path rmtree);
 use File::Find::Rule;
 use Module::Starter;
 use PPI;
-use STEVEB::Dist::Mgr::FileData;
+use Dist::Mgr::FileData;
 use Tie::File;
 
 use Exporter qw(import);
@@ -194,7 +194,7 @@ sub init {
 
     my $cwd = getcwd();
 
-    if ($cwd =~ /steveb-dist-mgr$/) {
+    if ($cwd =~ /dist-mgr$/) {
         croak "Can't run init() while in the '$cwd' directory";
     }
 
