@@ -9,8 +9,14 @@ use version;
 use lib 't/lib';
 use Helper qw(:all);
 
-my $orig = 't/data/orig';
-my $work = 't/data/work';
+my $orig = 't/data/orig/Changes';
+my $work = 't/data/work/Changes';
 
+# from initial creation
+{
+    copy_changes();
+
+    unlink_changes();
+}
 done_testing;
 

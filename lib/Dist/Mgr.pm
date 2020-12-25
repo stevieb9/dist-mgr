@@ -38,6 +38,7 @@ our $VERSION = '1.00';
 use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
     GITHUB_CI_PATH      => '.github/workflows/',
+    CHANGES_FILE        => 'Changes',
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
@@ -136,6 +137,13 @@ sub bump_version {
         }
     }
     return \%files;
+}
+sub changes_customize {
+    my ($changes_file) = @_ // (CHANGES_FILE);
+
+    print ($changes_file);
+
+
 }
 sub ci_badges {
     if (scalar @_ != 3) {

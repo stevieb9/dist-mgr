@@ -12,12 +12,13 @@ use Test::More;
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
-    copy_ci_files
+    copy_changes
     copy_makefile
     copy_module_files
     copy_manifest_skip
     copy_git_ignore
 
+    unlink_changes
     unlink_ci_files
     unlink_makefile
     unlink_module_files
@@ -41,6 +42,9 @@ my $unwanted_dir    = 't/data/work/unwanted/';
 my $init_dir        = 't/data/work/init/';
 my $ci_dir          = 't/data/work/ci/';
 
+sub copy_changes {
+    copy "$orig_dir/Changes", $work_dir or die $!;
+}
 sub copy_makefile {
     copy "$orig_dir/Makefile.PL", $work_dir or die $!;
 }
@@ -56,6 +60,12 @@ sub copy_git_ignore {
     copy "$orig_dir/.gitignore", $work_dir or die $!;
 }
 
+sub unlink_changes {
+    if (-e "$work_dir/Changes") {
+        unlink "$work_dir/Changes" or die $!;
+    }
+    is -e "$work_dir/Changes", undef, "temp Changes deleted ok";
+}
 sub unlink_ci_files {
     if (-e "$work_dir/github_ci_default.yml") {
         unlink "$work_dir/github_ci_default.yml" or die $!;
