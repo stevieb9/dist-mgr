@@ -7,6 +7,7 @@ use version;
 use Carp qw(croak cluck);
 use Cwd qw(getcwd);
 use Data::Dumper;
+use Digest::MD5 qw(md5_hex);
 use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
@@ -22,6 +23,8 @@ our @EXPORT_OK = qw(
     add_bugtracker
     add_repository
     bump_version
+    changes
+    changes_update
     ci_badges
     ci_github
     get_version_info
@@ -138,13 +141,18 @@ sub bump_version {
     }
     return \%files;
 }
-sub changes_customize {
-    my ($changes_file) = @_ // (CHANGES_FILE);
+sub changes {
+    my ($module, $changes_file) = @_;
 
-    print ($changes_file);
+    croak("changes_customize() needs a module parameter") if ! defined $module;
 
+    $changes_file //= CHANGES_FILE;
 
+    my $md5 = md5_hex($changes_file);
+
+    print "$md5\n";
 }
+sub changes_update {}
 sub ci_badges {
     if (scalar @_ != 3) {
         croak("ci_badges() needs \$author, \$repo and \$fs_entry sent in");

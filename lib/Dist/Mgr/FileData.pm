@@ -6,6 +6,8 @@ use strict;
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
+    _changes_file
+
     _ci_github_file
 
     _git_ignore_file
@@ -22,6 +24,19 @@ our @EXPORT = qw(
     _unwanted_filesystem_entries
 );
 
+sub _changes_file {
+    my ($module) = @_;
+
+    die "_changes_file() needs module param" if ! defined $module;
+
+    return (
+        qq{Revision history for $module},
+        qq{},
+        qq{0.01 UNREL},
+        qq{        - Auto generated distribution with Dist::Mgr},
+        qq{},
+    );
+}
 sub _ci_github_file {
     my ($os) = @_;
 

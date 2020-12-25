@@ -16,6 +16,7 @@ my $work = 't/data/work/Changes';
 {
     copy_changes();
 
+    changes('test');
     unlink_changes();
 }
 done_testing;
