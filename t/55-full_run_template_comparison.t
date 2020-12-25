@@ -121,9 +121,9 @@ remove_init();
 
     # Compare all files against the saved template
 
-    is
+    like
         getcwd(),
-        'dist-mgr/t/data/work/init',
+        qr|dist-mgr/t/data/work/init|,
         "in the init dir ok";
 
     my $template_dir = "$cwd/t/data/module_template/";
