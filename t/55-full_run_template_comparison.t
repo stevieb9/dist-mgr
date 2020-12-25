@@ -123,7 +123,7 @@ remove_init();
 
     is
         getcwd(),
-        '/home/spek/repos/dist-mgr/t/data/work/init',
+        'dist-mgr/t/data/work/init',
         "in the init dir ok";
 
     my $template_dir = "$cwd/t/data/module_template/";
