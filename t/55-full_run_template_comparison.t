@@ -30,7 +30,8 @@ my $h = Hook::Output::Tiny->new;
 
 remove_init();
 
-# move_distribution_files()
+# generate a distribution, and compare all files against our saved
+# distribution template
 {
     before();
 
@@ -39,8 +40,6 @@ remove_init();
     $h->hook('stderr');
     init(%module_args);
     $h->unhook('stderr');
-
-    # init() verify
 
     my @stderr = $h->stderr;
     is scalar @stderr, 11, "Module::Starter has proper print output";
@@ -70,7 +69,7 @@ remove_init();
     # ci_github()
 
     ci_github();
-    file_count(16);
+    file_count(16); # 16 from 13 because we also count the new directories
     is -e '.github/workflows/github_ci_default.yml', 1, "CI config in place ok";
     check_file(
         '.github/workflows/github_ci_default.yml',
@@ -136,6 +135,8 @@ remove_init();
 
     for my $tf (@template_files) {
         (my $nf = $tf) =~ s/$template_dir//;
+        # nf == new file
+        # tf == template file
 
         if (-f $nf) {
             open my $tfh, '<', $tf or die $!;
