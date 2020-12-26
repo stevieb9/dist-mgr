@@ -33,6 +33,8 @@ my $tpl = "t/data/module_template/Changes"; # Custom one created by this dist
 
 #    file_compare("$work/Changes", $orig_changes);
 
+    warn(`shasum $orig/Changes`);
+
     changes('Test::Module', $work);
 
 #    isnt
