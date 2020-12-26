@@ -83,7 +83,7 @@ sub changes {
 
     my @contents;
 
-    if (! -e "$dir/Changes" || (split /\s+/, `shasum -U $dir/Changes`)[0] eq CHANGES_ORIG_SHA) {
+    if (! -e "$dir/Changes" || _sha1sum("$dir/Changes") eq CHANGES_ORIG_SHA) {
         @contents = _changes_file($module);
         _changes_write_file($dir, \@contents);
     }
@@ -615,15 +615,11 @@ sub _module_write_template {
 
 # Validation related
 
-sub _md5sum {
+sub _sha1sum {
     my ($file) = @_;
 
-    croak "md5sum needs a file param" if ! defined $file;
-
-    my $md5 = Digest::MD5->new;
-    open my $fh, '<', $file or croak "Can't open file $file: $!";
-    binmode $fh;
-    return $md5->addfile($fh)->hexdigest();
+    croak("shasum needs file param") if ! defined $file;
+    return (split /\s+/, `shasum -U $file`)[0];
 }
 sub _validate_fs_entry {
     # Validates a file system entry as valid

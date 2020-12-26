@@ -32,8 +32,9 @@ our @EXPORT_OK = qw(
     remove_init
     remove_unwanted
 
+    file_compare
     file_scalar
-    md5sum
+    sha1sum
     module_args
     trap_warn
     verify_clean
@@ -105,6 +106,26 @@ sub unlink_git_ignore {
     is -e "$work_dir/.gitignore", undef, "temp .gitignore deleted ok";
 }
 
+sub file_compare {
+    my ($new, $orig) = @_;
+
+    if (! defined $new || ! defined $orig) {
+        croak("file_compare() requires 'new' and 'orig' file name params");
+    }
+
+    open my $new_fh, '<', $new or croak("Can't open $new: $!");
+    open my $orig_fh, '<', $orig or croak("Can't open $new: $!"); # 'original' custom
+
+    my @new = <$new_fh>;
+    my @orig = <$orig_fh>;
+
+    close $new_fh or die $!;
+    close $orig_fh or die $!;
+
+    for (0..$#new) {
+        is $new[$_], $orig[$_], "Updated Changes file line $_ matches template custom ok";
+    }
+}
 sub file_scalar {
     my ($fname) = @_;
     my $contents;
@@ -125,26 +146,11 @@ sub find_module_files {
         ->name('*.pm')
         ->in($dir);
 }
-sub md5sum {
+sub sha1sum {
     my ($file) = @_;
 
-    die "md5sum needs a file param" if ! defined $file;
-
-    my $md5 = Digest::MD5->new;
-    open my $fh, '<', $file or die $!;
-    binmode $fh;
-    return $md5->addfile($fh)->hexdigest();
-}
-sub module_args {
-    my %module_args = (
-        author  => 'Test Author',
-        email   => 'test@example.com',
-        modules => [qw(Test::Module)],
-        license => 'artistic2',
-        builder => 'ExtUtils::MakeMaker',
-    );
-
-    return %module_args;
+    croak("shasum needs file param") if ! defined $file;
+    return (split /\s+/, `shasum -U $file`)[0];
 }
 sub trap_warn {
     # enable/disable sinking our own internal warnings to prevent
@@ -169,6 +175,18 @@ sub trap_warn {
     else {
         $SIG{__WARN__} = sub { warn shift; }
     }
+}
+
+sub module_args {
+    my %module_args = (
+        author  => 'Test Author',
+        email   => 'test@example.com',
+        modules => [qw(Test::Module)],
+        license => 'artistic2',
+        builder => 'ExtUtils::MakeMaker',
+    );
+
+    return %module_args;
 }
 
 sub mkdir_init {

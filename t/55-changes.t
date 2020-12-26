@@ -29,10 +29,8 @@ unlink_changes();
 {
     copy_changes();
 
-    my $before_sha_digest = (split /\s+/,`shasum $work/Changes`)[0];
-
     is
-        $before_sha_digest,
+        sha1sum("$work/Changes"),
         $module_starter_changes_sha,
         "Changes file created by Module::Starter SHA match ok";
 
@@ -40,10 +38,8 @@ unlink_changes();
 
     changes('Test::Module', $work);
 
-    my $after_sha_digest = (split /\s+/,`shasum -U $work/Changes`)[0];
-
     isnt
-        $after_sha_digest,
+        sha1sum("$work/Changes"),
         $module_starter_changes_sha,
         "Changes updated has different SHA as the template ok";
 
@@ -55,20 +51,3 @@ unlink_changes();
 unlink_changes();
 
 done_testing;
-
-sub file_compare {
-    my ($gen, $save) = @_;
-
-    open my $gen_fh, '<', $gen or croak("Can't open $gen: $!");
-    open my $save_fh, '<', $save or croak("Can't open $save: $!"); # 'original' custom
-
-    my @gen = <$gen_fh>;
-    my @save = <$save_fh>;
-
-    close $gen_fh or die $!;
-    close $save_fh or die $!;
-
-    for (0..$#gen) {
-        is $gen[$_], $save[$_], "Updated Changes file line $_ matches template custom ok";
-    }
-}
