@@ -41,7 +41,7 @@ use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
     GITHUB_CI_PATH      => '.github/workflows/',
     CHANGES_FILE        => 'Changes',
-    CHANGES_ORIG_MD5    => '1f0e16f293c340668219a937272f0d2c', # Module::Starter version
+    CHANGES_ORIG_SHA    => 'a2da9f4316e1d8942a214038f2136363bb4940b6', # Module::Starter version
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
@@ -83,7 +83,7 @@ sub changes {
 
     my @contents;
 
-    if (! -e "$dir/Changes" || _md5sum("$dir/Changes") eq CHANGES_ORIG_MD5) {
+    if (! -e "$dir/Changes" || (split /\s+/, `shasum $dir/Changes`)[0] eq CHANGES_ORIG_SHA) {
         @contents = _changes_file($module);
         _changes_write_file($dir, \@contents);
     }

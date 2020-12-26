@@ -17,7 +17,7 @@ my $cwd = getcwd();
 like $cwd, qr/dist-mgr$/, "in root dir ok";
 die "not in the root dir" if $cwd !~ /dist-mgr$/;
 
-my $module_starter_changes_md5 = '1f0e16f293c340668219a937272f0d2c';
+my $module_starter_changes_sha = 'a2da9f4316e1d8942a214038f2136363bb4940b6';
 
 my $work = 't/data/work';
 my $orig_changes = 't/data/orig/Changes';
@@ -28,28 +28,31 @@ unlink_changes();
 # MD5 & content comparisons
 {
     copy_changes();
-#    is
-#        md5sum("$work/Changes"),
-#        $module_starter_changes_md5,
-#        "Changes file created by Module::Starter MD5 match ok";
 
-#    file_compare("$work/Changes", $orig_changes);
+    my $before_sha_digest = (split /\s+/,`shasum $work/Changes`)[0];
 
-    warn(`shasum $orig/Changes`);
+    is
+        $before_sha_digest,
+        $module_starter_changes_sha,
+        "Changes file created by Module::Starter SHA match ok";
+
+    file_compare("$work/Changes", $orig_changes);
 
     changes('Test::Module', $work);
 
-#    isnt
-#        md5sum("$work/Changes"),
-#        $module_starter_changes_md5,
-#        "Changes updated has different MD5 as the template ok";
+    my $after_sha_digest = (split /\s+/,`shasum $work/Changes`)[0];
+
+    isnt
+        $after_sha_digest,
+        $module_starter_changes_sha,
+        "Changes updated has different SHA as the template ok";
 
     file_compare("$work/Changes", $tpl);
 
-#    unlink_changes();
+    unlink_changes();
 }
 
-#unlink_changes();
+unlink_changes();
 
 done_testing;
 
