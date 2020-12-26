@@ -34,6 +34,8 @@ Revision history for Dist-Mgr
     - Added changes(), installs our custom Changes file
     - Added changes_date(), replaces the UNREL placeholder with today's date
       in preparation for release
+    - Added changes_bump(), prepares the Changes file for a new development
+      cycle
 
 0.04    2020-12-23
     - Last test CPAN release

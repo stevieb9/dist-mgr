@@ -92,7 +92,25 @@ sub changes {
 
     return @contents;
 }
-sub changes_bump {}
+sub changes_bump {
+    my ($version, $file) = @_;
+
+    croak("changes_bump() requires a version sent in") if ! defined $version;
+    _validate_version($version);
+
+    $file //= 'Changes';
+
+    my ($contents, $tie) = _changes_tie($file);
+
+    for (0..$#$contents) {
+        if ($contents->[$_] =~ /^\d+\.\d+\s+/) {
+            $contents->[$_-1] = "\n$version UNREL\n    -\n\n";
+            last;
+        }
+    }
+
+    untie $tie;
+}
 sub changes_date {
     my ($file) = @_;
 

@@ -106,6 +106,24 @@ C<.>.
 
 I<Returns:> The contents that were added into the file.
 
+=head2 changes_bump
+
+Prepares the C<Changes> file for a new development cycle after a release.
+
+I<Use>: After L<changes_date> and the previous release has been published.
+
+I<Parameters>:
+
+    $version
+
+I<Mandatory, Version>: A valid Perl version number. Must be higher than the
+previous release version.
+
+    $file
+
+I<Optional, String>: The name of the C<Changes> file to operate on. Defaults to
+the one in the current working directory.
+
 =head2 changes_date
 
 Replaces the C<UNREL> tag with today's date, in preparation of a release.

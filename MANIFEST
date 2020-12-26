@@ -21,7 +21,9 @@ t/45-init.t
 t/50-move_distribution_files.t
 t/55-changes.t
 t/60-changes_date.t
-t/99-full_run_template_comparison.t
+t/65-changes_bump.t
+t/95-build_cycle.t
+t/96-release_cycle.t
 t/data/module_template/.github/workflows/github_ci_default.yml
 t/data/module_template/Changes
 t/data/module_template/lib/Test/Module.pm
