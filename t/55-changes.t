@@ -27,7 +27,7 @@ unlink_changes();
 
 # MD5 & content comparisons
 {
-#    copy_changes();
+    copy_changes();
 #    is
 #        md5sum("$work/Changes"),
 #        $module_starter_changes_md5,
