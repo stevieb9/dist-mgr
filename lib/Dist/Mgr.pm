@@ -83,7 +83,7 @@ sub changes {
 
     my @contents;
 
-    if (! -e "$dir/Changes" || (split /\s+/, `shasum $dir/Changes`)[0] eq CHANGES_ORIG_SHA) {
+    if (! -e "$dir/Changes" || (split /\s+/, `shasum -U $dir/Changes`)[0] eq CHANGES_ORIG_SHA) {
         @contents = _changes_file($module);
         _changes_write_file($dir, \@contents);
     }

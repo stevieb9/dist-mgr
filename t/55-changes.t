@@ -40,7 +40,7 @@ unlink_changes();
 
     changes('Test::Module', $work);
 
-    my $after_sha_digest = (split /\s+/,`shasum $work/Changes`)[0];
+    my $after_sha_digest = (split /\s+/,`shasum -U $work/Changes`)[0];
 
     isnt
         $after_sha_digest,
