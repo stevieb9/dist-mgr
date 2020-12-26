@@ -25,7 +25,7 @@ my $tpl = "t/data/module_template/Changes"; # Custom one created by this dist
 
 unlink_changes();
 
-# MD5 & content comparisons
+# SHA1 & content comparisons
 {
     copy_changes();
 
@@ -36,7 +36,7 @@ unlink_changes();
 
     file_compare("$work/Changes", $orig_changes);
 
-    changes('Test::Module', $work);
+    changes('Test::Module', "$work/Changes");
 
     isnt
         sha1sum("$work/Changes"),

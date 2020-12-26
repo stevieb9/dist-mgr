@@ -24,6 +24,7 @@ our @EXPORT_OK = qw(
     add_repository
     changes
     changes_bump
+    changes_date
     ci_badges
     ci_github
     version_info
@@ -73,25 +74,45 @@ sub add_repository {
     _makefile_insert_repository($author, $repo, $makefile);
 }
 sub changes {
-    my ($module, $dir) = @_;
+    my ($module, $file) = @_;
 
     croak("changes() needs a module parameter") if ! defined $module;
 
-    $dir //= '.';
+    $file //= 'Changes';
 
     # Overwrite the Changes file if the SHA1 checksum matches the original file
     # created with module-starter
 
     my @contents;
 
-    if (! -e "$dir/Changes" || _sha1sum("$dir/Changes") eq CHANGES_ORIG_SHA) {
+    if (! -e $file || _sha1sum($file) eq CHANGES_ORIG_SHA) {
         @contents = _changes_file($module);
-        _changes_write_file($dir, \@contents);
+        _changes_write_file($file, \@contents);
     }
 
     return @contents;
 }
 sub changes_bump {}
+sub changes_date {
+    my ($file) = @_;
+
+    $file //= 'Changes';
+
+    my ($contents, $tie) = _changes_tie($file);
+
+    my ($d, $m, $y) = (localtime)[3, 4, 5];
+    $y += 1900;
+    $m += 1;
+
+    for (0..$#$contents) {
+        if ($contents->[$_] =~ /^(.*)\s+UNREL/) {
+            $contents->[$_] = "$1    $y-$m-$d";
+            last;
+        }
+    }
+
+    untie $tie;
+}
 sub ci_badges {
     if (scalar @_ != 3) {
         croak("ci_badges() needs \$author, \$repo and \$fs_entry sent in");
@@ -307,12 +328,21 @@ sub version_info {
 
 # Changes file related
 
+sub _changes_tie {
+    # Ties the Changes file to an array
+
+    my ($changes) = @_;
+    croak("_changes_tie() needs a Changes file name sent in") if ! defined $changes;
+
+    my $tie = tie my @changes, 'Tie::File', $changes;
+    return (\@changes, $tie);
+}
 sub _changes_write_file {
     # Writes out the custom Changes file
 
-    my ($dir, $content) = @_;
+    my ($file, $content) = @_;
 
-    open my $fh, '>', "$dir/Changes" or cluck("Can't open file $dir/Changes: $!");
+    open my $fh, '>', $file or cluck("Can't open file $file: $!");
 
     for (@$content) {
         print $fh "$_\n"

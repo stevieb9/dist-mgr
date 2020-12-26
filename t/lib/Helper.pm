@@ -11,6 +11,7 @@ use File::Copy;
 use File::Path qw(rmtree);
 use Digest::MD5;
 use Test::More;
+use Tie::File;
 
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
@@ -44,14 +45,37 @@ our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 ok 1;
 
-my $orig_dir        = 't/data/orig/';
-my $work_dir        = 't/data/work/';
-my $unwanted_dir    = 't/data/work/unwanted/';
-my $init_dir        = 't/data/work/init/';
-my $ci_dir          = 't/data/work/ci/';
+my $orig_dir        = 't/data/orig';
+my $work_dir        = 't/data/work';
+my $tpl_dir         = 't/data/module_template';
+my $unwanted_dir    = 't/data/work/unwanted';
+my $init_dir        = 't/data/work/init';
+my $ci_dir          = 't/data/work/ci';
 
 sub copy_changes {
-    copy "$orig_dir/Changes", $work_dir or die $!;
+    copy "$orig_dir/Changes", $work_dir or die "can't copy $orig_dir/Changes: $!";
+    copy "$tpl_dir/Changes", "$work_dir/Changes-prerelease" or die "Can't copy $tpl_dir/Changes-prerelease: $!";
+    copy "$orig_dir/Changes-release", $work_dir or die "Can't copy $orig_dir/Changes-release: $!";
+
+    # Set today's date in the -release file. This is the file we'll compare
+    # the results to
+
+    my ($d, $m, $y) = (localtime)[3, 4, 5];
+    $y+= 1900;
+    $m+= 1;
+
+    my $changes_release = "$work_dir/Changes-release";
+
+    my $tie = tie my @changes, 'Tie::File', $changes_release;
+
+    for my $line (@changes) {
+        if ($line =~ /XXXX-YY-ZZ/) {
+            $line =~ s/XXXX-YY-ZZ/$y-$m-$d/;
+            last;
+        }
+    }
+
+    untie $tie;
 }
 sub copy_makefile {
     copy "$orig_dir/Makefile.PL", $work_dir or die $!;
@@ -73,6 +97,16 @@ sub unlink_changes {
         unlink "$work_dir/Changes" or die $!;
     }
     is -e "$work_dir/Changes", undef, "temp Changes deleted ok";
+
+    if (-e "$work_dir/Changes-release") {
+        unlink "$work_dir/Changes-release" or die $!;
+    }
+    is -e "$work_dir/Changes-release", undef, "temp Changes-release deleted ok";
+
+    if (-e "$work_dir/Changes-prerelease") {
+        unlink "$work_dir/Changes-prerelease" or die $!;
+    }
+    is -e "$work_dir/Changes-prerelease", undef, "temp Changes-prerelease deleted ok";
 }
 sub unlink_ci_files {
     if (-e "$work_dir/github_ci_default.yml") {

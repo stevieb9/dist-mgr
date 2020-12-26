@@ -36,6 +36,8 @@ C<META_MERGE> section doesn't exist, we'll create it.
 
 Currently, only Github is supported.
 
+I<Use>: After L</init>, or any time.
+
 I<Parameters>:
 
     $author
@@ -62,6 +64,8 @@ C<META_MERGE> section doesn't exist, we'll create it.
 
 Currently, only Github is supported.
 
+I<Use>: After L</init>, or any time.
+
 I<Parameters>:
 
     $author
@@ -81,50 +85,45 @@ default to C<./Makefile.PL>.
 
 I<Returns>: C<0> upon success.
 
-=head2 version_bump
+=head2 changes
 
-Finds and updates the version number of a Perl module file, or all Perl
-module files in a directory structure.
+Creates or updates the initial L<Module::Starter> C<Changes> file to my custom
+standard format.
+
+I<Use>: After L</init>.
 
 I<Parameters>:
 
-    $version
+    $module
 
-I<Mandatory, String>: The new version to update to.
+I<Mandatory, String>: The name of the module (eg. C<Test::Module>).
 
-=head3 Dry run mode
+    $file
 
-The C<$version> parameter can be prepended with an optional dash (C<->), and if
-so, we'll operate in "dry-run" mode, where we'll return the results, but won't
-have written to any files. Eg: C<version_bump('-1.01')>.
+I<Optional, String>: The path and name of the C<Changes> file to operate on. By
+default, we operate on the C<Changes> file within the current working directory,
+C<.>.
 
-    $fs_entry
+I<Returns:> The contents that were added into the file.
 
-I<Optional, String>: The directory or file to operate on. If a directory is
-sent in, we'll iterate over all files in all directories recursively.
+=head2 changes_date
 
-I<Default>: C<lib/>
+Replaces the C<UNREL> tag with today's date, in preparation of a release.
 
-I<Returns>: An HoH:
+I<Use>: As part of the release cycle.
 
-    $VAR1 = {
-        't/data/work/Two.pm' => {
-            'dry_run'   => 0,
-            'from'      => '2.66',
-            'to'        => '2.67',
-            'content'   => '' # Module file code (snipped for brevity)
-        },
-        't/data/work/One.pm' => {
-            'dry_run'   => 0,
-            'from'      => '2.66',
-            'to'        => '2.67',
-            'content'   => '' # Module file code (snipped for brevity)
-        },
-    };
+I<Parameters>:
+
+    $file
+
+I<Optional, String>: The name of the C<Changes> file to operate on. By default,
+we operate on the one in the current working directory.
 
 =head2 ci_badges
 
 Inserts various CI and coverage badges into module files.
+
+I<Use>: After <L/init>, or any time.
 
 I<Parameters>:
 
@@ -150,6 +149,8 @@ I<Returns>: C<0> upon success.
 Installs a Github Actions configuration file into C<.github/workflows>. We'll
 create the directory if it doesn't exist.
 
+I<Use>: Any time.
+
 I<Parameters>:
 
     $os
@@ -169,6 +170,8 @@ I<Returns>: An array of the contents of the generated file.
 
 Fetches the file version information of Perl module files. Can operate on a
 single file, or iterate over a directory structure.
+
+I<Use>: Any time.
 
 I<Parameters>:
 
@@ -192,6 +195,8 @@ I<Returns>: Hash reference:
 =head2 git_ignore
 
 Generates a C<.gitignore> file.
+
+I<Use>: Any time.
 
 I<Parameters>:
 
@@ -230,6 +235,8 @@ C<artistic2>. See L<Module::Starter> for valid entries.
 
 Generates a C<MANIFEST.SKIP> file.
 
+I<Use>: Any time.
+
 I<Parameters>:
 
     $directory
@@ -245,6 +252,8 @@ After an L</init>, this method will scoop up all of the files and directories
 from within the newly created temp module directory into the current working
 dir, then remove the temp module directory.
 
+I<Use>: Immediately after <L/init>.
+
 I<Parameters>:
 
     $module
@@ -258,6 +267,51 @@ I<Returns>: C<0> upon success.
 
 Removes unwanted file system entries. We always operate from the perspective of
 the current working directory (C<.>).
+
+I<Use>: Immediately after <L/init>.
+
+=head2 version_bump
+
+Finds and updates the version number of a Perl module file, or all Perl
+module files in a directory structure.
+
+I<Use>: As part of the release cycle.
+
+I<Parameters>:
+
+    $version
+
+I<Mandatory, String>: The new version to update to.
+
+=head3 Dry run mode
+
+The C<$version> parameter can be prepended with an optional dash (C<->), and if
+so, we'll operate in "dry-run" mode, where we'll return the results, but won't
+have written to any files. Eg: C<version_bump('-1.01')>.
+
+    $fs_entry
+
+I<Optional, String>: The directory or file to operate on. If a directory is
+sent in, we'll iterate over all files in all directories recursively.
+
+I<Default>: C<lib/>
+
+I<Returns>: An HoH:
+
+    $VAR1 = {
+        't/data/work/Two.pm' => {
+            'dry_run'   => 0,
+            'from'      => '2.66',
+            'to'        => '2.67',
+            'content'   => '' # Module file code (snipped for brevity)
+        },
+        't/data/work/One.pm' => {
+            'dry_run'   => 0,
+            'from'      => '2.66',
+            'to'        => '2.67',
+            'content'   => '' # Module file code (snipped for brevity)
+        },
+    };
 
 =head1 AUTHOR
 
