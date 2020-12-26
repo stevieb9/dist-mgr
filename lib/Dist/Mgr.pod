@@ -17,7 +17,7 @@ utilizes C<Makefile.PL> files.
 
     use Dist::Mgr qw(:all)
 
-    my $results = bump_version('2.02');
+    my $results = version_bump('2.02');
 
     my $file_versions = get_version_info();
 
@@ -81,7 +81,7 @@ default to C<./Makefile.PL>.
 
 I<Returns>: C<0> upon success.
 
-=head2 bump_version
+=head2 version_bump
 
 Finds and updates the version number of a Perl module file, or all Perl
 module files in a directory structure.
@@ -96,7 +96,7 @@ I<Mandatory, String>: The new version to update to.
 
 The C<$version> parameter can be prepended with an optional dash (C<->), and if
 so, we'll operate in "dry-run" mode, where we'll return the results, but won't
-have written to any files. Eg: C<bump_version('-1.01')>.
+have written to any files. Eg: C<version_bump('-1.01')>.
 
     $fs_entry
 

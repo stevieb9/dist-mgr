@@ -22,9 +22,8 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
     add_bugtracker
     add_repository
-    bump_version
     changes
-    changes_update
+    changes_bump
     ci_badges
     ci_github
     get_version_info
@@ -33,6 +32,7 @@ our @EXPORT_OK = qw(
     manifest_skip
     move_distribution_files
     remove_unwanted_files
+    version_bump
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
@@ -71,76 +71,6 @@ sub add_repository {
 
     _makefile_insert_repository($author, $repo, $makefile);
 }
-sub bump_version {
-    my ($version, $fs_entry) = @_;
-
-    my $dry_run = 0;
-
-    if (defined $version && $version =~ /^-/) {
-        print "\nDry run\n\n";
-        $version =~ s/-//;
-        $dry_run = 1;
-    }
-
-    _validate_version($version);
-    _validate_fs_entry($fs_entry);
-
-    my @module_files = _module_find_files($fs_entry);
-
-    my %files;
-
-    for (@module_files) {
-        my $current_version = _module_extract_file_version($_);
-        my $version_line    = _module_extract_file_version_line($_);
-        my @file_contents   = _module_fetch_file_contents($_);
-
-        if (! defined $version_line) {
-            next;
-        }
-
-        if (! defined $current_version) {
-            next;
-        }
-
-        if (version->parse($current_version) >= version->parse($version)) {
-            croak(
-                "Your new version $version must be greater than the current " .
-                "one, $current_version"
-            );
-        }
-
-        my $mem_file;
-
-        open my $wfh, '>', \$mem_file or croak("Can't open mem file!: $!");
-
-        for my $line (@file_contents) {
-            chomp $line;
-
-            if ($line eq $version_line) {
-                $line =~ s/$current_version/$version/;
-            }
-
-            $line .= "\n";
-
-            # Write out the line to the in-memory temp file
-            print $wfh $line;
-
-            $files{$_}{from}    = $current_version;
-            $files{$_}{to}      = $version;
-        }
-
-        close $wfh;
-
-        $files{$_}{dry_run} = $dry_run;
-        $files{$_}{content} = $mem_file;
-
-        if (! $dry_run) {
-            # Write out the actual file
-            _module_write_file($_, $mem_file);
-        }
-    }
-    return \%files;
-}
 sub changes {
     my ($module, $changes_file) = @_;
 
@@ -152,7 +82,7 @@ sub changes {
 
     print "$md5\n";
 }
-sub changes_update {}
+sub changes_bump {}
 sub ci_badges {
     if (scalar @_ != 3) {
         croak("ci_badges() needs \$author, \$repo and \$fs_entry sent in");
@@ -295,7 +225,76 @@ sub remove_unwanted_files {
 
     return 0;
 }
+sub version_bump {
+    my ($version, $fs_entry) = @_;
 
+    my $dry_run = 0;
+
+    if (defined $version && $version =~ /^-/) {
+        print "\nDry run\n\n";
+        $version =~ s/-//;
+        $dry_run = 1;
+    }
+
+    _validate_version($version);
+    _validate_fs_entry($fs_entry);
+
+    my @module_files = _module_find_files($fs_entry);
+
+    my %files;
+
+    for (@module_files) {
+        my $current_version = _module_extract_file_version($_);
+        my $version_line    = _module_extract_file_version_line($_);
+        my @file_contents   = _module_fetch_file_contents($_);
+
+        if (! defined $version_line) {
+            next;
+        }
+
+        if (! defined $current_version) {
+            next;
+        }
+
+        if (version->parse($current_version) >= version->parse($version)) {
+            croak(
+                "Your new version $version must be greater than the current " .
+                    "one, $current_version"
+            );
+        }
+
+        my $mem_file;
+
+        open my $wfh, '>', \$mem_file or croak("Can't open mem file!: $!");
+
+        for my $line (@file_contents) {
+            chomp $line;
+
+            if ($line eq $version_line) {
+                $line =~ s/$current_version/$version/;
+            }
+
+            $line .= "\n";
+
+            # Write out the line to the in-memory temp file
+            print $wfh $line;
+
+            $files{$_}{from}    = $current_version;
+            $files{$_}{to}      = $version;
+        }
+
+        close $wfh;
+
+        $files{$_}{dry_run} = $dry_run;
+        $files{$_}{content} = $mem_file;
+
+        if (! $dry_run) {
+            # Write out the actual file
+            _module_write_file($_, $mem_file);
+        }
+    }
+    return \%files;
+}
 # CI related
 
 sub _ci_github_write_file {

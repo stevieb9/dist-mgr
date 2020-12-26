@@ -107,9 +107,9 @@ remove_init();
     my ($orig_ver) = values %{ (get_version_info('lib/'))[0] };
     is $orig_ver, '0.01', "original version is 0.01 ok";
 
-    # bump_version()
+    # version_bump()
 
-    bump_version('9.66', 'lib/Test/Module.pm');
+    version_bump('9.66', 'lib/Test/Module.pm');
     my ($new_ver) = values %{ (get_version_info('lib/'))[0] };
     is $new_ver, '9.66', "new version is 9.66 ok";
     is(

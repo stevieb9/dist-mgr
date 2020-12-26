@@ -22,21 +22,21 @@ copy_module_files();
 {
     # no version
     is eval {
-        bump_version();
+        version_bump();
         1
     }, undef, "no supplied version croaks ok";
     like $@, qr/version parameter/, "...and error is sane";
 
     # invalid version
     is eval {
-        bump_version('aaa');
+        version_bump('aaa');
         1
     }, undef, "invalid version croaks ok";
     like $@, qr/The version number/, "...and error is sane";
 
     # invalid fs entry
     is eval {
-        bump_version('1.00', 'asdf');
+        version_bump('1.00', 'asdf');
         1
     }, undef, "invalid file system entry croaks ok";
     like $@, qr/File system.*invalid/, "...and error is sane";
@@ -47,7 +47,7 @@ copy_module_files();
     $h->flush;
 
     $h->hook;
-    my $data = bump_version('-3.77', $d);
+    my $data = version_bump('-3.77', $d);
     $h->unhook;
 
     my @out = $h->stdout;
@@ -83,7 +83,7 @@ copy_module_files();
     $h->flush;
 
     $h->hook('stderr');
-    my $data = bump_version('-3.77', $d);
+    my $data = version_bump('-3.77', $d);
     $h->unhook('stderr');
 
     my @err = $h->stderr;
@@ -107,7 +107,7 @@ copy_module_files();
 {
 
     for my $file (@valid) {
-        my $data = bump_version('-9.11', $file);
+        my $data = version_bump('-9.11', $file);
 
         is keys %$data, 1, "returned href has proper number of keys ok";
         is exists $data->{$file}, 1, "$file is a key of the returned href ok";
@@ -118,7 +118,7 @@ copy_module_files();
 
 # files & content (live run)
 {
-    my $data = bump_version(9.12, $d);
+    my $data = version_bump(9.12, $d);
 
     for my $file (@valid) {
         is keys %$data, 3, "returned href has proper number of keys ok";
@@ -140,7 +140,7 @@ copy_module_files();
 # new version <= old version
 {
     is
-        eval { bump_version('0.01', $valid[2]); 1 },
+        eval { version_bump('0.01', $valid[2]); 1 },
         undef,
         "new version <= old version croaks ok";
     like $@, qr/must be greater than/, "...and error is sane";

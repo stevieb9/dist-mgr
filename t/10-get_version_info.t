@@ -20,21 +20,21 @@ my $d = 't/data/orig';
 {
     # no version
     is eval {
-        bump_version();
+        version_bump();
         1
     }, undef, "no supplied version croaks ok";
     like $@, qr/version parameter/, "...and error is sane";
 
     # invalid version
     is eval {
-        bump_version('aaa');
+        version_bump('aaa');
         1
     }, undef, "invalid version croaks ok";
     like $@, qr/The version number/, "...and error is sane";
 
     # invalid file system entry
     is eval {
-        bump_version('1.00', 'asdf');
+        version_bump('1.00', 'asdf');
         1
     }, undef, "invalid dir croaks ok";
     like $@, qr/File system entry.*invalid/, "...and error is sane";

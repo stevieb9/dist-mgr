@@ -24,7 +24,7 @@ Revision history for Dist-Mgr
         - Finished t/50-full_run.t, goes through every function to create an
           entire distribution with all customizations in place. Can be used as a
           roadmap for a binary script
-        - We now croak() if the new version sent into bump_version() is less
+        - We now croak() if the new version sent into version_bump() is less
           than or equal to the current version (closes #14)
         - Add tests that compare a full run against a saved template
           distribution (closes #17)
