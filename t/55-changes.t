@@ -25,7 +25,7 @@ my $tpl = "t/data/module_template/Changes"; # Custom one created by this dist
 
 # MD5 & content comparisons
 {
-    copy_changes();
+#    copy_changes();
 #    is
 #        md5sum("$work/Changes"),
 #        $module_starter_changes_md5,
