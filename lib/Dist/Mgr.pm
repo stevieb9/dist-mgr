@@ -7,6 +7,7 @@ use version;
 use Carp qw(croak cluck);
 use Cwd qw(getcwd);
 use Data::Dumper;
+use Digest::SHA;
 use Dist::Mgr::FileData;
 use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
@@ -619,7 +620,12 @@ sub _sha1sum {
     my ($file) = @_;
 
     croak("shasum needs file param") if ! defined $file;
-    return (split /\s+/, `shasum -U $file`)[0];
+
+    my $sha1 = Digest::SHA->new;
+
+    $sha1->addfile($file, 'U');
+
+    return $sha1->hexdigest;
 }
 sub _validate_fs_entry {
     # Validates a file system entry as valid

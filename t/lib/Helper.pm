@@ -6,6 +6,7 @@ use strict;
 use Carp qw(croak);
 use Cwd qw(getcwd);
 use Exporter qw(import);
+use Digest::SHA;
 use File::Copy;
 use File::Path qw(rmtree);
 use Digest::MD5;
@@ -150,7 +151,12 @@ sub sha1sum {
     my ($file) = @_;
 
     croak("shasum needs file param") if ! defined $file;
-    return (split /\s+/, `shasum -U $file`)[0];
+
+    my $sha1 = Digest::SHA->new;
+
+    $sha1->addfile($file, 'U');
+
+    return $sha1->hexdigest;
 }
 sub trap_warn {
     # enable/disable sinking our own internal warnings to prevent
