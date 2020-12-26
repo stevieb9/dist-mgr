@@ -61,10 +61,10 @@ remove_init();
 
     # changes()
 
-#    file_count(12);
-#    changes($mods->[0]);
-#    check_file('Changes', qr/Dist::Mgr/, "our custom Changes is in place ok");
-#    is md5sum('Changes'), '53e7d5e8dc3372dade87b085f11a07b4', "updated Changes has proper md5 ok";
+    file_count(12);
+    changes($mods->[0]);
+    check_file('Changes', qr/Dist::Mgr/, "our custom Changes is in place ok");
+    is sha1sum('Changes'), '5e94218da86f2e727ab8c332dec4af058d482304', "updated Changes has proper md5 ok";
 
     # manifest_skip()
 
@@ -141,11 +141,6 @@ remove_init();
     my $file_count = 0;
 
     for my $tf (@template_files) {
-        if ($tf =~ /Changes/) {
-            warn 'SKIPPING CHANGES';
-            $file_count++;
-            next;
-        }
         (my $nf = $tf) =~ s/$template_dir//;
         # nf == new file
         # tf == template file
