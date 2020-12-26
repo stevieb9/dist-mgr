@@ -23,6 +23,8 @@ my $work = 't/data/work';
 my $orig_changes = 't/data/orig/Changes';
 my $tpl = "t/data/module_template/Changes"; # Custom one created by this dist
 
+unlink_changes();
+
 # MD5 & content comparisons
 {
 #    copy_changes();

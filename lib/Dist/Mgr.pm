@@ -83,7 +83,7 @@ sub changes {
 
     my @contents;
 
-    if (!-e "$dir/Changes" || _md5sum("$dir/Changes") eq CHANGES_ORIG_MD5) {
+    if (! -e "$dir/Changes" || _md5sum("$dir/Changes") eq CHANGES_ORIG_MD5) {
         @contents = _changes_file($module);
         _changes_write_file($dir, \@contents);
     }
