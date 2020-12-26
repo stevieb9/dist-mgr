@@ -42,14 +42,14 @@ my $d = 't/data/orig';
 
 # file
 {
-    my $info = get_version_info($f);
+    my $info = version_info($f);
     is $info->{$f}, '0.01', "with file, info href contains proper data ok";
 }
 
 # dir
 {
     trap_warn(1);
-    my $info = get_version_info($d);
+    my $info = version_info($d);
     trap_warn(0);
 
     is keys %$info, 5, "proper key count in info href ok";
@@ -67,7 +67,7 @@ my $d = 't/data/orig';
     my $h = Hook::Output::Tiny->new;
 
     $h->hook('stderr');
-    get_version_info($d);
+    version_info($d);
     $h->unhook('stderr');
 
     my @stderr = $h->stderr;

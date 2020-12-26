@@ -10,7 +10,7 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 t/00-load.t
 t/05-version_bump.t
-t/10-get_version_info.t
+t/10-version_info.t
 t/15-add_repo_add_bugtrack.t
 t/20-ci_config_files.t
 t/25-ci_badges.t

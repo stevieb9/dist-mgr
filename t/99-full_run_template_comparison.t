@@ -109,15 +109,15 @@ remove_init();
     check_file('Makefile.PL', qr/META_MERGE/, "repo META_MERGE added ok");
     check_file('Makefile.PL', qr/repository/, "repository added ok");
 
-    # get_version_info()
+    # version_info()
 
-    my ($orig_ver) = values %{ (get_version_info('lib/'))[0] };
+    my ($orig_ver) = values %{ (version_info('lib/'))[0] };
     is $orig_ver, '0.01', "original version is 0.01 ok";
 
     # version_bump()
 
     version_bump('9.66', 'lib/Test/Module.pm');
-    my ($new_ver) = values %{ (get_version_info('lib/'))[0] };
+    my ($new_ver) = values %{ (version_info('lib/'))[0] };
     is $new_ver, '9.66', "new version is 9.66 ok";
     is(
         version->parse($new_ver) > version->parse($orig_ver),

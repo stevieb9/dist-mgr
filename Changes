@@ -30,6 +30,7 @@ Revision history for Dist-Mgr
           distribution (closes #17)
         - Renamed distribution to Dist::Mgr and repo to dist-mgr (closes #18)
         - Renamed bump_version() to version_bump()
+        - Renamed get_version_info() to version_info()
         - Added changes(), installs our custom Changes file
 
 0.04    2020-12-23

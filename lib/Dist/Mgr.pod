@@ -19,7 +19,7 @@ utilizes C<Makefile.PL> files.
 
     my $results = version_bump('2.02');
 
-    my $file_versions = get_version_info();
+    my $file_versions = version_info();
 
 =head1 EXPORT_OK
 
@@ -165,7 +165,7 @@ I<Valid values>: C<l>, C<w>, C<m>, where:
 
 I<Returns>: An array of the contents of the generated file.
 
-=head2 get_version_info
+=head2 version_info
 
 Fetches the file version information of Perl module files. Can operate on a
 single file, or iterate over a directory structure.

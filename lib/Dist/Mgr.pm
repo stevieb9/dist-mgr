@@ -26,7 +26,7 @@ our @EXPORT_OK = qw(
     changes_bump
     ci_badges
     ci_github
-    get_version_info
+    version_info
     git_ignore
     init
     manifest_skip
@@ -79,7 +79,7 @@ sub changes {
 
     $dir //= '.';
 
-    # Overwrite the Changes file if the MD5 checksum matches the original file
+    # Overwrite the Changes file if the SHA1 checksum matches the original file
     # created with module-starter
 
     my @contents;
@@ -116,22 +116,6 @@ sub ci_github {
     _ci_github_write_file(\@contents);
 
     return @contents;
-}
-sub get_version_info {
-    my ($fs_entry) = @_;
-
-    _validate_fs_entry($fs_entry);
-
-    my @module_files = _module_find_files($fs_entry);
-
-    my %version_info;
-
-    for (@module_files) {
-        my $version = _module_extract_file_version($_);
-        $version_info{$_} = $version;
-    }
-
-    return \%version_info;
 }
 sub git_ignore {
     my ($dir) = @_;
@@ -303,6 +287,22 @@ sub version_bump {
         }
     }
     return \%files;
+}
+sub version_info {
+    my ($fs_entry) = @_;
+
+    _validate_fs_entry($fs_entry);
+
+    my @module_files = _module_find_files($fs_entry);
+
+    my %version_info;
+
+    for (@module_files) {
+        my $version = _module_extract_file_version($_);
+        $version_info{$_} = $version;
+    }
+
+    return \%version_info;
 }
 
 # Changes file related
