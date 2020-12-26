@@ -18,72 +18,46 @@ die "not in the root dir" if $cwd !~ /dist-mgr$/;
 
 my $module_starter_changes_md5 = '1f0e16f293c340668219a937272f0d2c';
 
-my $mod_dir = 'Test-Module';
-my $work_dir = 't/data/work';
-my $init_dir = "$work_dir/init";
-my $orig = "$cwd/t/data/orig/Changes"; # Custom one created by this dist
+my $work = 't/data/work/Changes';
+my $tpl = "t/data/module_template/Changes"; # Custom one created by this dist
 
-my $h = Hook::Output::Tiny->new;
-
-remove_init();
-mkdir_init();
-
-# from initial creation
+# MD5 & content comparisons
 {
-    # Change into 'init' dir
-
-    chdir $init_dir or die $!;
-    like getcwd(), qr|dist-mgr/$init_dir$|, "in init dir ok";
-    die "not in the init dir" if getcwd() !~ m|dist-mgr/$init_dir$|;
-
-    $h->hook;
-    init(module_args());
-    $h->unhook;
-
-    # Change into module dir
-
-    chdir $mod_dir or die $!;
-    like getcwd(), qr|dist-mgr/$init_dir/$mod_dir$|, "in module dir ok";
-    die "not in the init dir" if getcwd() !~ m|dist-mgr/$init_dir/$mod_dir$|;
-
+    copy_changes();
     is
-        md5sum('Changes'),
+        md5sum($work),
         $module_starter_changes_md5,
         "Changes file created by Module::Starter MD5 match ok";
 
-    changes('Test::Module', 'Changes');
+    changes('Test::Module', $work);
 
     isnt
-        md5sum('Changes'),
+        md5sum($work),
         $module_starter_changes_md5,
         "Changes updated has different MD5 as the template ok";
 
-    file_compare('Changes', $orig);
+    file_compare($work, $tpl);
 
     unlink_changes();
 }
 
-chdir $cwd or die $!;
-is getcwd(), $cwd, "in $cwd dir ok";
-die "not in cwd" if getcwd() ne $cwd;
-
-remove_init();
+unlink_changes();
 
 done_testing;
 
 sub file_compare {
-    my ($new, $orig) = @_;
+    my ($gen, $save) = @_;
 
-    open my $new_fh, '<', $new or die $!;
-    open my $orig_fh, '<', $orig or die $!; # 'original' custom
+    open my $gen_fh, '<', $gen or die $!;
+    open my $save_fh, '<', $save or die $!; # 'original' custom
 
-    my @new = <$new_fh>;
-    my @orig = <$orig_fh>;
+    my @gen = <$gen_fh>;
+    my @save = <$save_fh>;
 
-    close $new_fh or die $!;
-    close $orig_fh or die $!;
+    close $gen_fh or die $!;
+    close $save_fh or die $!;
 
-    for (0..$#new) {
-        is $new[$_], $orig[$_], "Updated Changes file line $_ matches template custom ok";
+    for (0..$#gen) {
+        is $gen[$_], $save[$_], "Updated Changes file line $_ matches template custom ok";
     }
 }

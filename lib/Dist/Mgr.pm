@@ -41,7 +41,7 @@ use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
     GITHUB_CI_PATH      => '.github/workflows/',
     CHANGES_FILE        => 'Changes',
-    CHANGES_ORIG_MD5    => '1f0e16f293c340668219a937272f0d2c',
+    CHANGES_ORIG_MD5    => '1f0e16f293c340668219a937272f0d2c', # Module::Starter version
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
@@ -72,21 +72,23 @@ sub add_repository {
     _makefile_insert_repository($author, $repo, $makefile);
 }
 sub changes {
-    my ($module, $changes_file) = @_;
+    my ($module, $file) = @_;
 
     croak("changes() needs a module parameter") if ! defined $module;
 
-    $changes_file //= CHANGES_FILE;
+    $file //= CHANGES_FILE;
 
     # Overwrite the Changes file if the MD5 checksum matches the original file
     # created with module-starter
 
-    if (_md5sum($changes_file) eq CHANGES_ORIG_MD5) {
-        _changes_write_file(
-            $changes_file,
-            _changes_file($module, $changes_file)
-        );
+    my @contents;
+
+    if (_md5sum($file) eq CHANGES_ORIG_MD5) {
+        @contents = _changes_file($module);
+        _changes_write_file($file, \@contents);
     }
+
+    return @contents;
 }
 sub changes_bump {}
 sub ci_badges {
@@ -180,7 +182,7 @@ sub init {
 
     _module_write_template($module_file, $module, $args{author}, $args{email});
 
-    chdir '..' or die "Can't change into original directory";
+    chdir '..' or croak "Can't change into original directory";
 }
 sub manifest_skip {
     my ($dir) = @_;
@@ -307,11 +309,11 @@ sub version_bump {
 sub _changes_write_file {
     # Writes out the custom Changes file
 
-    my ($changes_file, @content) = @_;
+    my ($file, $content) = @_;
 
-    open my $fh, '>', $changes_file or die $!;
+    open my $fh, '>', $file or croak("Can't open file $file: $!");
 
-    for (@content) {
+    for (@$content) {
         print $fh "$_\n"
     }
 
@@ -335,7 +337,7 @@ sub _ci_github_write_file {
 
     make_path(GITHUB_CI_PATH) if ! -d GITHUB_CI_PATH;
 
-    open my $fh, '>', $ci_file or die $!;
+    open my $fh, '>', $ci_file or croak $!;
 
     print $fh "$_\n" for @$contents;
 }
@@ -365,7 +367,7 @@ sub _git_ignore_write_file {
 
     my ($dir, $content) = @_;
 
-    open my $fh, '>', "$dir/.gitignore" or die $!;
+    open my $fh, '>', "$dir/.gitignore" or croak $!;
 
     for (@$content) {
         print $fh "$_\n"
@@ -460,7 +462,7 @@ sub _manifest_skip_write_file {
 
     my ($dir, $content) = @_;
 
-    open my $fh, '>', "$dir/MANIFEST.SKIP" or die $!;
+    open my $fh, '>', "$dir/MANIFEST.SKIP" or croak $!;
 
     for (@$content) {
         print $fh "$_\n"
@@ -616,10 +618,10 @@ sub _module_write_template {
 sub _md5sum {
     my ($file) = @_;
 
-    die "md5sum needs a file param" if ! defined $file;
+    croak "md5sum needs a file param" if ! defined $file;
 
     my $md5 = Digest::MD5->new;
-    open my $fh, '<', $file or die $!;
+    open my $fh, '<', $file or croak "Can't open file $file: $!";
     binmode $fh;
     return $md5->addfile($fh)->hexdigest();
 }
