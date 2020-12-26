@@ -59,6 +59,13 @@ remove_init();
     file_count(12);
     check_file('lib/Test/Module.pm', qr/Test Author/, "our custom module template is in place ok");
 
+    # changes()
+
+    file_count(12);
+    changes($mods->[0]);
+    check_file('Changes', qr/Dist::Mgr/, "our custom Changes is in place ok");
+    is md5sum('Changes'), '53e7d5e8dc3372dade87b085f11a07b4', "updated Changes has proper md5 ok";
+
     # manifest_skip()
 
     manifest_skip();

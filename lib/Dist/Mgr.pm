@@ -7,14 +7,13 @@ use version;
 use Carp qw(croak cluck);
 use Cwd qw(getcwd);
 use Data::Dumper;
-use Digest::MD5 qw(md5_hex);
+use Dist::Mgr::FileData;
 use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
 use File::Find::Rule;
 use Module::Starter;
 use PPI;
-use Dist::Mgr::FileData;
 use Tie::File;
 
 use Exporter qw(import);
@@ -42,6 +41,7 @@ use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
     GITHUB_CI_PATH      => '.github/workflows/',
     CHANGES_FILE        => 'Changes',
+    CHANGES_ORIG_MD5    => '1f0e16f293c340668219a937272f0d2c',
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
@@ -74,13 +74,19 @@ sub add_repository {
 sub changes {
     my ($module, $changes_file) = @_;
 
-    croak("changes_customize() needs a module parameter") if ! defined $module;
+    croak("changes() needs a module parameter") if ! defined $module;
 
     $changes_file //= CHANGES_FILE;
 
-    my $md5 = md5_hex($changes_file);
+    # Overwrite the Changes file if the MD5 checksum matches the original file
+    # created with module-starter
 
-    print "$md5\n";
+    if (_md5sum($changes_file) eq CHANGES_ORIG_MD5) {
+        _changes_write_file(
+            $changes_file,
+            _changes_file($module, $changes_file)
+        );
+    }
 }
 sub changes_bump {}
 sub ci_badges {
@@ -295,6 +301,25 @@ sub version_bump {
     }
     return \%files;
 }
+
+# Changes file related
+
+sub _changes_write_file {
+    # Writes out the custom Changes file
+
+    my ($changes_file, @content) = @_;
+
+    open my $fh, '>', $changes_file or die $!;
+
+    for (@content) {
+        print $fh "$_\n"
+    }
+
+    close $fh;
+
+    return 0;
+}
+
 # CI related
 
 sub _ci_github_write_file {
@@ -588,6 +613,16 @@ sub _module_write_template {
 
 # Validation related
 
+sub _md5sum {
+    my ($file) = @_;
+
+    die "md5sum needs a file param" if ! defined $file;
+
+    my $md5 = Digest::MD5->new;
+    open my $fh, '<', $file or die $!;
+    binmode $fh;
+    return $md5->addfile($fh)->hexdigest();
+}
 sub _validate_fs_entry {
     # Validates a file system entry as valid
 

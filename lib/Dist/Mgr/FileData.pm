@@ -29,14 +29,16 @@ sub _changes_file {
 
     die "_changes_file() needs module param" if ! defined $module;
 
+    $module =~ s/::/-/g;
+
     return (
         qq{Revision history for $module},
         qq{},
         qq{0.01 UNREL},
-        qq{        - Auto generated distribution with Dist::Mgr},
-        qq{},
+        qq{    - Auto generated distribution with Dist::Mgr},
     );
 }
+
 sub _ci_github_file {
     my ($os) = @_;
 

@@ -29,6 +29,8 @@ Revision history for Dist-Mgr
         - Add tests that compare a full run against a saved template
           distribution (closes #17)
         - Renamed distribution to Dist::Mgr and repo to dist-mgr (closes #18)
+        - Renamed bump_version() to version_bump()
+        - Added changes(), installs our custom Changes file
 
 0.04    2020-12-23
         - Last test CPAN release

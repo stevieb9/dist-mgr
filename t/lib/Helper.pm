@@ -8,6 +8,7 @@ use Cwd qw(getcwd);
 use Exporter qw(import);
 use File::Copy;
 use File::Path qw(rmtree);
+use Digest::MD5;
 use Test::More;
 
 our @ISA = qw(Exporter);
@@ -25,10 +26,15 @@ our @EXPORT_OK = qw(
     unlink_manifest_skip
     unlink_git_ignore
 
+    mkdir_init
+
     remove_ci
     remove_init
     remove_unwanted
+
     file_scalar
+    md5sum
+    module_args
     trap_warn
     verify_clean
 );
@@ -119,6 +125,27 @@ sub find_module_files {
         ->name('*.pm')
         ->in($dir);
 }
+sub md5sum {
+    my ($file) = @_;
+
+    die "md5sum needs a file param" if ! defined $file;
+
+    my $md5 = Digest::MD5->new;
+    open my $fh, '<', $file or die $!;
+    binmode $fh;
+    return $md5->addfile($fh)->hexdigest();
+}
+sub module_args {
+    my %module_args = (
+        author  => 'Test Author',
+        email   => 'test@example.com',
+        modules => [qw(Test::Module)],
+        license => 'artistic2',
+        builder => 'ExtUtils::MakeMaker',
+    );
+
+    return %module_args;
+}
 sub trap_warn {
     # enable/disable sinking our own internal warnings to prevent
     # cluttered test output
@@ -144,11 +171,17 @@ sub trap_warn {
     }
 }
 
+sub mkdir_init {
+    if (! -e $init_dir) {
+        mkdir $init_dir or die $!;
+    }
+}
+
 sub remove_ci {
     if (-e $ci_dir) {
         is rmtree("$work_dir/ci") >= 1, 1, "removed ci dir structure ok";
     }
-    is -e $ci_dir, undef, "init dir removed ok";
+    is -e $ci_dir, undef, "ci dir removed ok";
 }
 sub remove_init {
     if (-e $init_dir) {
