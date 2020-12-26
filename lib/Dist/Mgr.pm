@@ -72,20 +72,20 @@ sub add_repository {
     _makefile_insert_repository($author, $repo, $makefile);
 }
 sub changes {
-    my ($module, $file) = @_;
+    my ($module, $dir) = @_;
 
     croak("changes() needs a module parameter") if ! defined $module;
 
-    $file //= CHANGES_FILE;
+    $dir //= '.';
 
     # Overwrite the Changes file if the MD5 checksum matches the original file
     # created with module-starter
 
     my @contents;
 
-    if (_md5sum($file) eq CHANGES_ORIG_MD5) {
+    if (_md5sum("$dir/Changes") eq CHANGES_ORIG_MD5) {
         @contents = _changes_file($module);
-        _changes_write_file($file, \@contents);
+        _changes_write_file($dir, \@contents);
     }
 
     return @contents;
@@ -309,9 +309,9 @@ sub version_bump {
 sub _changes_write_file {
     # Writes out the custom Changes file
 
-    my ($file, $content) = @_;
+    my ($dir, $content) = @_;
 
-    open my $fh, '>', $file or croak("Can't open file $file: $!");
+    open my $fh, '>', "$dir/Changes" or cluck("Can't open file $dir/Changes: $!");
 
     for (@$content) {
         print $fh "$_\n"

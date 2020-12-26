@@ -18,25 +18,25 @@ die "not in the root dir" if $cwd !~ /dist-mgr$/;
 
 my $module_starter_changes_md5 = '1f0e16f293c340668219a937272f0d2c';
 
-my $work = 't/data/work/Changes';
+my $work = 't/data/work';
 my $tpl = "t/data/module_template/Changes"; # Custom one created by this dist
 
 # MD5 & content comparisons
 {
     copy_changes();
     is
-        md5sum($work),
+        md5sum("$work/Changes"),
         $module_starter_changes_md5,
         "Changes file created by Module::Starter MD5 match ok";
 
     changes('Test::Module', $work);
 
     isnt
-        md5sum($work),
+        md5sum("$work/Changes"),
         $module_starter_changes_md5,
         "Changes updated has different MD5 as the template ok";
 
-    file_compare($work, $tpl);
+    file_compare("$work/Changes", $tpl);
 
     unlink_changes();
 }
