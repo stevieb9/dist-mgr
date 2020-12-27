@@ -36,6 +36,9 @@ Revision history for Dist-Mgr
       in preparation for release
     - Added changes_bump(), prepares the Changes file for a new development
       cycle
+    - Added POD to FileData, added section for creating new file entries
+      (closes #8)
+    - FileData functions are no longer exported by default
 
 0.04    2020-12-23
     - Last test CPAN release

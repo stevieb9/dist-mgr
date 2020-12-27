@@ -371,6 +371,18 @@ Returns an array of the file lines that make up a default C<MANIFEST.SKIP> file.
 Returns an array of files and directories we remove from the base, stock
 distribution after it's been initialized.
 
+=head1 Adding New File Contents
+
+Read through the various functions to get an idea of how things hang together.
+
+Manage any required variables.
+
+The C<dev/quote_file_contents.pl> script takes a file name as an argument, and
+will generate and print to C<STDOUT> the quoted contents that can be dropped
+into an array and returned from your new function.
+
+Change the quote type within the script if required.
+
 =head1 AUTHOR
 
 Steve Bertrand, C<< <steveb at cpan.org> >>
