@@ -30,7 +30,6 @@ unlink_changes();
     my @d = split /\n/, file_scalar($work);
 
     if ($^O =~ /win32/i) {
-        print "**** $^O\n";
         my $stringified_result = file_scalar($work);
         $stringified_result =~ s/[\n\s]//g;
         like
