@@ -7,7 +7,7 @@ use Data::Dumper;
 use Hook::Output::Tiny;
 use Module::Starter;
 use Dist::Mgr qw(:all);
-use Dist::Mgr::FileData;
+use Dist::Mgr::FileData qw(:all);
 
 use lib 't/lib';
 use Helper qw(:all);

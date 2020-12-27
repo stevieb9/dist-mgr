@@ -5,7 +5,7 @@ use strict;
 
 use Exporter qw(import);
 our @ISA = qw(Exporter);
-our @EXPORT = qw(
+our @EXPORT_OK = qw(
     _changes_file
 
     _ci_github_file
@@ -23,6 +23,7 @@ our @EXPORT = qw(
 
     _unwanted_filesystem_entries
 );
+our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 sub _changes_file {
     my ($module) = @_;
@@ -291,6 +292,84 @@ sub __placeholder {}
 
 1;
 __END__
+
+=head1 NAME
+
+Dist::Mgr::FileData - Fetch pre-written contents for various distribution files.
+
+=head1 DESCRIPTION
+
+This module returns arrays of pre-written file contents that can be used to
+insert into various files.
+
+=head1 SYNOPSIS
+
+use Dist::Mgr::FileData qw(:all);
+
+=head1 EXPORT_OK
+
+We export nothing by default. See the L</FUNCTIONS> section for everything that
+can be imported individually, or with the C<:all> tag.
+
+All functions are quasi-private and mainly used for development, but I've
+decided to advertise them anyway.
+
+=head1 FUNCTIONS
+
+=head2 _changes_file($module)
+
+Returns an array of the lines of a default custom C<Changes> file.
+
+=head2 _ci_github_file($os)
+
+Return an array of the file contents of a custom Github Actions CI configuration
+file.
+
+Send in the parameters within an array reference. Each entry signifies the OS of
+the system the build will run on. The three options mapped to how we handle them
+internally.
+
+        l => qq{ubuntu-latest},
+        w => qq{windows-latest},
+        m => qq{macos-latest},
+
+=head2 _git_ignore_file()
+
+Returns an array of the contents of a populated C<.gitignore> file.
+
+=head2 _module_section_ci_badges($author, $repo)
+
+Returns an array of the lines required to add CI and coverage badges. C<$author>
+is your Github username, and C<$repo> should be self-explanitory.
+
+=head2 _module_template_file($module, $author, $email)
+
+Returns an array of the file lines of our default module file. Parameters are
+the same as if you were running C<module-starter> at the command line.
+
+=head2 _makefile_section_meta_merge()
+
+Return an array of the skeleton contents of a C<Makefile.PL> C<META_MERGE>
+section. We put repository and bugtracer information in here.
+
+=head2 _makefile_section_bugtracker($author, $repo)
+
+Returns an array of the contents that make up the bugtracker section of a
+C<Makefile.PL> file.
+
+=head2 _makefile_section_repo($author, $repo)
+
+Returns an array of the contents that make up the repository section of a
+C<Makefile.PL> file.
+
+=head2 _manifest_skip_file()
+
+Returns an array of the file lines that make up a default C<MANIFEST.SKIP> file.
+
+=head2 _unwanted_filesystem_entries()
+
+Returns an array of files and directories we remove from the base, stock
+distribution after it's been initialized.
 
 =head1 AUTHOR
 

@@ -8,7 +8,7 @@ use Carp qw(croak cluck);
 use Cwd qw(getcwd);
 use Data::Dumper;
 use Digest::SHA;
-use Dist::Mgr::FileData;
+use Dist::Mgr::FileData qw(:all);
 use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
