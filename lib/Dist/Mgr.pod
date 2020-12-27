@@ -1,6 +1,6 @@
 =head1 NAME
 
-Dist::Mgr - My distribution development cycle toolkit
+Dist::Mgr - Distribution development cycle toolkit
 
 =for html
 <a href="https://github.com/stevieb9/dist-mgr/actions"><img src="https://github.com/stevieb9/dist-mgr/workflows/CI/badge.svg"/></a>
@@ -8,10 +8,12 @@ Dist::Mgr - My distribution development cycle toolkit
 
 =head1 DESCRIPTION
 
-This distribution is for my personal development cycle. At this time, is relies
-on using L<Module::Starter> for initial distribution creation, Github for
-repository and bugtracker, and the L<ExtUtils::MakeMaker> build system, which
-utilizes C<Makefile.PL> files.
+This distribution is essentially a bunch of tools that revolve around a base
+distribution created with C<module-starter>.
+
+At this time, it relies on using L<Module::Starter> for initial distribution
+creation, Github for repository and bugtracker, and the L<ExtUtils::MakeMaker>
+build system, which utilizes C<Makefile.PL> files.
 
 =head1 SYNOPSIS
 
@@ -110,7 +112,7 @@ I<Returns:> The contents that were added into the file.
 
 Prepares the C<Changes> file for a new development cycle after a release.
 
-I<Use>: After L<changes_date> and the previous release has been published.
+I<Use>: After L</changes_date> and the release has been published.
 
 I<Parameters>:
 
@@ -128,7 +130,7 @@ the one in the current working directory.
 
 Replaces the C<UNREL> tag with today's date, in preparation of a release.
 
-I<Use>: As part of the release cycle.
+I<Use>: As part of the release cycle, before release and L</changes_bump>.
 
 I<Parameters>:
 
@@ -141,7 +143,7 @@ we operate on the one in the current working directory.
 
 Inserts various CI and coverage badges into module files.
 
-I<Use>: After <L/init>, or any time.
+I<Use>: After L</init>, or any time.
 
 I<Parameters>:
 
@@ -230,6 +232,8 @@ I<Returns>: An array of the file's contents.
 Initializes a new distribution using L<Module::Starter>. The new directory will
 be placed into the current working directory (C<.>).
 
+I<Use>: To create a brand new distribution skeleton.
+
 I<Parameters>:
 
     module  => "Test::Module"
@@ -270,7 +274,7 @@ After an L</init>, this method will scoop up all of the files and directories
 from within the newly created temp module directory into the current working
 dir, then remove the temp module directory.
 
-I<Use>: Immediately after <L/init>.
+I<Use>: Immediately after L</init>.
 
 I<Parameters>:
 
@@ -286,14 +290,14 @@ I<Returns>: C<0> upon success.
 Removes unwanted file system entries. We always operate from the perspective of
 the current working directory (C<.>).
 
-I<Use>: Immediately after <L/init>.
+I<Use>: Immediately after L</init> and L</move_distribution_files>.
 
 =head2 version_bump
 
 Finds and updates the version number of a Perl module file, or all Perl
 module files in a directory structure.
 
-I<Use>: As part of the release cycle.
+I<Use>: After publishing a release.
 
 I<Parameters>:
 
