@@ -12,7 +12,7 @@ BEGIN {
 
     # Too low a version on Windows
     {
-        my $win_ver_ok = version->parse('5.12.0') < version->parse($^V);
+        my $win_ver_ok = version->parse('5.16 < version->parse($^V);
 
         if ($^O =~ /win32/i && ! $win_ver_ok) {
             plan skip_all => "Windows must have minimum perl version 5.12 for these tests"
