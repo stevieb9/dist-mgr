@@ -209,7 +209,12 @@ sub git_release {
         }
             until ($interrupt || defined $key && $key eq "\n");
 
-        print "Interrupted: $interrupt\n";
+        if ($interrupt) {
+            print "\nTests pass, continuing with release\n";
+        }
+        else {
+            print "\nTests failed, halting progress\n";
+        }
 
     }
 }
