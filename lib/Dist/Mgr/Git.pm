@@ -22,8 +22,9 @@ use Tie::File;
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
-    git_commit
-    git_push
+    _git_commit
+    _git_push
+    _git_release
 );
 our %EXPORT_TAGS = (
     all     => [@EXPORT_OK],
@@ -31,7 +32,9 @@ our %EXPORT_TAGS = (
 
 our $VERSION = '1.00';
 
-sub git_commit {
+my $spinner_count;
+
+sub _git_commit {
     my ($version) = @_;
 
     croak("git_commit() requires a version sent in") if ! defined $version;
@@ -59,7 +62,7 @@ sub git_commit {
 
     return $exit;
 }
-sub git_push {
+sub _git_push {
     print "\nPushing release candidate to Github...\n";
 
     my $exit;
@@ -74,6 +77,58 @@ sub git_push {
     }
 
     return $exit;
+}
+sub _git_release {
+    my ($version, $wait_for_ci) = @_;
+
+    croak("git_release() requires a version sent in") if !defined $version;
+
+    $wait_for_ci //= 1;
+
+    _git_commit($version);
+    _git_push();
+
+    if ($wait_for_ci) {
+        `clear`;
+
+        print "\n\nWaiting for CI tests to complete.\n\n";
+        print "Hit ENTER on failure, and CTRL-C to continue on...\n\n";
+
+        local $| = 1;
+
+        my $interrupt = 0;
+        $SIG{INT} = sub {$interrupt = 1;};
+
+        my $key = '';
+
+        do {
+            _wait_spinner("Waiting: ");
+            $key = ReadKey(-1);
+        }
+            until ($interrupt || defined $key && $key eq "\n");
+
+        if ($interrupt) {
+            print "\nTests pass, continuing with release\n";
+            return 0;
+        }
+        else {
+            print "\nTests failed, halting progress\n";
+            return -1;
+        }
+    }
+}
+sub _wait_spinner {
+    my ($msg) = @_;
+
+    croak("_wait_spinner() needs a message sent in") if ! $msg;
+
+    $spinner_count //= 0;
+    my $num = 20 - $spinner_count;
+    my $spinner = '.' x $spinner_count . ' ' x $num;
+    $spinner_count++;
+    $spinner_count = 0 if $spinner_count == 20;
+    print STDERR "$msg: $spinner\r";
+    select(undef, undef, undef, 0.1);
 }
 sub _validate_git {
     my $sep = $^O =~ /win32/i ? ';' : ':';

@@ -182,44 +182,7 @@ sub git_ignore {
     return @content;
 }
 sub git_release {
-    # uncoverable subroutine
-    my ($version, $wait_for_ci) = @_;
-
-    croak("git_release() requires a version sent in") if ! defined $version;
-
-    $wait_for_ci //= 1;
-
-    _git_commit($version);
-    _git_push();
-
-    if ($wait_for_ci) {
-        `clear`;
-
-        print "\n\nWaiting for CI tests to complete.\n\n";
-        print "Hit ENTER on failure, and CTRL-C to continue on...\n\n";
-
-        local $|=1;
-
-        my $interrupt = 0;
-        $SIG{INT} = sub {$interrupt = 1;};
-
-        my $key = '';
-
-        do {
-            _wait_spinner("Waiting: ");
-            $key = ReadKey(-1);
-        }
-            until ($interrupt || defined $key && $key eq "\n");
-
-        if ($interrupt) {
-            print "\nTests pass, continuing with release\n";
-            return 0;
-        }
-        else {
-            print "\nTests failed, halting progress\n";
-            return -1;
-        }
-    }
+    _git_release(@_); #uncoverable statement
 }
 sub init {
     my (%args) = @_;
@@ -468,11 +431,11 @@ sub _default_distribution_file_count {
 
 # Git related
 
-sub _git_commit {
-    git_commit(@_);
+sub git_commit {
+    _git_commit(@_);
 }
-sub _git_push {
-    git_push(@_);
+sub git_push {
+    _git_push(@_);
 }
 sub _git_ignore_write_file {
     # Writes out the .gitignore file
@@ -768,24 +731,9 @@ sub _validate_version {
 
 # Miscellaneous
 
-my $spinner_count;
-
 sub _export_private {
     push @EXPORT_OK, @EXPORT_PRIVATE;
     return \@EXPORT_OK;
-}
-sub _wait_spinner {
-    my ($msg) = @_;
-
-    croak("_wait_spinner() needs a message sent in") if ! $msg;
-
-    $spinner_count //= 0;
-    my $num = 20 - $spinner_count;
-    my $spinner = '.' x $spinner_count . ' ' x $num;
-    $spinner_count++;
-    $spinner_count = 0 if $spinner_count == 20;
-    print STDERR "$msg: $spinner\r";
-    select(undef, undef, undef, 0.1);
 }
 sub __placeholder {}
 

@@ -43,6 +43,7 @@ Revision history for Dist-Mgr
     - Added git_release(), _git_commit(), _git_push(), _validate_git()
     - Added export tag 'private', exports certain private functions
     - Added tests for git functions
+    - Moved all Git functionality to Git.pm
 
 0.04    2020-12-23
     - Last test CPAN release

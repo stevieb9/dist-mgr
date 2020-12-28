@@ -66,7 +66,7 @@ my $git_ok = _validate_git();
     is eval { git_release(); 1 }, undef, "git_release() requires a version ok";
     like $@, qr/requires a version/, "...and error is sane";
 
-    git_release(0.01);
+    git_release(0.01, 0); # 0 == don't wait for CI tests to run
 }
 
 chdir $cwd or die $!;
