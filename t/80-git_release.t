@@ -14,22 +14,25 @@ use version;
 use lib 't/lib';
 use Helper qw(:all);
 
-if (! $ENV{RELEASE_TESTING} && ! $ENV{DEV_TEST}) {
-    plan skip_all => "RELEASE_TESTING or DEV_TEST env var not set";
+# DIST_MGR_REPO_DIR eg. /home/spek/repos
+
+if (! $ENV{DIST_MGR_GIT_TEST} || ! $ENV{DIST_MGR_REPO_DIR}) {
+    plan skip_all => "DIST_MGR_GIT_TEST and DIST_MGR_REPO_DIR env vars must be set";
 }
 
 my $h = Hook::Output::Tiny->new;
 
-my $init_dir = 't/data/work/init';
+my $repos = $ENV{DIST_MGR_REPO_DIR};
+my $repo  = 'test-push';
+my $repo_dir = "$repos/$repo";
 
 my $cwd = getcwd();
 like $cwd, qr/dist-mgr$/, "in root dir ok";
 die "not in the root dir" if $cwd !~ /dist-mgr$/;
 
-mkdir_init();
-chdir $init_dir or die "Can't change into 'init' dir: $!";
-like getcwd(), qr|$init_dir$|, "in temp dir ok";
-croak "not in the 'init' dir!" if getcwd() !~ m|$init_dir$|;
+chdir $repos or die "Can't change into 'repos' dir $repos: $!";
+is getcwd(), $repos, "in repos dir ok";
+croak "not in the 'repos' dir!" if getcwd() ne $repos;
 
 my $git_ok = _validate_git();
 
@@ -54,6 +57,10 @@ my $git_ok = _validate_git();
 
 # git_release
 {
+    chdir $repo_dir or die $!;
+    is getcwd(), $repo_dir, "in test-push repo dir ok";
+    croak "not in the test-push repo dir!" if getcwd() ne $repo_dir;
+
     is eval { git_release(); 1 }, undef, "git_release() requires a version ok";
     like $@, qr/requires a version/, "...and error is sane";
 
