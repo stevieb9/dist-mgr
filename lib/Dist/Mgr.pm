@@ -9,6 +9,7 @@ use Cwd qw(getcwd);
 use Data::Dumper;
 use Digest::SHA;
 use Dist::Mgr::FileData qw(:all);
+use Dist::Mgr::Git qw(:all);
 use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
@@ -181,6 +182,7 @@ sub git_ignore {
     return @content;
 }
 sub git_release {
+    # uncoverable subroutine
     my ($version, $wait_for_ci) = @_;
 
     croak("git_release() requires a version sent in") if ! defined $version;
@@ -467,48 +469,10 @@ sub _default_distribution_file_count {
 # Git related
 
 sub _git_commit {
-    my ($version) = @_;
-
-    croak("_git_commit() requires a version sent in") if ! defined $version;
-
-    print "\nCommitting release candidate...\n";
-
-    my $exit;
-
-    if ( _validate_git()) {
-        $exit = system("git commit -am 'Release $version candidate'");
-
-        if ($exit != 0) {
-            if ($exit == 256) {
-                print "\nNothing to commit, proceeding...\n";
-            }
-            else {
-                croak("Git commit failed... needs intervention...") if $exit != 0;
-            }
-        }
-    }
-    else {
-        warn "'git' not installed, can't commit\n";
-        $exit = -1;
-    }
-
-    return $exit;
+    git_commit(@_);
 }
 sub _git_push {
-    print "\nPushing release candidate to Github...\n";
-
-    my $exit;
-
-    if (_validate_git()) {
-        $exit = system("git", "push");
-        croak("Git push failed... needs intervention...") if $exit != 0;
-    }
-    else {
-        warn "'git' not installed, can't commit\n";
-        $exit = -1;
-    }
-
-    return $exit;
+    git_push(@_);
 }
 sub _git_ignore_write_file {
     # Writes out the .gitignore file
