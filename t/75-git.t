@@ -3,22 +3,26 @@ use strict;
 
 use Hook::Output::Tiny;
 use Mock::Sub;
-use Test::More;
 use Carp;
 use Cwd qw(getcwd);
 use Data::Dumper;
 use Dist::Mgr qw(:private);
 use File::Touch;
+use Test::More;
 use version;
+
+
+
+BEGIN {
+    # DIST_MGR_REPO_DIR eg. /home/spek/repos
+
+    if (!$ENV{DIST_MGR_GIT_TEST} || !$ENV{DIST_MGR_REPO_DIR}) {
+        plan skip_all => "DIST_MGR_GIT_TEST and DIST_MGR_REPO_DIR env vars must be set";
+    }
+}
 
 use lib 't/lib';
 use Helper qw(:all);
-
-# DIST_MGR_REPO_DIR eg. /home/spek/repos
-
-if (! $ENV{DIST_MGR_GIT_TEST} || ! $ENV{DIST_MGR_REPO_DIR}) {
-    plan skip_all => "DIST_MGR_GIT_TEST and DIST_MGR_REPO_DIR env vars must be set";
-}
 
 my $h = Hook::Output::Tiny->new;
 
