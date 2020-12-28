@@ -253,6 +253,20 @@ I<Mandatory, String>: The email address of the author.
 I<Optional, String>: The license to apply to the new distribution. Defaults to
 C<artistic2>. See L<Module::Starter> for valid entries.
 
+=head2 make_test
+
+Using C<system()>, perform a C<%^X Makefile.PL> and C<make test>.
+
+I<Use>: After L</changes_date> and before all other release cycle functions.
+
+B<Note>: Do not call this function from within the test suite, or else it'll
+spin off into an infinite loop.
+
+B<Note>: Always check the return value of this function before proceeding with
+the rest of the release cycle. Zero C<0> is success, everything else is fail.
+
+I<Returns>: C<0> on success. Anything other than C<0> is a failure.
+
 =head2 manifest_skip
 
 Generates a C<MANIFEST.SKIP> file.

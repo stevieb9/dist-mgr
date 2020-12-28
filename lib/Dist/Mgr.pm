@@ -13,8 +13,10 @@ use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
 use File::Find::Rule;
+use Hook::Output::Tiny;
 use Module::Starter;
 use PPI;
+use Term::ReadKey;
 use Tie::File;
 
 use Exporter qw(import);
@@ -27,15 +29,25 @@ our @EXPORT_OK = qw(
     changes_date
     ci_badges
     ci_github
-    version_info
     git_ignore
+    git_release
     init
+    make_test
     manifest_skip
     move_distribution_files
     remove_unwanted_files
     version_bump
+    version_info
 );
-our %EXPORT_TAGS = (all => \@EXPORT_OK);
+our @EXPORT_PRIVATE = qw(
+    _git_commit
+    _git_push
+    _validate_git
+);
+our %EXPORT_TAGS = (
+    all     => [@EXPORT_OK],
+    private => _export_private(),
+);
 
 our $VERSION = '1.00';
 
@@ -47,6 +59,7 @@ use constant {
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
+    SPINNER_TOTAL       => 20,
 };
 
 # Public
@@ -167,6 +180,39 @@ sub git_ignore {
 
     return @content;
 }
+sub git_release {
+    my ($version, $wait_for_ci) = @_;
+
+    croak("git_release() requires a version sent in") if ! defined $version;
+
+    $wait_for_ci //= 1;
+
+    _git_commit($version);
+    _git_push();
+
+    if ($wait_for_ci) {
+        `clear`;
+
+        print "\n\nWaiting for CI tests to complete.\n\n";
+        print "Hit ENTER on failure, and CTRL-C to continue on...\n\n";
+
+        local $|=1;
+
+        my $interrupt = 0;
+        $SIG{INT} = sub {$interrupt = 1;};
+
+        my $key = '';
+
+        do {
+            _wait_spinner("Waiting: ");
+            $key = ReadKey(-1);
+        }
+            until ($interrupt || defined $key && $key eq "\n");
+
+        print "Interrupted: $interrupt\n";
+
+    }
+}
 sub init {
     my (%args) = @_;
 
@@ -256,6 +302,9 @@ sub remove_unwanted_files {
     }
 
     return 0;
+}
+sub make_test {
+    return system("$^X Makefile.PL && make test");
 }
 sub version_bump {
     my ($version, $fs_entry) = @_;
@@ -411,6 +460,50 @@ sub _default_distribution_file_count {
 
 # Git related
 
+sub _git_commit {
+    my ($version) = @_;
+
+    croak("_git_commit() requires a version sent in") if ! defined $version;
+
+    print "\nCommitting release candidate...\n";
+
+    my $exit;
+
+    if ( _validate_git()) {
+        $exit = system("git commit -am 'Release $version candidate'");
+
+        if ($exit != 0) {
+            if ($exit == 256) {
+                print "\nNothing to commit, proceeding...\n";
+            }
+            else {
+                croak("Git commit failed... needs intervention...") if $exit != 0;
+            }
+        }
+    }
+    else {
+        warn "'git' not installed, can't commit\n";
+        $exit = -1;
+    }
+
+    return $exit;
+}
+sub _git_push {
+    print "\nPushing release candidate to Github...\n";
+
+    my $exit;
+
+    if (_validate_git()) {
+        $exit = system("git", "push");
+        croak("Git push failed... needs intervention...") if $exit != 0;
+    }
+    else {
+        warn "'git' not installed, can't commit\n";
+        $exit = -1;
+    }
+
+    return $exit;
+}
 sub _git_ignore_write_file {
     # Writes out the .gitignore file
 
@@ -675,6 +768,10 @@ sub _sha1sum {
 
     return $sha1->hexdigest;
 }
+sub _validate_git {
+    my $sep = $^O =~ /win32/i ? ';' : ':';
+    return grep {-x "$_/git" } split /$sep/, $ENV{PATH};
+}
 sub _validate_fs_entry {
     # Validates a file system entry as valid
 
@@ -699,6 +796,27 @@ sub _validate_version {
     }
 }
 
+# Miscellaneous
+
+my $spinner_count;
+
+sub _export_private {
+    push @EXPORT_OK, @EXPORT_PRIVATE;
+    return \@EXPORT_OK;
+}
+sub _wait_spinner {
+    my ($msg) = @_;
+
+    croak("_wait_spinner() needs a message sent in") if ! $msg;
+
+    $spinner_count //= 0;
+    my $num = 20 - $spinner_count;
+    my $spinner = '.' x $spinner_count . ' ' x $num;
+    $spinner_count++;
+    $spinner_count = 0 if $spinner_count == 20;
+    print STDERR "$msg: $spinner\r";
+    select(undef, undef, undef, 0.1);
+}
 sub __placeholder {}
 
 1;

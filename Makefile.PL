@@ -28,6 +28,7 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => '0',
     },
     BUILD_REQUIRES => {
+        'File::Touch'        => 0,
         'Hook::Output::Tiny' => '1.00',
         'Mock::Sub'          => 0,
         'Test::More'         => 0,
