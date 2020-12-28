@@ -16,7 +16,7 @@ use Helper qw(:all);
 
 # DIST_MGR_REPO_DIR eg. /home/spek/repos
 
-if (! $ENV{DIST_MGR_GIT_TEST} || ! $ENV{DIST_MGR_REPO_DIR}) {
+unless (! $ENV{DIST_MGR_GIT_TEST} && ! $ENV{DIST_MGR_REPO_DIR}) {
     plan skip_all => "DIST_MGR_GIT_TEST and DIST_MGR_REPO_DIR env vars must be set";
 }
 
