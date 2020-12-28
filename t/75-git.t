@@ -11,8 +11,6 @@ use File::Touch;
 use Test::More;
 use version;
 
-
-
 BEGIN {
     # DIST_MGR_REPO_DIR eg. /home/spek/repos
 

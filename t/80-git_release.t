@@ -11,7 +11,6 @@ use Dist::Mgr qw(:private);
 use File::Touch;
 use version;
 
-
 BEGIN {
     # DIST_MGR_REPO_DIR eg. /home/spek/repos
 

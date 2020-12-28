@@ -211,11 +211,12 @@ sub git_release {
 
         if ($interrupt) {
             print "\nTests pass, continuing with release\n";
+            return 0;
         }
         else {
             print "\nTests failed, halting progress\n";
+            return -1;
         }
-
     }
 }
 sub init {

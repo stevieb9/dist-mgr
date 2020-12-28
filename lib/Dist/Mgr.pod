@@ -227,6 +227,31 @@ specified, we'll create it in the current directory, C<.>.
 
 I<Returns>: An array of the file's contents.
 
+=head2 git_release
+
+Commits and pushes the repository, and executes the CI test pipeline (if
+available).
+
+I<Use>: After L</make_test>.
+
+I<Parameters>:
+
+    $version
+
+I<Mandatory, String>: The release version of the distribution.
+
+    $wait_for_ci
+
+I<Optional, Bool>: Whether to wait for keyboard interaction while CI testing
+runs. If set, we'll wait for you to press either C<CTRL-C> to signifiy tests
+were successful and we should continue with the release cycle, or C<ENTER> to
+signify that we should stop and wait for you to fix any test errors before
+running again.
+
+I<Default>: C<1>, Enabled.
+
+I<Returns>: C<0> on test success (CTRL-C), C<1> on test failure (ENTER).
+
 =head2 init
 
 Initializes a new distribution using L<Module::Starter>. The new directory will
