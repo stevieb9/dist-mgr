@@ -37,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cpanm -n Devel::Cover::Report::Coveralls
-          cover -test -report -ignore Git.pm$ Coveralls
+          cover -ignore Git.pm$ -test -report Coveralls
   finish:
     needs: test
     runs-on: ubuntu-latest
