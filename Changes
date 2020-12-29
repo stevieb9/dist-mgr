@@ -8,7 +8,7 @@ Revision history for Dist-Mgr
     - Commented out package statement in test module template so it doesn't
       get indexed on the CPAN (fixes #7)
     - Renamed all instances of Acme::STEVEB and Acme-STEVEB with
-      Test::Module and Test-Module
+      Acme-STEVEB and Acme-STEVEB
     - We now send in all of the proper variables to the module template
       (fixes #11)
     - Renamed _makefile_load() and _module_load() to _makefile_tie() and

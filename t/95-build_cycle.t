@@ -15,12 +15,12 @@ use Helper qw(:all);
 
 my $work = 't/data/work';
 
-my $mods = [qw(Test::Module)];
+my $mods = [qw(Acme::STEVEB)];
 my $cwd = getcwd();
 
 my %module_args = (
-    author  => 'Test Author',
-    email   => 'test@example.com',
+    author  => 'Steve Bertrand',
+    email   => 'steveb@cpan.org',
     modules => $mods,
     license => 'artistic2',
     builder => 'ExtUtils::MakeMaker',
@@ -43,13 +43,13 @@ remove_init();
 
     my @stderr = $h->stderr;
     is scalar @stderr, 11, "Module::Starter has proper print output";
-    is -d 'Test-Module', 1, "Test-Module directory created ok";
+    is -d 'Acme-STEVEB', 1, "Acme-STEVEB directory created ok";
 
     # move_distribution_files()
 
     my $r = move_distribution_files($mods->[0]);
     is $r, 0, "proper return from move_distribution_files()";
-    is -e 'Test-Module', undef, "distribution dir was removed ok";
+    is -e 'Acme-STEVEB', undef, "distribution dir was removed ok";
     like getcwd(), qr/init$/, "we're in the init dir ok";
     file_count(16);
 
@@ -57,14 +57,14 @@ remove_init();
 
     remove_unwanted_files();
     file_count(12);
-    check_file('lib/Test/Module.pm', qr/Test Author/, "our custom module template is in place ok");
+    check_file('lib/Acme/STEVEB.pm', qr/Steve Bertrand/, "our custom module template is in place ok");
 
     # changes()
 
     file_count(12);
     changes($mods->[0]);
     check_file('Changes', qr/Dist::Mgr/, "our custom Changes is in place ok");
-    is sha1sum('Changes'), '5e94218da86f2e727ab8c332dec4af058d482304', "updated Changes has proper md5 ok";
+    is sha1sum('Changes'), '29bd43ee41fc555186bb2a736c86af8241098f21', "updated Changes has proper md5 ok";
 
     # manifest_skip()
 
@@ -92,20 +92,20 @@ remove_init();
 
     # ci_badges()
 
-    ci_badges('stevieb9', 'test-module', 'lib/Test/Module.pm');
-    check_file('lib/Test/Module.pm', qr/=for html/, "ci_badges() has html for loop ok");
-    check_file('lib/Test/Module.pm', qr/coveralls/, "ci_badges() dropped coveralls ok");
-    check_file('lib/Test/Module.pm', qr/workflows/, "ci_badges() dropped github actions ok");
+    ci_badges('stevieb9', 'acme-steveb', 'lib/Acme/STEVEB.pm');
+    check_file('lib/Acme/STEVEB.pm', qr/=for html/, "ci_badges() has html for loop ok");
+    check_file('lib/Acme/STEVEB.pm', qr/coveralls/, "ci_badges() dropped coveralls ok");
+    check_file('lib/Acme/STEVEB.pm', qr/workflows/, "ci_badges() dropped github actions ok");
 
     # add_bugtracker()
 
-    add_bugtracker('stevieb9', 'test-module');
+    add_bugtracker('stevieb9', 'acme-steveb');
     check_file('Makefile.PL', qr/META_MERGE/, "bugtrack META_MERGE added ok");
     check_file('Makefile.PL', qr/bugtracker/, "bugtracker added ok");
 
     # add_repository()
 
-    add_repository('stevieb9', 'test-module');
+    add_repository('stevieb9', 'acme-steveb');
     check_file('Makefile.PL', qr/META_MERGE/, "repo META_MERGE added ok");
     check_file('Makefile.PL', qr/repository/, "repository added ok");
 
@@ -116,7 +116,7 @@ remove_init();
 
     # version_bump()
 
-    version_bump('9.66', 'lib/Test/Module.pm');
+    version_bump('9.66', 'lib/Acme/STEVEB.pm');
     my ($new_ver) = values %{ (version_info('lib/'))[0] };
     is $new_ver, '9.66', "new version is 9.66 ok";
     is(
@@ -156,6 +156,13 @@ remove_init();
             close $nfh;
 
             for (0 .. $#tf) {
+                if ($nf eq 'lib/Acme/STEVEB.pm') {
+                    if ($nf[$_] =~ /\$VERSION/) {
+                        # VERSION
+                        like $nf[$_], qr/\$VERSION = '9.66'/, "Changes line 2 contains date ok";
+                        next;
+                    }
+                }
                 is $nf[$_], $tf[$_], "$nf file matches the template $tf ok";
             }
             $file_count++;

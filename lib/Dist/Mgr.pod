@@ -98,7 +98,7 @@ I<Parameters>:
 
     $module
 
-I<Mandatory, String>: The name of the module (eg. C<Test::Module>).
+I<Mandatory, String>: The name of the module (eg. C<Acme-STEVEB>).
 
     $file
 
@@ -216,6 +216,31 @@ I<Returns>: Hash reference:
         't/data/orig/No.pm'     => undef,   # No $VERSION defined
     };
 
+=head2 git_add
+
+Adds all files in the current working directory to the repository.
+
+B<Note>: Calls C<Dist::Mgr::Git::_git_add()> internally.
+
+I<Use>: Any time.
+
+I<Returns>: Exit code from the C<system> call.
+
+=head2 git_ignore
+
+Generates a C<.gitignore> file.
+
+I<Use>: Any time.
+
+I<Parameters>:
+
+    $directory
+
+I<Optional, String>: The directory where we'll create the file. If not
+specified, we'll create it in the current directory, C<.>.
+
+I<Returns>: An array of the file's contents.
+
 =head2 git_commit
 
 Commits all changes to the repository.
@@ -237,26 +262,21 @@ I<Returns>: Exit code from the C<system> call.
 
 Pushes the repository to Github.
 
-B<Note>: Calls C<Dist::Mgr::Git::_git_commit()> internally.
+B<Note>: Calls C<Dist::Mgr::Git::_git_push()> internally.
 
 I<Use>: Any time.
 
 I<Returns>: Exit code from the C<system> call.
 
-=head2 git_ignore
+=head2 git_pull
 
-Generates a C<.gitignore> file.
+Does a C<git pull> to fetch any update from the upstream.
+
+B<Note>: Calls C<Dist::Mgr::Git::_git_pull()> internally.
 
 I<Use>: Any time.
 
-I<Parameters>:
-
-    $directory
-
-I<Optional, String>: The directory where we'll create the file. If not
-specified, we'll create it in the current directory, C<.>.
-
-I<Returns>: An array of the file's contents.
+I<Returns>: Exit code from the C<system> call.
 
 =head2 git_release
 
@@ -283,6 +303,22 @@ I<Default>: C<1>, Enabled.
 
 I<Returns>: C<0> on test success (CTRL-C), C<1> on test failure (ENTER).
 
+=head2 git_tag
+
+Tags the current state of the repository.
+
+I<Parameters>:
+
+    $tag
+
+I<Mandatory, String>: The tag for the commit.
+
+B<Note>: Calls C<Dist::Mgr::Git::_git_tag()> internally.
+
+I<Use>: Any time.
+
+I<Returns>: Exit code from the C<system> call.
+
 =head2 init
 
 Initializes a new distribution using L<Module::Starter>. The new directory will
@@ -292,7 +328,7 @@ I<Use>: To create a brand new distribution skeleton.
 
 I<Parameters>:
 
-    module  => "Test::Module"
+    module  => "Acme-STEVEB"
 
 I<Mandatory, String>: The name of the main module of the distribution.
 
@@ -308,6 +344,15 @@ I<Mandatory, String>: The email address of the author.
 
 I<Optional, String>: The license to apply to the new distribution. Defaults to
 C<artistic2>. See L<Module::Starter> for valid entries.
+
+=head2 make_dist
+
+Using C<system()>, perform a C<make dist> that creates a CPAN-ready distribution
+tarball file in the current working directory.
+
+I<Use>: After all other pre-release functions have been called.
+
+I<Returns>: C<0> on success. Anything other than C<0> is a failure.
 
 =head2 make_test
 
@@ -351,7 +396,7 @@ I<Parameters>:
     $module
 
 I<Mandatory, String>: The name of the module that was created with L</init>, eg.
-C<Test::Module>.
+C<Acme-STEVEB>.
 
 I<Returns>: C<0> upon success.
 

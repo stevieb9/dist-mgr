@@ -221,7 +221,7 @@ sub module_args {
     my %module_args = (
         author  => 'Test Author',
         email   => 'test@example.com',
-        modules => [qw(Test::Module)],
+        modules => [qw(Acme-STEVEB)],
         license => 'artistic2',
         builder => 'ExtUtils::MakeMaker',
     );

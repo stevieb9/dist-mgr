@@ -14,10 +14,10 @@ use Helper qw(:all);
 my $work = 't/data/work';
 my $orig = 't/data/orig';
 
-my $mods = [qw(Test::Module)];
+my $mods = [qw(Acme::STEVEB)];
 my $cwd = getcwd();
 
-my $new_mod_file = "lib/Test/Module.pm";
+my $new_mod_file = "lib/Acme/STEVEB.pm";
 
 my %module_args = (
     author  => 'Steve Bertrand',
@@ -133,7 +133,7 @@ remove_init();
 
     is $e[0], 'Added to MANIFEST: Changes', "line 0 of stderr ok";
     is $e[1], 'Added to MANIFEST: ignore.txt', "line 1 of stderr ok";
-    is $e[2], 'Added to MANIFEST: lib/Test/Module.pm', "line 2 of stderr ok";
+    is $e[2], 'Added to MANIFEST: lib/Acme/STEVEB.pm', "line 2 of stderr ok";
     is $e[3], 'Added to MANIFEST: Makefile.PL', "line 3 of stderr ok";
     is $e[4], 'Added to MANIFEST: MANIFEST', "line 4 of stderr ok";
     is $e[5], 'Added to MANIFEST: README', "line 5 of stderr ok";
@@ -146,8 +146,8 @@ remove_init();
 
     # check that the new module file is the same as our baseline template
 
-    chdir 'Test-Module' or die $!;
-    like getcwd(), qr/Test-Module$/, "in new module directory ok";
+    chdir 'Acme-STEVEB' or die $!;
+    like getcwd(), qr/Acme-STEVEB$/, "in new module directory ok";
 
     open my $orig_fh, '<', "$cwd/$orig/Module.tpl" or die $!;
     open my $new_fh, '<', $new_mod_file or die $!;
@@ -200,9 +200,9 @@ sub after {
     is -e "$work/init", undef, "'init' dir removed ok";
 }
 sub check {
-    is -d 'Test-Module', 1, "Test-Module directory created ok";
+    is -d 'Acme-STEVEB', 1, "Acme-STEVEB directory created ok";
 
-    chdir 'Test-Module' or die $!;
-    like getcwd(), qr/Test-Module/, "in Test-Module dir ok";
+    chdir 'Acme-STEVEB' or die $!;
+    like getcwd(), qr/Acme-STEVEB/, "in Acme-STEVEB dir ok";
 }
 

@@ -17,7 +17,7 @@ my $cwd = getcwd();
 like $cwd, qr/dist-mgr$/, "in root dir ok";
 die "not in the root dir" if $cwd !~ /dist-mgr$/;
 
-my $module_starter_changes_sha = 'a2da9f4316e1d8942a214038f2136363bb4940b6';
+my $module_starter_changes_sha = '97624d56464d7254ef5577e4a0c8a098d6c6d9e6';
 
 my $work = 't/data/work';
 my $orig_changes = 't/data/orig/Changes';
@@ -36,7 +36,7 @@ unlink_changes();
 
     file_compare("$work/Changes", $orig_changes);
 
-    changes('Test::Module', "$work/Changes");
+    changes('Acme-STEVEB', "$work/Changes");
 
     isnt
         sha1sum("$work/Changes"),

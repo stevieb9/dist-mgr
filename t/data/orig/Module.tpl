@@ -1,18 +1,18 @@
-#package Test::Module;
+#package Acme::STEVEB;
 
 use strict;
 use warnings;
 
 our $VERSION = '0.01';
 
-__placeholder {}
+sub __placeholder {}
 
 1;
 __END__
 
 =head1 NAME
 
-Test::Module - One line description
+Acme::STEVEB - One line description
 
 =head1 SYNOPSIS
 

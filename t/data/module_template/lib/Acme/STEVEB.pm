@@ -1,22 +1,22 @@
-package Test::Module;
+package Acme::STEVEB;
 
 use strict;
 use warnings;
 
-our $VERSION = '9.66';
+our $VERSION = '0.01';
 
-__placeholder {}
+sub __placeholder {}
 
 1;
 __END__
 
 =head1 NAME
 
-Test::Module - One line description
+Acme::STEVEB - One line description
 
 =for html
-<a href="https://github.com/stevieb9/test-module/actions"><img src="https://github.com/stevieb9/test-module/workflows/CI/badge.svg"/></a>
-<a href='https://coveralls.io/github/stevieb9/test-module?branch=master'><img src='https://coveralls.io/repos/stevieb9/test-module/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
+<a href="https://github.com/stevieb9/acme-steveb/actions"><img src="https://github.com/stevieb9/acme-steveb/workflows/CI/badge.svg"/></a>
+<a href='https://coveralls.io/github/stevieb9/acme-steveb?branch=master'><img src='https://coveralls.io/repos/stevieb9/acme-steveb/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
 
 
 =head1 SYNOPSIS
@@ -39,11 +39,11 @@ I<Returns>: C<0> upon success.
 
 =head1 AUTHOR
 
-Test Author, C<< <test at example.com> >>
+Steve Bertrand, C<< <steveb at cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2020 Test Author.
+Copyright 2020 Steve Bertrand.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a

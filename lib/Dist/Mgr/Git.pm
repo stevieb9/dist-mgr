@@ -22,9 +22,12 @@ use Tie::File;
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
+    _git_add
     _git_commit
     _git_push
+    _git_pull
     _git_release
+    _git_tag
 );
 our %EXPORT_TAGS = (
     all     => [@EXPORT_OK],
@@ -34,6 +37,22 @@ our $VERSION = '1.00';
 
 my $spinner_count;
 
+sub _git_add {
+    print "\nGit adding files...\n";
+
+    my $exit;
+
+    if (_validate_git()) {
+        $exit = system("git", "add", ".");
+        croak("Git add failed... needs intervention...") if $exit != 0;
+    }
+    else {
+        warn "'git' not installed, can't commit\n";
+        $exit = -1;
+    }
+
+    return $exit;
+}
 sub _git_commit {
     my ($version) = @_;
 
@@ -62,6 +81,22 @@ sub _git_commit {
 
     return $exit;
 }
+sub _git_pull {
+    print "\nPulling updates from repository...\n";
+
+    my $exit;
+
+    if (_validate_git()) {
+        $exit = system("git", "pull");
+        croak("Git pull failed... needs intervention...") if $exit != 0;
+    }
+    else {
+        warn "'git' not installed, can't commit\n";
+        $exit = -1;
+    }
+
+    return $exit;
+}
 sub _git_push {
     print "\nPushing release candidate to Github...\n";
 
@@ -69,6 +104,7 @@ sub _git_push {
 
     if (_validate_git()) {
         $exit = system("git", "push");
+        $exit = system("git", "push", "--tags");
         croak("Git push failed... needs intervention...") if $exit != 0;
     }
     else {
@@ -85,6 +121,7 @@ sub _git_release {
 
     $wait_for_ci //= 1;
 
+    _git_pull();
     _git_commit($version);
     _git_push();
 
@@ -117,6 +154,27 @@ sub _git_release {
         }
     }
 }
+sub _git_tag {
+    my ($version) = @_;
+
+    croak("git_tag() requires a version sent in") if ! defined $version;
+
+    print "\nCreating release tag v$version...\n";
+
+    my $exit;
+
+    if (_validate_git()) {
+        $exit = system("git", "tag", "v$version");
+
+       # croak("Git tag failed... needs intervention...") if $exit != 0;
+    }
+    else {
+        warn "'git' not installed, can't commit\n";
+        $exit = -1;
+    }
+
+    return $exit;
+}
 sub _wait_spinner {
     my ($msg) = @_;
 
@@ -138,20 +196,6 @@ sub __placeholder {}
 
 1;
 __END__
-
-=head1 AUTHOR
-
-Steve Bertrand, C<< <steveb at cpan.org> >>
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2020 Steve Bertrand.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
-
-L<http://www.perlfoundation.org/artistic_license_2_0>
 
 =head1 AUTHOR
 

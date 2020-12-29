@@ -164,7 +164,7 @@ sub _module_template_file {
         qq{},
         qq{our \$VERSION = '0.01';},
         qq{},
-        qq{__placeholder {}},
+        qq{sub __placeholder {}},
         qq{},
         qq{1;},
         qq{__END__},

@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-    NAME             => 'Test::Module',
-    AUTHOR           => q{Test Author <test@example.com>},
-    VERSION_FROM     => 'lib/Test/Module.pm',
-    ABSTRACT_FROM    => 'lib/Test/Module.pm',
+    NAME             => 'Acme::STEVEB',
+    AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
+    VERSION_FROM     => 'lib/Acme/STEVEB.pm',
+    ABSTRACT_FROM    => 'lib/Acme/STEVEB.pm',
     LICENSE          => 'artistic_2',
     MIN_PERL_VERSION => '5.006',
     META_MERGE => {
@@ -15,11 +15,11 @@ my %WriteMakefileArgs = (
         resources   => {
             repository => {
                 type => 'git',
-                url => 'https://github.com/stevieb9/test-module.git',
-                web => 'https://github.com/stevieb9/test-module',
+                url => 'https://github.com/stevieb9/acme-steveb.git',
+                web => 'https://github.com/stevieb9/acme-steveb',
             },
             bugtracker => {
-                web => 'https://github.com/stevieb9/test-module/issues',
+                web => 'https://github.com/stevieb9/acme-steveb/issues',
             },
         },
     },
@@ -34,7 +34,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Test-Module-*' },
+    clean => { FILES => 'Acme-STEVEB-*' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

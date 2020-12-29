@@ -30,9 +30,14 @@ our @EXPORT_OK = qw(
     changes_date
     ci_badges
     ci_github
+    git_add
+    git_pull
+    git_push
     git_ignore
     git_release
+    git_tag
     init
+    make_dist
     make_test
     manifest_skip
     move_distribution_files
@@ -43,6 +48,7 @@ our @EXPORT_OK = qw(
 our @EXPORT_PRIVATE = qw(
     _git_commit
     _git_push
+    _git_pull
     _validate_git
 );
 our %EXPORT_TAGS = (
@@ -56,7 +62,7 @@ use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
     GITHUB_CI_PATH      => '.github/workflows/',
     CHANGES_FILE        => 'Changes',
-    CHANGES_ORIG_SHA    => 'a2da9f4316e1d8942a214038f2136363bb4940b6', # Module::Starter version
+    CHANGES_ORIG_SHA    => '97624d56464d7254ef5577e4a0c8a098d6c6d9e6', # Module::Starter version
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
@@ -170,6 +176,12 @@ sub ci_github {
 
     return @contents;
 }
+sub cleanup {
+
+}
+sub git_add {
+    _git_add();
+}
 sub git_ignore {
     my ($dir) = @_;
 
@@ -182,7 +194,10 @@ sub git_ignore {
     return @content;
 }
 sub git_release {
-    _git_release(@_); #uncoverable statement
+    _git_release(@_);
+}
+sub git_tag {
+    _git_tag(@_);
 }
 sub init {
     my (%args) = @_;
@@ -273,6 +288,9 @@ sub remove_unwanted_files {
     }
 
     return 0;
+}
+sub make_dist {
+    return system('make', 'dist');
 }
 sub make_test {
     return system("$^X Makefile.PL && make test");
@@ -436,6 +454,9 @@ sub git_commit {
 }
 sub git_push {
     _git_push(@_);
+}
+sub git_pull {
+    _git_pull(@_);
 }
 sub _git_ignore_write_file {
     # Writes out the .gitignore file
@@ -652,7 +673,7 @@ sub _module_tie {
     # Ties a module file to an array
 
     my ($mod_file) = @_;
-    croak("Test::Module() needs a module file name sent in") if ! defined $mod_file;
+    croak("Acme-STEVEB() needs a module file name sent in") if ! defined $mod_file;
 
     my $tie = tie my @mf, 'Tie::File', $mod_file;
     return (\@mf, $tie);

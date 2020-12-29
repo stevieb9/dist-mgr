@@ -31,7 +31,7 @@ t/95-build_cycle.t
 t/96-release_cycle.t
 t/data/module_template/.github/workflows/github_ci_default.yml
 t/data/module_template/Changes
-t/data/module_template/lib/Test/Module.pm
+t/data/module_template/lib/Acme/STEVEB.pm
 t/data/module_template/Makefile.PL
 t/data/module_template/MANIFEST
 t/data/module_template/MANIFEST.SKIP
