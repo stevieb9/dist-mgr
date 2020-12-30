@@ -30,24 +30,10 @@ my %cpan_args = (
     dry_run     => 1,
 );
 
-# generate a distribution, and compare all files against our saved
-# distribution template
 {
-    before();
+    before ();
 
-    # version_info()
-
-    my ($orig_ver) = values %{ (version_info('lib/Acme/STEVEB.pm'))[0] };
-
-    # version_bump()
-
-    release_version($orig_ver);
-    my ($new_ver) = values %{ (version_info('lib/Acme/STEVEB.pm'))[0] };
-    is(
-        version->parse($new_ver) > version->parse($orig_ver),
-        1,
-        "$new_ver is greater than $orig_ver ok"
-    );
+    my $new_ver = update_version();
 
     # changes()
 
@@ -55,6 +41,12 @@ my %cpan_args = (
     check_file('Changes', qr/Acme-STEVEB/, "our custom Changes is in place ok");
 
     # changes_date()
+
+    changes_date('Changes');
+    check_file('Changes', qr/\d{4}-\d{2}-\d{2}/, "changes_date() ok");
+
+    changes_bump($new_ver, 'Changes');
+    check_file('Changes', qr/UNREL/, "changes_bump() ok");
 
     changes_date('Changes');
     check_file('Changes', qr/\d{4}-\d{2}-\d{2}/, "changes_date() ok");
@@ -79,11 +71,7 @@ my %cpan_args = (
 
     make_dist();
 
-    ##
-    ## upload here
-    ##
-
-    # Compare all files against the saved template
+    # Compare all files against the saved template (post release)
 
     is getcwd(), "$work/acme-steveb", "in the repo dir ok";
 
@@ -119,6 +107,10 @@ my %cpan_args = (
                             is $nf[$_] !~ /UNREL/, 1, "Changes line 2 has temp UNREL removed ok";
                             next;
                         }
+                        if ($nf[$_] =~ /^\s{4}-\s+$/) {
+                            like $nf[$_], qr/^\s{4}-\s+$/, "line with only a dash ok";
+                            next;
+                        }
                     }
                     if ($nf eq 'lib/Acme/STEVEB.pm') {
                         if ($nf[$_] =~ /\$VERSION/) {
@@ -137,12 +129,16 @@ my %cpan_args = (
         is scalar $file_count, $base_count, "file count matches number of files in template, plus the dist tarball";
     }
     else {
-        warn "SKIPPING FILE COMPARE CHECKS!";
+        warn "SKIPPING POST RELEASE FILE COMPARE CHECKS!";
     }
 
     my $dist_file = (glob('*Acme-STEVEB*'))[-1];
 
-    is cpan_upload($dist_file, \%cpan_args), 1, "cpan_upload() ok";
+    my $output = capture_merged {
+        cpan_upload($dist_file, %cpan_args);
+    };
+
+    like $output, qr/cowardly refusing/, "cpan_upload() ran ok in dry mode";
 
     # cleanup
 
@@ -152,13 +148,92 @@ my %cpan_args = (
         is -e $_, undef, "dist file $_ removed ok";
     }
 
+    # next release prep
+
+    my $post_release_ver = update_version();
+
+    # next release Changes
+
+    changes_bump($post_release_ver, 'Changes');
+    check_file('Changes', qr/UNREL/, "changes_bump() ok");
+
+    # next release lib
+
+    check_file('lib/Acme/STEVEB.pm', qr/$post_release_ver/, "lib ver bump ok");
+
+    # commit and push
+
+    git_commit($post_release_ver);
+    git_push();
+
+    # Compare all files against the saved template (post release)
+
+    is getcwd(), "$work/acme-steveb", "in the repo dir ok";
+
+    $template_dir = "$cwd/t/data/release_module_template/";
+
+    @template_files = File::Find::Rule->file()
+        ->name('*')
+        ->in($template_dir);
+
+    $file_count = 1; #FIXME: Change back to 0 after we clean up the dist tarball
+
+    if (1) {
+        for my $tf (@template_files) {
+            (my $nf = $tf) =~ s/$template_dir//;
+            # nf == new file
+            # tf == template file
+
+            if (-f $nf) {
+                open my $tfh, '<', $tf or die $!;
+                open my $nfh, '<', $nf or die $!;
+
+                my @tf = <$tfh>;
+                my @nf = <$nfh>;
+
+                close $tfh;
+                close $nfh;
+
+                for (0 .. $#tf) {
+                    if ($nf eq 'Changes') {
+                        if ($_ == 2) {
+                            # UNREL/Date line
+                            is $nf[$_] !~ qr/\d{4}-\d{2}-\d{2}/, 1, "Changes line 2 contains date ok";
+                            is $nf[$_] =~ /UNREL/, 1, "Changes line 2 has temp UNREL removed ok";
+                            next;
+                        }
+                        if ($nf[$_] =~ /^\s{4}-\s+$/) {
+                            like $nf[$_], qr/^\s{4}-\s+$/, "line with only a dash ok";
+                            next;
+                        }
+                    }
+                    if ($nf eq 'lib/Acme/STEVEB.pm') {
+                        if ($nf[$_] =~ /\$VERSION/) {
+                            # VERSION
+                            like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Changes line 2 contains date ok";
+                            next;
+                        }
+                    }
+                    is $nf[$_], $tf[$_], "$nf file matches the template $tf ok";
+                }
+                $file_count++;
+            }
+        }
+        my $base_count = scalar @template_files;
+        $base_count++; # dist tarball
+        is scalar $file_count, $base_count, "file count matches number of files in template, plus the dist tarball";
+    }
+    else {
+        warn "SKIPPING FILE NEXT CYCLE COMPARE CHECKS!";
+    }
+
     # done!
 
     after();
 }
 
 done_testing;
-system("rm", "-rf", "/home/spek/repos/acme-steveb");
+#system("rm", "-rf", "/home/spek/repos/acme-steveb");
 
 sub before {
     like $cwd, qr/dist-mgr/, "in proper directory ok";
@@ -203,6 +278,21 @@ sub check_file {
 }
 sub done {
     done_testing;
-    system("rm", "-rf", "/home/spek/repos/acme-steveb");
+#    system("rm", "-rf", "/home/spek/repos/acme-steveb");
     exit;
+}
+sub update_version {
+    # version_info()
+
+    my ($orig_ver) = values %{(version_info('lib/Acme/STEVEB.pm'))[0]};
+
+    release_version($orig_ver);
+    my ($new_ver) = values %{(version_info('lib/Acme/STEVEB.pm'))[0]};
+    is(
+        version->parse($new_ver) > version->parse($orig_ver),
+        1,
+        "$new_ver is greater than $orig_ver ok"
+    );
+
+    return $new_ver;
 }

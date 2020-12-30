@@ -202,10 +202,9 @@ I<Parameters>:
 
 I<Mandatory, String>: The name of the distribution's tarball file.
 
-    \%args
+    %args
 
-I<Optional, Hash Reference>: See L<CPAN::Uploader> for full details. A couple of
-notes:
+I<Optional, Hash>: See L<CPAN::Uploader> for full details. A couple of notes:
 
 =over
 
