@@ -8,6 +8,7 @@ use Cwd qw(getcwd);
 use Data::Dumper;
 use Dist::Mgr qw(:private);
 use File::Touch;
+use Hook::Output::Tiny;
 use Test::More;
 use version;
 
