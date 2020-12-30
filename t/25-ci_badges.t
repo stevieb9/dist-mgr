@@ -3,7 +3,6 @@ use strict;
 use Test::More;
 
 use Data::Dumper;
-use Hook::Output::Tiny;
 use Dist::Mgr qw(:all);
 
 use lib 't/lib';
@@ -13,8 +12,6 @@ my $d = 't/data/work';
 my $f = 't/data/orig/No.pm';
 
 my @valid = ("$d/One.pm", "$d/Two.pm", "$d/Three.pm");
-
-my $h = Hook::Output::Tiny->new;
 
 my $u = 'stevieb9';
 my $r = 'test-repo';

@@ -11,7 +11,6 @@ use version;
 
 use lib 't/lib';
 use Helper qw(:all);
-use Hook::Output::Tiny;
 
 my $cwd = getcwd();
 like $cwd, qr/dist-mgr$/, "in root dir ok";

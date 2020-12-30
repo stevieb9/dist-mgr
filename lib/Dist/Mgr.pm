@@ -15,7 +15,6 @@ use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
 use File::Find::Rule;
-use Hook::Output::Tiny;
 use Module::Starter;
 use PPI;
 use Term::ReadKey;

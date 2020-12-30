@@ -30,6 +30,7 @@ WriteMakefile(
     BUILD_REQUIRES => {
         'Capture::Tiny'      => 0,
         'File::Touch'        => 0,
+        'Hook::Output::Tiny' => 0,
         'Mock::Sub'          => 0,
         'Test::More'         => 0,
     },

@@ -1,10 +1,10 @@
 use warnings;
 use strict;
 
+use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
 use Test::More;
 use Data::Dumper;
-use Hook::Output::Tiny;
 use Module::Starter;
 use Dist::Mgr qw(:all);
 use Dist::Mgr::FileData qw(:all);
@@ -42,10 +42,9 @@ is -d 'unwanted', 1, "'unwanted' dir created ok";
 chdir 'unwanted' or die $!;
 like getcwd(), qr/$work\/unwanted$/, "in $work/unwanted directory ok";
 
-$h->hook('stderr');
-Module::Starter->create_distro(%module_args);
-$h->unhook('stderr');
-
+capture_merged {
+    Module::Starter->create_distro(%module_args);
+};
 is -d 'Acme-STEVEB', 1, "Acme-STEVEB directory created ok";
 
 chdir 'Acme-STEVEB' or die $!;
