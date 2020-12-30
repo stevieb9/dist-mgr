@@ -25,6 +25,7 @@ jobs:
         with:
           perl-version: ${{ matrix.perl }}
       - run: perl -V
+      - run: perl Makefile.PL
       - run: cpanm ExtUtils::PL2Bat
       - run: cpanm ExtUtils::MakeMaker
       - run: cpanm --installdeps .
