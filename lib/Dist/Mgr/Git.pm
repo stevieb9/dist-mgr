@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use version;
 
+use Capture::Tiny qw(:all);
 use Carp qw(croak cluck);
 use Cwd qw(getcwd);
 use Data::Dumper;
@@ -13,7 +14,6 @@ use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
 use File::Find::Rule;
-use Hook::Output::Tiny;
 use Module::Starter;
 use PPI;
 use Term::ReadKey;
@@ -37,81 +37,82 @@ our $VERSION = '1.00';
 
 my $spinner_count;
 
-sub _git_add {
-    print "\nGit adding files...\n";
+sub _exec {
+    my ($cmd, $verbose) = @_;
 
-    my $exit;
+    croak("_exec() requires cmd parameter sent in") if ! defined $cmd;
+
+    if ($verbose) {
+        `$cmd`;
+    }
+    else {
+        capture_merged {
+            `$cmd`;
+        };
+    }
+}
+sub _git_add {
+    my ($verbose) = @_;
 
     if (_validate_git()) {
-        $exit = system("git", "add", ".");
-        croak("Git add failed... needs intervention...") if $exit != 0;
+        _exec('git add', $verbose);
+        croak("Git add failed... needs intervention...") if $? != 0;
     }
     else {
         warn "'git' not installed, can't add\n";
-        $exit = -1;
     }
 
-    return $exit;
+    return $?;
 }
 sub _git_commit {
-    my ($version) = @_;
+    my ($version, $verbose) = @_;
 
     croak("git_commit() requires a version sent in") if ! defined $version;
 
-    print "\nCommitting release candidate...\n";
-
-    my $exit;
-
     if ( _validate_git()) {
-        $exit = system("git commit -am 'Release $version candidate'");
-        if ($exit != 0) {
-            if ($exit == 256) {
+        _exec("git commit -am 'Release $version candidate'", $verbose);
+
+        if ($? != 0) {
+            if ($? == 256) {
                 print "\nNothing to commit, proceeding...\n";
             }
             else {
-                croak("Git commit failed... needs intervention...") if $exit != 0;
+                croak("Git commit failed... needs intervention...") if $? != 0;
             }
         }
     }
     else {
         warn "'git' not installed, can't commit\n";
-        $exit = -1;
     }
 
-    return $exit;
+    return $?;
 }
 sub _git_pull {
-    print "\nPulling updates from repository...\n";
-
-    my $exit;
+    my ($version) = @_;
 
     if (_validate_git()) {
-        $exit = system("git", "pull");
-        croak("Git pull failed... needs intervention...") if $exit != 0;
+        `git pull`;
+        croak("Git pull failed... needs intervention...") if $? != 0;
     }
     else {
         warn "'git' not installed, can't commit\n";
-        $exit = -1;
     }
 
-    return $exit;
+    return $?;
 }
 sub _git_push {
-    print "\nPushing release candidate to Github...\n";
-
-    my $exit;
+    my ($verbose) = @_;
 
     if (_validate_git()) {
-        $exit = system("git", "push");
-        $exit = system("git", "push", "--tags");
-        croak("Git push failed... needs intervention...") if $exit != 0;
+        _exec('git push', $verbose);
+        _exec('git push --tags', $verbose);
+        croak("Git push failed... needs intervention...") if $? != 0;
     }
     else {
-        warn "'git' not installed, can't commit\n";
-        $exit = -1;
+        warn "'git' not installed, can't push\n";
     }
 
-    return $exit;
+    return $?;
 }
 sub _git_release {
     my ($version, $wait_for_ci) = @_;
@@ -119,10 +120,11 @@ sub _git_release {
     croak("git_release() requires a version sent in") if !defined $version;
 
     $wait_for_ci //= 1;
+    my $verbose = 0;
 
-    _git_pull();
-    _git_commit($version);
-    _git_push();
+    _git_pull(0);
+    _git_commit($version, $verbose);
+    _git_push($verbose);
 
     if ($wait_for_ci) {
         `clear`;
@@ -154,25 +156,21 @@ sub _git_release {
     }
 }
 sub _git_tag {
-    my ($version) = @_;
+    my ($version, $verbose) = @_;
 
     croak("git_tag() requires a version sent in") if ! defined $version;
 
-    print "\nCreating release tag v$version...\n";
-
-    my $exit;
-
     if (_validate_git()) {
-        $exit = system("git", "tag", "v$version");
+        _exec('git tag', $verbose);
+        croak("Git tag failed... needs intervention...") if $? != 0;
 
        # croak("Git tag failed... needs intervention...") if $exit != 0;
     }
     else {
         warn "'git' not installed, can't commit\n";
-        $exit = -1;
     }
 
-    return $exit;
+    return $?;
 }
 sub _wait_spinner {
     my ($msg) = @_;

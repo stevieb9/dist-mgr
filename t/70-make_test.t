@@ -8,6 +8,8 @@ use version;
 
 my ($m, $sub_system);
 
+plan skip_all => "TEST FILE DISABLED";
+
 BEGIN {
 
     # Too low a version on Windows

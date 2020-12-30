@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Hook::Output::Tiny;
+use Capture::Tiny qw(:all);
 use Mock::Sub;
 use Carp;
 use Cwd qw(getcwd);
@@ -49,11 +49,11 @@ my $git_ok = _validate_git();
 # clone our test repo
 {
     if (! -e 'test-push') {
-        $h->hook;
-        my $e = system('git', 'clone', 'https://stevieb9@github.com/stevieb9/test-push');
-        $h->unhook;
 
-        is $e, 0, "git cloned 'test-push' test repo ok";
+        capture_merged {
+            `git clone 'https://stevieb9\@github.com/stevieb9/test-push`;
+        }
+        is $?, 0, "git cloned 'test-push' test repo ok";
     }
 }
 
@@ -68,20 +68,23 @@ my $git_ok = _validate_git();
     print $fh $random;
     close $fh;
 
-    $h->hook;
-    my $e = _git_commit('0.01');
-    $h->unhook;
+    capture_merged {
+        git_commit('0.01');
+    };
 
-    is $e == 256 || $e == 0, 1, "_git_commit() exited with success status ok";
+    is defined $?, 1, "commit exit code defined ok";
+    is $? == 256 || $? == 0, 1, "git_commit() exited with success status ok";
 }
 
 # git push
 {
-    $h->hook;
-    my $e = _git_push();
-    $h->unhook;
 
-    is $e == 0, 1, "_git_push() exited with success status ok";
+    capture_merged {
+        git_push();
+    };
+
+    is defined $?, 1, "push exit code defined ok";
+    is $? == 0, 1, "git_push() exited with success status ok";
 }
 
 chdir $cwd or die $!;

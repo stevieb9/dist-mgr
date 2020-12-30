@@ -1,12 +1,12 @@
 use warnings;
 use strict;
 
+use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
 use Data::Dumper;
 use File::Find::Rule;
 use File::Find;
 use Test::More;
-use Hook::Output::Tiny;
 use Dist::Mgr qw(:all);
 use version;
 
@@ -25,8 +25,6 @@ my $work = $ENV{DIST_MGR_REPO_DIR};
 
 my $mods = [qw(Acme::STEVEB)];
 my $cwd = getcwd();
-
-my $h = Hook::Output::Tiny->new;
 
 # generate a distribution, and compare all files against our saved
 # distribution template
@@ -85,7 +83,7 @@ my $h = Hook::Output::Tiny->new;
 
     is getcwd(), "$work/acme-steveb", "in the repo dir ok";
 
-    my $template_dir = "$cwd/t/data/module_template/";
+    my $template_dir = "$cwd/t/data/release_module_template/";
 
     my @template_files = File::Find::Rule->file()
         ->name('*')
@@ -93,7 +91,7 @@ my $h = Hook::Output::Tiny->new;
 
     my $file_count = 1; #FIXME: Change back to 0 after we clean up the dist tarball
 
-    if (0) {
+    if (1) {
         for my $tf (@template_files) {
             (my $nf = $tf) =~ s/$template_dir//;
             # nf == new file
@@ -121,7 +119,7 @@ my $h = Hook::Output::Tiny->new;
                     if ($nf eq 'lib/Acme/STEVEB.pm') {
                         if ($nf[$_] =~ /\$VERSION/) {
                             # VERSION
-                            like $nf[$_], qr/\$VERSION = '0.02'/, "Changes line 2 contains date ok";
+                            like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Changes line 2 contains date ok";
                             next;
                         }
                     }
@@ -155,11 +153,10 @@ sub before {
     # clone our test repo
     {
         if (! -e 'acme-steveb') {
-            #$h->hook; # Breaks the clone process for some reason
-            my $e = system('git', 'clone', 'https://stevieb9@github.com/stevieb9/acme-steveb');
-            #$h->hook;
-
-            is $e, 0, "git cloned 'acme-steveb' test repo ok";
+            capture_merged {
+                `git clone 'https://stevieb9\@github.com/stevieb9/acme-steveb'`;
+            };
+            is $?, 0, "git cloned 'acme-steveb' test repo ok";
         }
     }
 

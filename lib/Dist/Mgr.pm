@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use version;
 
+use Capture::Tiny qw(:all);
 use Carp qw(croak cluck);
 use Cwd qw(getcwd);
 use Data::Dumper;
@@ -31,6 +32,7 @@ our @EXPORT_OK = qw(
     ci_badges
     ci_github
     git_add
+    git_commit
     git_pull
     git_push
     git_ignore
@@ -46,9 +48,6 @@ our @EXPORT_OK = qw(
     version_info
 );
 our @EXPORT_PRIVATE = qw(
-    _git_commit
-    _git_push
-    _git_pull
     _validate_git
 );
 our %EXPORT_TAGS = (
@@ -316,10 +315,26 @@ sub remove_unwanted_files {
     return 0;
 }
 sub make_dist {
-    return system('make', 'dist');
+    capture_merged {
+        `make dist`;
+    };
+
+    if ($? != 0) {
+        croak("Exit code $? returned... 'make dist' failed");
+    }
+
+    return $?;
 }
 sub make_test {
-    return system("$^X Makefile.PL && make test");
+    capture_merged {
+        `$^X Makefile.PL && make test`;
+    };
+
+    if ($? != 0) {
+        croak("Exit code $? returned... 'make test' failed");
+    }
+
+    return $?;
 }
 sub version_bump {
     my ($version, $fs_entry) = @_;

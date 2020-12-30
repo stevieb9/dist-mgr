@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Hook::Output::Tiny;
+use Capture::Tiny qw(:all);
 use Mock::Sub;
 use Test::More;
 use Carp;
@@ -21,8 +21,6 @@ BEGIN {
 
 use lib 't/lib';
 use Helper qw(:all);
-
-my $h = Hook::Output::Tiny->new;
 
 my $repos = $ENV{DIST_MGR_REPO_DIR};
 my $repo  = 'test-push';
@@ -49,11 +47,10 @@ my $git_ok = _validate_git();
 # clone our test repo
 {
     if (! -e 'test-push') {
-        $h->hook;
-        my $e = system('git', 'clone', 'https://stevieb9@github.com/stevieb9/test-push');
-        $h->hook;
-
-        is $e, 0, "git cloned 'test-push' test repo ok";
+        capture_merged {
+            `git clone 'https://stevieb9\@github.com/stevieb9/test-push'`;
+        };
+        is $?, 0, "git cloned 'test-push' test repo ok";
     }
 }
 
@@ -66,7 +63,9 @@ my $git_ok = _validate_git();
     is eval { git_release(); 1 }, undef, "git_release() requires a version ok";
     like $@, qr/requires a version/, "...and error is sane";
 
-    git_release(0.01, 0); # 0 == don't wait for CI tests to run
+    capture_merged {
+        git_release(0.01, 0); # 0 == don't wait for CI tests to run
+    };
 }
 
 chdir $cwd or die $!;

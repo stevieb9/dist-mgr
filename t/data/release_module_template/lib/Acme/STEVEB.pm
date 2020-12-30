@@ -3,7 +3,7 @@ package Acme::STEVEB;
 use strict;
 use warnings;
 
-our $VERSION = '9.66';
+our $VERSION = '0.36';
 
 sub __placeholder {}
 
@@ -12,7 +12,7 @@ __END__
 
 =head1 NAME
 
-Acme::STEVEB - One line description
+Acme::STEVEB - Test release distribution for Dist::Mgr
 
 =for html
 <a href="https://github.com/stevieb9/acme-steveb/actions"><img src="https://github.com/stevieb9/acme-steveb/workflows/CI/badge.svg"/></a>
@@ -22,6 +22,9 @@ Acme::STEVEB - One line description
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
+
+This distribution literally does nothing. It's here as an upload test for
+L<Dist::Mgr>.
 
 =head1 METHODS
 

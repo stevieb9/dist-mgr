@@ -50,6 +50,16 @@ t/data/orig/No.pm
 t/data/orig/One.pm
 t/data/orig/Three.pm
 t/data/orig/Two.pm
+t/data/release_module_template/.github/workflows/github_ci_default.yml
+t/data/release_module_template/Changes
+t/data/release_module_template/lib/Acme/STEVEB.pm
+t/data/release_module_template/Makefile.PL
+t/data/release_module_template/MANIFEST
+t/data/release_module_template/MANIFEST.SKIP
+t/data/release_module_template/t/00-load.t
+t/data/release_module_template/t/manifest.t
+t/data/release_module_template/t/pod-coverage.t
+t/data/release_module_template/t/pod.t
 t/lib/Helper.pm
 t/manifest.t
 t/pod-coverage.t

@@ -28,8 +28,8 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => '0',
     },
     BUILD_REQUIRES => {
+        'Capture::Tiny'      => 0,
         'File::Touch'        => 0,
-        'Hook::Output::Tiny' => '1.00',
         'Mock::Sub'          => 0,
         'Test::More'         => 0,
     },
