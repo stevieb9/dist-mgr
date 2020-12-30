@@ -23,18 +23,8 @@ use Helper qw(:all);
 
 my $work = $ENV{DIST_MGR_REPO_DIR};
 
-my $version = '0.02';
-
 my $mods = [qw(Acme::STEVEB)];
 my $cwd = getcwd();
-
-my %module_args = (
-    author  => 'Steve Bertrand',
-    email   => 'steveb@cpan.org',
-    modules => $mods,
-    license => 'artistic2',
-    builder => 'ExtUtils::MakeMaker',
-);
 
 my $h = Hook::Output::Tiny->new;
 
@@ -43,84 +33,14 @@ my $h = Hook::Output::Tiny->new;
 {
     before();
 
-    # init()
-
-    $h->hook('stderr');
-    init(%module_args);
-    $h->unhook('stderr');
-
-    my @stderr = $h->stderr;
-    is scalar @stderr, 11, "Module::Starter has proper print output";
-    is -d 'Acme-STEVEB', 1, "Acme-STEVEB directory created ok";
-
-    # move_distribution_files()
-
-    my $r = move_distribution_files($mods->[0]);
-    is $r, 0, "proper return from move_distribution_files()";
-    is -e 'Acme-STEVEB', undef, "distribution dir was removed ok";
-    like getcwd(), qr/acme-steveb$/, "we're in the repo dir ok";
-#    file_count(98, "after move_distribution_files()"); # because .git dir
-
-    # remove_unwanted_files()
-
-    remove_unwanted_files();
-#    file_count(94, "after remove_unwanted_files()");
-    check_file('lib/Acme/STEVEB.pm', qr/Steve Bertrand/, "our custom module template is in place ok");
-
-    # manifest_skip()
-
-    manifest_skip();
-#    file_count(36, "after manifest_skip()");
-    is -e 'MANIFEST.SKIP', 1, "MANIFEST.SKIP created ok";
-    check_file('MANIFEST.SKIP', qr/BB-Pass/, "it's our custom MANIFEST.SKIP ok");
-
-    # ci_github()
-
-    ci_github();
-#    file_count(39, "after ci_github()"); # 16 from 13 because we also count the new directories
-    is -e '.github/workflows/github_ci_default.yml', 1, "CI config in place ok";
-    check_file(
-        '.github/workflows/github_ci_default.yml',
-        qr/PL2Bat/,
-        "our custom CI config file is in place ok"
-    );
-
-    # git_ignore()
-
-    git_ignore();
-    is -e '.gitignore', 1, ".gitignore in place ok";
-    check_file('.gitignore', qr/BB-Pass/, "our custom .gitignore is in place ok");
-#    file_count(94, "after git_ignore()");
-
-    # ci_badges()
-
-    ci_badges('stevieb9', 'acme-steveb', 'lib/Acme/STEVEB.pm');
-    check_file('lib/Acme/STEVEB.pm', qr/=for html/, "ci_badges() has html for loop ok");
-    check_file('lib/Acme/STEVEB.pm', qr/coveralls/, "ci_badges() dropped coveralls ok");
-    check_file('lib/Acme/STEVEB.pm', qr/workflows/, "ci_badges() dropped github actions ok");
-
-    # add_bugtracker()
-
-    add_bugtracker('stevieb9', 'acme-steveb');
-    check_file('Makefile.PL', qr/META_MERGE/, "bugtrack META_MERGE added ok");
-    check_file('Makefile.PL', qr/bugtracker/, "bugtracker added ok");
-
-    # add_repository()
-
-    add_repository('stevieb9', 'acme-steveb');
-    check_file('Makefile.PL', qr/META_MERGE/, "repo META_MERGE added ok");
-    check_file('Makefile.PL', qr/repository/, "repository added ok");
-
     # version_info()
 
-    my ($orig_ver) = values %{ (version_info('lib/'))[0] };
-    is $orig_ver, '0.01', "original version is 0.01 ok";
+    my ($orig_ver) = values %{ (version_info('lib/Acme/STEVEB.pm'))[0] };
 
     # version_bump()
 
-    version_bump($version, 'lib/Acme/STEVEB.pm');
-    my ($new_ver) = values %{ (version_info('lib/'))[0] };
-    is $new_ver, $version, "new version is $version ok";
+    release_version($orig_ver);
+    my ($new_ver) = values %{ (version_info('lib/Acme/STEVEB.pm'))[0] };
     is(
         version->parse($new_ver) > version->parse($orig_ver),
         1,
@@ -129,10 +49,8 @@ my $h = Hook::Output::Tiny->new;
 
     # changes()
 
-    is sha1sum('Changes'), '97624d56464d7254ef5577e4a0c8a098d6c6d9e6', "updated Changes has proper md5 ok";
     changes($mods->[0]);
     check_file('Changes', qr/Acme-STEVEB/, "our custom Changes is in place ok");
-    is sha1sum('Changes'), '29bd43ee41fc555186bb2a736c86af8241098f21', "updated Changes has proper md5 ok";
 
     # changes_date()
 
@@ -149,11 +67,11 @@ my $h = Hook::Output::Tiny->new;
 
     # git_tag
 
-    git_tag($version);
+    git_tag($new_ver);
 
     # git_release
 
-    git_release($version, 0); # 0 == don't wait for CI tests to run
+    git_release($new_ver, 0); # 0 == don't wait for CI tests to run
 
     # make_dist
 
@@ -175,15 +93,13 @@ my $h = Hook::Output::Tiny->new;
 
     my $file_count = 1; #FIXME: Change back to 0 after we clean up the dist tarball
 
-    if (1) {
+    if (0) {
         for my $tf (@template_files) {
             (my $nf = $tf) =~ s/$template_dir//;
             # nf == new file
             # tf == template file
 
-            print "TF: $tf\n";
             if (-f $nf) {
-                print "NF: $nf\n";
                 open my $tfh, '<', $tf or die $!;
                 open my $nfh, '<', $nf or die $!;
 
@@ -255,6 +171,11 @@ sub before {
     git_pull();
 }
 sub after {
+    my @dist_files = glob('*Acme-STEVEB*');
+    for (@dist_files) {
+        unlink $_ or die "can't unlink dist file $_: $!";
+        is -e $_, undef, "dist file $_ removed ok";
+    }
     chdir $cwd or die $!;
     like getcwd(), qr/dist-mgr/, "back in root directory ok";
 }

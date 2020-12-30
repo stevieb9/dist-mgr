@@ -34,6 +34,7 @@ WriteMakefile(
         'Test::More'         => 0,
     },
     PREREQ_PM => {
+        'CPAN::Uploader'        => 0,
         'File::Find::Rule'      => 0,
         'File::Copy::Recursive' => 0,
         'File::Path'            => 0,

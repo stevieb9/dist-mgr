@@ -47,7 +47,7 @@ sub _git_add {
         croak("Git add failed... needs intervention...") if $exit != 0;
     }
     else {
-        warn "'git' not installed, can't commit\n";
+        warn "'git' not installed, can't add\n";
         $exit = -1;
     }
 
@@ -64,7 +64,6 @@ sub _git_commit {
 
     if ( _validate_git()) {
         $exit = system("git commit -am 'Release $version candidate'");
-
         if ($exit != 0) {
             if ($exit == 256) {
                 print "\nNothing to commit, proceeding...\n";

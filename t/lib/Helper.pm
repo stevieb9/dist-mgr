@@ -7,6 +7,7 @@ use Carp qw(croak);
 use Cwd qw(getcwd);
 use Exporter qw(import);
 use Digest::SHA;
+use Dist::Mgr qw(version_info version_bump);
 use File::Copy;
 use File::Path qw(rmtree);
 use Digest::MD5;
@@ -38,6 +39,7 @@ our @EXPORT_OK = qw(
     file_scalar
     sha1sum
     module_args
+    release_version
     trap_warn
     verify_clean
 );
@@ -254,6 +256,13 @@ sub remove_unwanted {
     is -e $unwanted_dir, undef, "unwanted dir removed ok";
 }
 
+sub release_version {
+    my ($v) = @_;
+    die "release_version() needs version param" if ! defined $v;
+    my $file = "$ENV{DIST_MGR_REPO_DIR}/acme-steveb/lib/Acme/STEVEB.pm";
+    $v = sprintf("%.2f", $v + '0.01');
+    version_bump($v, $file);
+}
 sub verify_clean {
     is(scalar(find_module_files($work_dir)), 0, "all work module files unlinked ok");
 }

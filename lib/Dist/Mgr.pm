@@ -66,7 +66,6 @@ use constant {
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
-    SPINNER_TOTAL       => 20,
 };
 
 # Public
@@ -176,8 +175,26 @@ sub ci_github {
 
     return @contents;
 }
-sub cleanup {
+sub cpan_upload {
+    my ($dist_file) = @_;
 
+    if (! defined $dist_file) {
+        croak("cpan_upload() requires the name of a distribution file sent in");
+    }
+
+    my %args;
+
+    $args{un} = $ENV{CPAN_USERNAME} ||= 0;
+    $args{pw} = $ENV{CPAN_PASSWORD} ||= 0;
+
+    if (! $args{un} || ! $args{pw}) {
+        croak("cpan_upload() requires the CPAN_USERNAME and CPAN_PASSWORD env vars set");
+    }
+
+    CPAN::Uploader->upload_file(
+        $dist_file,
+        \%args
+    );
 }
 sub git_add {
     _git_add();
@@ -192,6 +209,15 @@ sub git_ignore {
     _git_ignore_write_file($dir, \@content);
 
     return @content;
+}
+sub git_commit {
+    _git_commit(@_);
+}
+sub git_push {
+    _git_push(@_);
+}
+sub git_pull {
+    _git_pull(@_);
 }
 sub git_release {
     _git_release(@_);
@@ -449,15 +475,6 @@ sub _default_distribution_file_count {
 
 # Git related
 
-sub git_commit {
-    _git_commit(@_);
-}
-sub git_push {
-    _git_push(@_);
-}
-sub git_pull {
-    _git_pull(@_);
-}
 sub _git_ignore_write_file {
     # Writes out the .gitignore file
 
