@@ -146,6 +146,14 @@ my %cpan_args = (
 
     # cleanup
 
+    my @dist_files = glob('*Acme-STEVEB*');
+    for (@dist_files) {
+        unlink $_ or die "can't unlink dist file $_: $!";
+        is -e $_, undef, "dist file $_ removed ok";
+    }
+
+    # done!
+
     after();
 }
 
@@ -176,11 +184,6 @@ sub before {
     git_pull();
 }
 sub after {
-    my @dist_files = glob('*Acme-STEVEB*');
-    for (@dist_files) {
-        unlink $_ or die "can't unlink dist file $_: $!";
-        is -e $_, undef, "dist file $_ removed ok";
-    }
     chdir $cwd or die $!;
     like getcwd(), qr/dist-mgr/, "back in root directory ok";
 }
