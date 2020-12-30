@@ -7,6 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
+    BAIL_OUT "fail";
     use_ok( 'Dist::Mgr' ) || print "Bail out!\n";
 }
 

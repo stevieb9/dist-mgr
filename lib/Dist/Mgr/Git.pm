@@ -117,7 +117,7 @@ sub _git_push {
 sub _git_release {
     my ($version, $wait_for_ci) = @_;
 
-    croak("git_release() requires a version sent in") if !defined $version;
+    croak("git_release() requires a version sent in") if ! defined $version;
 
     $wait_for_ci //= 1;
     my $verbose = 0;

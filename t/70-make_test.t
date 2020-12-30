@@ -8,7 +8,6 @@ use version;
 
 my ($m, $sub_system);
 
-
 BEGIN {
 
     plan skip_all => "TEST FILE DISABLED";

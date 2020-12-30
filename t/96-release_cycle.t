@@ -26,6 +26,10 @@ my $work = $ENV{DIST_MGR_REPO_DIR};
 my $mods = [qw(Acme::STEVEB)];
 my $cwd = getcwd();
 
+my %cpan_args = (
+    dry_run     => 1,
+);
+
 # generate a distribution, and compare all files against our saved
 # distribution template
 {
@@ -136,7 +140,11 @@ my $cwd = getcwd();
         warn "SKIPPING FILE COMPARE CHECKS!";
     }
 
-    # Cleanup
+    my $dist_file = (glob('*Acme-STEVEB*'))[-1];
+
+    is cpan_upload($dist_file, \%cpan_args), 1, "cpan_upload() ok";
+
+    # cleanup
 
     after();
 }

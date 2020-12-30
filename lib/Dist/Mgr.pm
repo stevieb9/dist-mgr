@@ -6,6 +6,7 @@ use version;
 
 use Capture::Tiny qw(:all);
 use Carp qw(croak cluck);
+use CPAN::Uploader;
 use Cwd qw(getcwd);
 use Data::Dumper;
 use Digest::SHA;
@@ -30,6 +31,7 @@ our @EXPORT_OK = qw(
     changes_date
     ci_badges
     ci_github
+    cpan_upload
     git_add
     git_commit
     git_pull
@@ -174,23 +176,25 @@ sub ci_github {
     return @contents;
 }
 sub cpan_upload {
-    my ($dist_file) = @_;
+    my ($dist_file_name, %args) = @_;
 
-    if (! defined $dist_file) {
+    if (! defined $dist_file_name) {
         croak("cpan_upload() requires the name of a distribution file sent in");
     }
 
-    my %args;
+    if (! -f $dist_file_name) {
+        croak("File name sent to cpan_upload() isn't a valid file");
+    }
 
-    $args{un} = $ENV{CPAN_USERNAME} ||= 0;
-    $args{pw} = $ENV{CPAN_PASSWORD} ||= 0;
+    $args{user} = $ENV{CPAN_USERNAME} ||= 0 if ! exists $args{user};
+    $args{password} = $ENV{CPAN_PASSWORD} ||= 0 if ! exists $args{password};
 
-    if (! $args{un} || ! $args{pw}) {
+    if (! $args{user} || ! $args{password}) {
         croak("cpan_upload() requires the CPAN_USERNAME and CPAN_PASSWORD env vars set");
     }
 
     CPAN::Uploader->upload_file(
-        $dist_file,
+        $dist_file_name,
         \%args
     );
 }
