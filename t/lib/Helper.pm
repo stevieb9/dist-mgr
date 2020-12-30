@@ -45,8 +45,6 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-ok 1;
-
 my $orig_dir        = 't/data/orig';
 my $work_dir        = 't/data/work';
 my $tpl_dir         = 't/data/module_template';
