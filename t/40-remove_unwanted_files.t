@@ -25,8 +25,6 @@ my %module_args = (
     builder => 'ExtUtils::MakeMaker',
 );
 
-my $h = Hook::Output::Tiny->new;
-
 remove_unwanted();
 
 my $cwd = getcwd();
