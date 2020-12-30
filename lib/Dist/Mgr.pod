@@ -98,7 +98,7 @@ I<Parameters>:
 
     $module
 
-I<Mandatory, String>: The name of the module (eg. C<Acme-STEVEB>).
+I<Mandatory, String>: The name of the module (eg. C<Acme::STEVEB>).
 
     $file
 
