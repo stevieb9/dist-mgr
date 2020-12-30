@@ -41,6 +41,7 @@ our @EXPORT_OK = qw(
     git_tag
     init
     make_dist
+    make_distclean
     make_test
     manifest_skip
     move_distribution_files
@@ -320,6 +321,17 @@ sub remove_unwanted_files {
 sub make_dist {
     capture_merged {
         `make dist`;
+    };
+
+    if ($? != 0) {
+        croak("Exit code $? returned... 'make dist' failed");
+    }
+
+    return $?;
+}
+sub make_distclean {
+    capture_merged {
+        `make distclean`;
     };
 
     if ($? != 0) {

@@ -1,6 +1,6 @@
 Revision history for Dist-Mgr
 
-1.00 UNREL
+1.00    2020-12-30
     - Fix issue where ABSTRACT was being pulled from one of the test
       modules. We now pull it from the proper POD file (fixes #4)
     - t/20-ci_config_files.t no longer overwrites this distribution's
@@ -44,6 +44,8 @@ Revision history for Dist-Mgr
     - Added export tag 'private', exports certain private functions
     - Added tests for git functions
     - Moved all Git functionality to Git.pm
+    - All tests pass; ready for dev release for doc review, and move on to
+      writing the release procedures and binaries
 
 0.04    2020-12-23
     - Last test CPAN release

@@ -219,32 +219,6 @@ process.
 
 I<Returns>: C<1> (true) on success.
 
-=head2 version_info
-
-Fetches the file version information of Perl module files. Can operate on a
-single file, or iterate over a directory structure.
-
-I<Use>: Any time.
-
-I<Parameters>:
-
-    $fs_entry
-
-I<Optional, String>: The directory or file to operate on. If a directory is
-sent in, we'll iterate over all files in all directories recursively.
-
-I<Default>: C<lib/>
-
-I<Returns>: Hash reference:
-
-    $VAR1 = {
-        't/data/orig/One.pm'    => '2.66'
-        't/data/orig/Two.pm'    => '2.66',
-        't/data/orig/Three.pm'  => '2.66',
-        't/data/orig/Bad.pm'    => undef,   # $VERSION can't be parsed
-        't/data/orig/No.pm'     => undef,   # No $VERSION defined
-    };
-
 =head2 git_add
 
 Adds all files in the current working directory to the repository.
@@ -406,16 +380,24 @@ C<artistic2>. See L<Module::Starter> for valid entries.
 
 =head2 make_dist
 
-Using C<system()>, perform a C<make dist> that creates a CPAN-ready distribution
-tarball file in the current working directory.
+Perform a C<make dist> that creates a CPAN-ready distribution tarball file in
+the current working directory.
 
-I<Use>: After all other pre-release functions have been called.
+I<Use>: After all other release functions have been called.
+
+I<Returns>: C<0> on success. Anything other than C<0> is a failure.
+
+=head2 make_distclean
+
+Perform a C<make distclean> on the project directory.
+
+I<Use>: After all other post-release functions have been called.
 
 I<Returns>: C<0> on success. Anything other than C<0> is a failure.
 
 =head2 make_test
 
-Using C<system()>, perform a C<%^X Makefile.PL> and C<make test>.
+Perform a C<%^X Makefile.PL> and C<make test>.
 
 I<Use>: After L</changes_date> and before all other release cycle functions.
 
@@ -507,6 +489,32 @@ I<Returns>: An HoH:
             'to'        => '2.67',
             'content'   => '' # Module file code (snipped for brevity)
         },
+    };
+
+=head2 version_info
+
+Fetches the file version information of Perl module files. Can operate on a
+single file, or iterate over a directory structure.
+
+I<Use>: Any time.
+
+I<Parameters>:
+
+    $fs_entry
+
+I<Optional, String>: The directory or file to operate on. If a directory is
+sent in, we'll iterate over all files in all directories recursively.
+
+I<Default>: C<lib/>
+
+I<Returns>: Hash reference:
+
+    $VAR1 = {
+        't/data/orig/One.pm'    => '2.66'
+        't/data/orig/Two.pm'    => '2.66',
+        't/data/orig/Three.pm'  => '2.66',
+        't/data/orig/Bad.pm'    => undef,   # $VERSION can't be parsed
+        't/data/orig/No.pm'     => undef,   # No $VERSION defined
     };
 
 =head1 AUTHOR
