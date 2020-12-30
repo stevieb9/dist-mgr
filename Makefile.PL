@@ -7,7 +7,7 @@ use version;
 # If OS is Windows, perl must be 5.16+
 
 if ($^O =~ /win32/i) {
-    if (version->parse($^V) < version->parse('5.16')) {
+    if (version->parse($^V) < version->parse('5.16.0')) {
         print "On Windows, perl must be version 5.16 or higher\n";
         exit;
     }
