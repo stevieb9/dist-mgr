@@ -24,20 +24,22 @@ jobs:
         uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: ${{ matrix.perl }}
-          env:
-            CPAN_USERNAME: test
-            CPAN_PASSWORD: test
       - run: perl -V
       - run: cpanm ExtUtils::PL2Bat
       - run: cpanm ExtUtils::MakeMaker
       - run: cpanm --installdeps .
       - name: Run tests (no coverage)
         if: ${{ !matrix.coverage }}
+        env:
+          CPAN_USERNAME: test
+          CPAN_PASSWORD: test
         run: prove -lv t
       - name: Run tests (with coverage)
         if: ${{ matrix.coverage }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CPAN_USERNAME: test
+          CPAN_PASSWORD: test
         run: |
           cpanm -n Devel::Cover::Report::Coveralls
           cover -ignore Git.pm$ -test -report Coveralls
