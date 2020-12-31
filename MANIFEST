@@ -17,6 +17,7 @@ t/15-add_repo_add_bugtrack.t
 t/20-ci_config_files.t
 t/25-ci_badges.t
 t/30-manifest_skip.t
+t/32-manifest_test.t
 t/35-git_ignore.t
 t/40-remove_unwanted_files.t
 t/45-init.t
@@ -49,6 +50,7 @@ t/data/orig/Changes-release
 t/data/orig/github_ci_default.yml
 t/data/orig/Makefile.PL
 t/data/orig/MANIFEST.SKIP
+t/data/orig/manifest.t
 t/data/orig/Module.tpl
 t/data/orig/No.pm
 t/data/orig/One.pm

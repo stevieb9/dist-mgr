@@ -20,6 +20,7 @@ our @EXPORT_OK = qw(
     _makefile_section_repo
 
     _manifest_skip_file
+    _manifest_t_file
 
     _unwanted_filesystem_entries
 );
@@ -279,6 +280,20 @@ sub _manifest_skip_file {
         q{scrap\.pl},
     );
 }
+sub _manifest_t_file {
+    return (
+        q{use warnings;},
+        q{use strict;},
+        q{},
+        q{use Test::More;},
+        q{use ExtUtils::Manifest;},
+        q{},
+        q{is_deeply [ ExtUtils::Manifest::manicheck() ], [], 'missing';},
+        q{is_deeply [ ExtUtils::Manifest::filecheck() ], [], 'extra';},
+        q{},
+        q{done_testing;},
+    );
+}
 
 sub _unwanted_filesystem_entries {
     return qw(
@@ -365,6 +380,11 @@ C<Makefile.PL> file.
 =head2 _manifest_skip_file()
 
 Returns an array of the file lines that make up a default C<MANIFEST.SKIP> file.
+
+=head2 _manifest_t_file()
+
+Returns an array of the file lines that make up our custom C<t/makefile.t> test
+file.
 
 =head2 _unwanted_filesystem_entries()
 

@@ -45,6 +45,7 @@ our @EXPORT_OK = qw(
     make_distclean
     make_test
     manifest_skip
+    manifest_t
     move_distribution_files
     remove_unwanted_files
     version_bump
@@ -301,6 +302,17 @@ sub manifest_skip {
 
     return @content;
 }
+sub manifest_t {
+    my ($dir) = @_;
+
+    $dir //= './t';
+
+    my @content = _manifest_t_file();
+
+    _manifest_t_write_file($dir, \@content);
+
+    return @content;
+}
 sub move_distribution_files {
     my ($module) = @_;
 
@@ -445,12 +457,12 @@ sub version_bump {
 sub version_incr {
     my ($version) = @_;
 
-    croak("version_incr() nees a version sent in") if ! defined $version;
+    croak("version_incr() needs a version number sent in") if ! defined $version;
 
     my $incremented_version;
 
-    _validate_version($param);
-    return sprintf("%.2f", $param + '0.01');
+    _validate_version($version);
+    return sprintf("%.2f", $version + '0.01');
 }
 sub version_info {
     my ($fs_entry) = @_;
@@ -629,7 +641,7 @@ sub _makefile_insert_repository {
     return 0;
 }
 
-# MANIFEST.SKIP related
+# MANIFEST related
 
 sub _manifest_skip_write_file {
     # Writes out the MANIFEST.SKIP file
@@ -637,6 +649,19 @@ sub _manifest_skip_write_file {
     my ($dir, $content) = @_;
 
     open my $fh, '>', "$dir/MANIFEST.SKIP" or croak $!;
+
+    for (@$content) {
+        print $fh "$_\n"
+    }
+
+    return 0;
+}
+sub _manifest_t_write_file {
+    # Writes out the t/manifest.t test file
+
+    my ($dir, $content) = @_;
+
+    open my $fh, '>', "$dir/manifest.t" or croak $!;
 
     for (@$content) {
         print $fh "$_\n"

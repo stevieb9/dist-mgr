@@ -17,7 +17,7 @@ use Helper qw(:all);
         version_incr();
         1
     }, undef, "version_incr() croaks if no param";
-    like $@, qr/needs either a version number/, "...and error is sane";
+    like $@, qr/needs a version number/, "...and error is sane";
 
     # invalid version
     is eval {
@@ -25,13 +25,6 @@ use Helper qw(:all);
         1
     }, undef, "invalid version croaks ok";
     like $@, qr/The version number/, "...and error is sane";
-
-    # invalid module
-    is eval {
-        version_incr('No::Module::Available');
-        1
-    }, undef, "invalid module croaks ok";
-    like $@, qr/File system entry.*invalid/, "...and error is sane";
 }
 
 # version

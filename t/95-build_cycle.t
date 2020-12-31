@@ -73,6 +73,13 @@ remove_init();
     is -e 'MANIFEST.SKIP', 1, "MANIFEST.SKIP created ok";
     check_file('MANIFEST.SKIP', qr/BB-Pass/, "it's our custom MANIFEST.SKIP ok");
 
+    # manifest_t()
+
+    manifest_t();
+    file_count(13);
+    is -e 't/manifest.t', 1, "t/manifest.t created ok";
+    check_file('t/manifest.t', qr/manicheck/, "it's our custom manifest.t ok");
+
     # ci_github()
 
     ci_github();
