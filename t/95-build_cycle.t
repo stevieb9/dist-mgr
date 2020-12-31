@@ -129,7 +129,7 @@ remove_init();
 
     like
         getcwd(),
-        qr|dist-mgr/t/data/work/init|,
+        qr|dist-mgr(-\d+\.\d+)?/t/data/work/init|i,
         "in the init dir ok";
 
     my $template_dir = "$cwd/t/data/module_template/";
@@ -181,7 +181,7 @@ remove_init() if getcwd() !~ /init$/;
 done_testing;
 
 sub before {
-    like $cwd, qr/dist-mgr/, "in proper directory ok";
+    like $cwd, qr/dist-mgr/i, "in proper directory ok";
 
     chdir $work or die $!;
     like getcwd(), qr/$work$/, "in $work directory ok";
