@@ -28,7 +28,7 @@ commands()->{$cmd}(%args);
 
 # Commands
 
-sub create {
+sub build {
     my (%args) = @_;
 
     for (qw(modules author email)) {
@@ -48,7 +48,7 @@ sub create {
     my $module = $args{modules}->[0];
     my $dir;
 
-    # Clone the repository
+    # Clone the repository, or create the directory if no VCS
     if ($git) {
         git_clone($args{user}, $args{repo}, $args{verbose});
         $dir = $args{repo};
@@ -65,57 +65,79 @@ sub create {
     # Create the distribution
     init(%args);
 
-    # Move the files to the repo dir
+    # Move the files to the module dir
     move_distribution_files($module);
 
     # Remove our unwanted files
-
     remove_unwanted_files();
 
-    # Update Changes
+    # Changes
     changes($module);
 
     # MANIFEST.SKIP
-
     manifest_skip();
 
     # Git actions
-
     if ($git) {
         # .gitignore
-
         git_ignore();
 
         # CI config
-
         ci_github();
 
         # CI/Coverage badges
-
         ci_badges($args{user}, $args{repo});
 
         # Add bugtracker to Makefile.PL
-
         add_bugtracker($args{user}, $args{repo});
 
         # Add repository to Makefile.PL
-
         add_repository($args{user}, $args{repo});
 
         # git add
-
         git_add($args{verbose});
 
         # git commit
-
         git_commit("Initial import of $module", $args{verbose});
 
         # git push
-
         git_push($args{verbose});
     }
 }
 sub cycle {
+}
+sub dist {
+    my (%args) = @_;
+
+    for (qw(modules author email)) {
+        if (! exists $args{$_}) {
+            warn "create: requires '$_' argument\n";
+            help();
+        }
+    }
+
+    my $module = $args{modules}->[0];
+    my $dir = $module;
+    $dir =~ s/::/-/g;
+    mkdir $dir or die "Can't create the '$dir' directory: $!";
+
+    # Change into module directory
+    chdir $dir or die "Can't change into the '$dir' directory: $!";
+
+    # Create the distribution
+    init(%args);
+
+    # Move the files to the module dir
+    move_distribution_files($module);
+
+    # Remove our unwanted files
+    remove_unwanted_files();
+
+    # Changes
+    changes($module);
+
+    # MANIFEST.SKIP
+    manifest_skip();
 }
 sub install {
 }
@@ -131,8 +153,9 @@ sub help {
 }
 sub commands {
     return {
-        create  => \&create,
+        create  => \&build,
         cycle   => \&cycle,
+        dist    => \&dist,
         install => \&install,
         release => \&release,
     };
@@ -156,6 +179,9 @@ Usage: distmgr <command> [OPTIONS]
 Commands:
 
 create
+
+Creates a full blown distribution with everything included
+
     -m | --module   Mandatory: The module name (eg. Test::Module)
     -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
     -e | --email    Mandatory: The email address of the author
@@ -167,6 +193,15 @@ B<Notes>: We will skip adding repository information, skip adding CI badge info,
 and skip adding repository and bugtracker information to C<Makefile.PL> file
 if C<--user> or C<--repo> are not present in the parameter list.
 
+dist
+
+Creates a bare-bones distribution with just the basics
+
+    -m | --module   Mandatory: The module name (eg. Test::Module)
+    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
+    -e | --email    Mandatory: The email address of the author
+    -V | --verbose  Optional:  Display verbose output for each process
+
 cycle
     -v| --version
 
@@ -175,3 +210,4 @@ install
 
 release
     -v
+
