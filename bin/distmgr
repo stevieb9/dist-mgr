@@ -1,7 +1,8 @@
 #!/usr/bin/env perl
 use warnings;
 use strict;
-
+# dist-mgr/bin/distmgr create -m Test::Module -a Steve Bertrand -e steveb@cpan.org -u stevieb9 -r test-module -V
+use Cwd qw(getcwd);
 use Data::Dumper;
 use Dist::Mgr qw(:all);
 use Getopt::Long;
@@ -45,11 +46,21 @@ sub create {
     }
 
     my $module = $args{modules}->[0];
+    my $dir;
 
     # Clone the repository
     if ($git) {
         git_clone($args{user}, $args{repo}, $args{verbose});
+        $dir = $args{repo};
     }
+    else {
+        $dir = $module;
+        $dir =~ s/::/-/g;
+        mkdir $dir or die "Can't create the '$dir' directory: $!";
+    }
+
+    # Change into module directory
+    chdir $dir or die "Can't change into the '$dir' directory: $!";
 
     # Create the distribution
     init(%args);
@@ -137,7 +148,6 @@ sub _init {
 }
 sub _check_repo_info {
     my (%args) = @_;
-
 }
 
 __DATA__
@@ -151,6 +161,7 @@ create
     -e | --email    Mandatory: The email address of the author
     -u | --user     Optional:  The Github username (eg. stevieb9)
     -r | --repo     Optional:  The Github repository name (eg. test-module)
+    -V | --verbose  Optional:  Display verbose output for each process
 
 B<Notes>: We will skip adding repository information, skip adding CI badge info,
 and skip adding repository and bugtracker information to C<Makefile.PL> file
