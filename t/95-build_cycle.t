@@ -38,7 +38,7 @@ remove_init();
     # init()
 
     $h->hook('stderr');
-    init(%module_args);
+    init(%module_args, verbose => 1);
     $h->unhook('stderr');
 
     my @stderr = $h->stderr;
@@ -197,7 +197,7 @@ sub before {
 }
 sub after {
     chdir $cwd or die $!;
-    like getcwd(), qr/dist-mgr/, "back in root directory ok";
+    like getcwd(), qr/dist-mgr(-\d+\.\d+)?/i, "back in root directory ok";
 }
 sub file_count {
     my ($expected_count) = @_;
