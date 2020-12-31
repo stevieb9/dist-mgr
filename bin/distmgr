@@ -5,7 +5,7 @@ use strict;
 use Cwd qw(getcwd);
 use Data::Dumper;
 use Dist::Mgr qw(:all);
-use Getopt::Long;
+use Getopt::Long qw(:config no_ignore_case);
 
 my $cmd = _init();    # shifts @ARGV
 
@@ -13,15 +13,20 @@ my %args;
 my $git = 1;
 
 GetOptions(
-    "help|h"      => \$args{help},
-    "module|m=s@" => \$args{modules},
-    "author|a=s"  => \$args{author},
-    "email|e=s"   => \$args{email},
-    "repo|r=s"    => \$args{repo},
-    "user|u=s"    => \$args{user},
-    "cpanid|c=s"  => \$args{cpanid},
-    "version|v=s" => \$args{version},
-    "verbose|V"   => \$args{verbose},
+    "h|help"      => \$args{help},
+    "m|module=s@" => \$args{modules},
+    "a|author=s"  => \$args{author},
+    "e|email=s"   => \$args{email},
+    "r|repo=s"    => \$args{repo},
+    "u|user=s"    => \$args{user},
+    "v|version=s" => \$args{version},
+    "V|verbose"   => \$args{verbose},
+
+    "g|gitignore"   => \$args{install_gitignore},
+    "c|ci"          => \$args{install_ci},
+    "B|badges"      => \$args{add_badges},
+    "b|bugtracker"  => \$args{add_bugtracker},
+    "R|repository"  => \$args{add_repository}
 );
 
 commands()->{$cmd}(%args);
@@ -140,6 +145,26 @@ sub dist {
     manifest_skip();
 }
 sub install {
+    my (%args) = @_;
+
+    git_ignore() if $args{install_gitignore};
+    ci_github() if $args{install_ci};
+
+    if (! defined $args{user} || ! defined $args{repo}) {
+        if ($args{add_badges}) {
+            die "--badges requires --user and --repo\n";
+        }
+        if ($args{add_bugtracker}) {
+            die "--bugtracker requires --user and --repo\n";
+        }
+        if ($args{add_repository}) {
+            die "--repository requires --user and --repo\n";
+        }
+    }
+
+    ci_badges($args{user}, $args{repo}) if $args{add_badges};
+    add_bugtracker($args{user}, $args{repo}) if $args{add_bugtracker};
+    add_repository($args{user}, $args{repo}) if $args{add_repository};
 }
 sub release {
 }
@@ -206,6 +231,11 @@ cycle
     -v| --version
 
 install
+    -g | --gitignore    Install .gitignore file
+    -c | --ci           Install Github Actions CI configuration file
+    -B | --badges       Insert CI/Coverage badges links into the module's POD
+    -b | --bugtracker   Insert bugtracker information into Makefile.PL
+    -R | --repository   Insert repository information into Makefile.PL
     -v
 
 release

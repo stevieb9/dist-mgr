@@ -5,6 +5,7 @@ Revision history for Dist-Mgr
     - ci_badges() was forcing $fs_entry param, but it should be optional; fixed
     - git_commit() now accepts $msg instead of $version as first param
     - All Git commands now print the exit code in the error message
+    - Add build, dist and install commands to binary
 
 1.00    2020-12-30
     - Fix issue where ABSTRACT was being pulled from one of the test
