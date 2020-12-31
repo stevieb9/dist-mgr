@@ -1,11 +1,12 @@
 Revision history for Dist-Mgr
 
-1.01 UNREL
+1.01    2020-12-31
     - Added bin/distmgr script
     - ci_badges() was forcing $fs_entry param, but it should be optional; fixed
     - git_commit() now accepts $msg instead of $version as first param
     - All Git commands now print the exit code in the error message
     - Add build, dist and install commands to binary
+    - Replace t/manifest.t with updated code to work properly with custom entries
 
 1.00    2020-12-30
     - Fix issue where ABSTRACT was being pulled from one of the test
@@ -39,7 +40,7 @@ Revision history for Dist-Mgr
     - Renamed bump_version() to version_bump()
     - Renamed get_version_info() to version_info()
     - Added changes(), installs our custom Changes file
-    - Added changes_date(), replaces the UNREL placeholder with today's date
+    - Added changes_date(), replaces the    2020-12-31
       in preparation for release
     - Added changes_bump(), prepares the Changes file for a new development
       cycle
