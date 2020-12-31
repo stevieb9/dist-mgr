@@ -361,7 +361,7 @@ I<Use>: To create a brand new distribution skeleton.
 
 I<Parameters>:
 
-    module  => "Acme-STEVEB"
+    module  => "Acme::STEVEB"
 
 I<Mandatory, String>: The name of the main module of the distribution.
 

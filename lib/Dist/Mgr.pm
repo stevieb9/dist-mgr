@@ -100,13 +100,19 @@ sub changes {
 
     $file //= 'Changes';
 
-    # Overwrite the Changes file if the SHA1 checksum matches the original file
-    # created with module-starter
+    # Overwrite the Changes file if there aren't any dates in it
 
     my @contents;
 
-    if (! -e $file || _sha1sum($file) eq CHANGES_ORIG_SHA) {
-        @contents = _changes_file($module);
+    my $changes_date_count = 0;
+
+    if (-e $file) {
+        my ($contents, $tie) = _changes_tie($file);
+        $changes_date_count = grep /\d{4}-\d{2}-\d{2}/, $contents;
+        untie $tie;
+    }
+    if (! -e $file || ! $changes_date_count) {
+        my @contents = _changes_file($module);
         _changes_write_file($file, \@contents);
     }
 
@@ -758,17 +764,17 @@ sub _module_write_template {
 
 # Validation related
 
-sub _sha1sum {
-    my ($file) = @_;
-
-    croak("shasum needs file param") if ! defined $file;
-
-    my $sha1 = Digest::SHA->new;
-
-    $sha1->addfile($file, 'U');
-
-    return $sha1->hexdigest;
-}
+#sub _sha1sum {
+#    my ($file) = @_;
+#
+#    croak("shasum needs file param") if ! defined $file;
+#
+#    my $sha1 = Digest::SHA->new;
+#
+#    $sha1->addfile($file, 'U');
+#
+#    return $sha1->hexdigest;
+#}
 sub _validate_git {
     my $sep = $^O =~ /win32/i ? ';' : ':';
     return grep {-x "$_/git" } split /$sep/, $ENV{PATH};
