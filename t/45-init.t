@@ -126,7 +126,7 @@ remove_init();
 
     $h->flush;
     $h->hook('stderr');
-    init(%module_args);
+    init(%module_args, verbose => 1);
     $h->unhook('stderr');
 
     my @e = $h->stderr;
