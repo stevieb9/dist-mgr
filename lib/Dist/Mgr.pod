@@ -402,6 +402,10 @@ I<Mandatory, String>: The email address of the author.
 I<Optional, String>: The license to apply to the new distribution. Defaults to
 C<artistic2>. See L<Module::Starter> for valid entries.
 
+    verbose => 1
+
+I<Optional, Bool>: If set, we'll display the progress of module creation.
+
 =head2 make_dist
 
 Perform a C<make dist> that creates a CPAN-ready distribution tarball file in

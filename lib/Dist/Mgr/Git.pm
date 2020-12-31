@@ -56,7 +56,7 @@ sub _git_add {
     my ($verbose) = @_;
 
     if (_validate_git()) {
-        _exec('git add', $verbose);
+        _exec('git add .', $verbose);
         croak("Git add failed with exit code: $?") if $? != 0;
     }
     else {
@@ -75,7 +75,7 @@ sub _git_commit {
 
         if ($? != 0) {
             if ($? == 256) {
-                print "\nNothing to commit, proceeding...\n";
+                print "\nNothing to commit, proceeding...\n" if $verbose;
             }
             else {
                 croak("Git commit failed with exit code: $?") if $? != 0;

@@ -262,7 +262,15 @@ sub init {
         croak("init()'s 'modules' parameter must be an array reference");
     }
 
-    Module::Starter->create_distro(%args);
+    if ($args{verbose}) {
+        delete $args{verbose};
+        Module::Starter->create_distro(%args);
+    }
+    else {
+        capture_merged {
+            Module::Starter->create_distro(%args);
+        };
+    }
 
     my ($module) = (@{ $args{modules} })[0];
     my $module_file = $module;
