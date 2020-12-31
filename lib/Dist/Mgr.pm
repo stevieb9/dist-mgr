@@ -48,6 +48,7 @@ our @EXPORT_OK = qw(
     move_distribution_files
     remove_unwanted_files
     version_bump
+    version_incr
     version_info
 );
 our @EXPORT_PRIVATE = qw(
@@ -440,6 +441,16 @@ sub version_bump {
         }
     }
     return \%files;
+}
+sub version_incr {
+    my ($version) = @_;
+
+    croak("version_incr() nees a version sent in") if ! defined $version;
+
+    my $incremented_version;
+
+    _validate_version($param);
+    return sprintf("%.2f", $param + '0.01');
 }
 sub version_info {
     my ($fs_entry) = @_;

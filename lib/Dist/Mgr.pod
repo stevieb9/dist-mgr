@@ -519,6 +519,20 @@ I<Returns>: An HoH:
         },
     };
 
+=head2 version_incr
+
+Increments a version number by C<0.01>, and returns the result.
+
+I<Use>: Any time
+
+I<Parameters>:
+
+    $version
+
+I<Mandatory, String>: A valid version number (eg: C<1.03>).
+
+I<Returns>: The supplied version number incremented by C<0.01>.
+
 =head2 version_info
 
 Fetches the file version information of Perl module files. Can operate on a
