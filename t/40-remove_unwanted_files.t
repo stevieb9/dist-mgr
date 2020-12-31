@@ -29,7 +29,7 @@ remove_unwanted();
 
 my $cwd = getcwd();
 
-like $cwd, qr/dist-mgr/, "in proper directory ok";
+like $cwd, qr/dist-mgr/i, "in proper directory ok";
 
 chdir $work or die $!;
 like getcwd(), qr/$work$/, "in $work directory ok";
@@ -62,7 +62,7 @@ like getcwd(), qr/Acme-STEVEB/, "in Acme-STEVEB dir ok";
 }
 
 chdir $cwd or die $!;
-like getcwd(), qr/dist-mgr/, "back in root directory ok";
+like getcwd(), qr/dist-mgr/i, "back in root directory ok";
 
 remove_unwanted();
 
