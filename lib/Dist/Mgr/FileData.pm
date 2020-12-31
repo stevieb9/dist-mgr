@@ -297,6 +297,16 @@ __END__
 
 Dist::Mgr::FileData - Fetch pre-written contents for various distribution files.
 
+=for html
+<a href="https://github.com/stevieb9/test-repo/actions"><img src="https://github.com/stevieb9/test-repo/workflows/CI/badge.svg"/></a>
+<a href='https://coveralls.io/github/stevieb9/test-repo?branch=master'><img src='https://coveralls.io/repos/stevieb9/test-repo/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
+
+
+=for html
+<a href="https://github.com/stevieb9/test-repo/actions"><img src="https://github.com/stevieb9/test-repo/workflows/CI/badge.svg"/></a>
+<a href='https://coveralls.io/github/stevieb9/test-repo?branch=master'><img src='https://coveralls.io/repos/stevieb9/test-repo/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
+
+
 =head1 DESCRIPTION
 
 This module returns arrays of pre-written file contents that can be used to

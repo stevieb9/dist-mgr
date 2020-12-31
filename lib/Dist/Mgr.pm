@@ -158,11 +158,13 @@ sub changes_date {
     untie $tie;
 }
 sub ci_badges {
-    if (scalar @_ != 3) {
-        croak("ci_badges() needs \$author, \$repo and \$fs_entry sent in");
+    if (scalar @_ < 2) {
+        croak("ci_badges() needs \$author and \$repo sent in");
     }
 
     my ($author, $repo, $fs_entry) = @_;
+
+    $fs_entry //= DEFAULT_DIR;
 
     for (_module_find_files($fs_entry)) {
         _module_insert_ci_badges($author, $repo, $_);
@@ -764,17 +766,6 @@ sub _module_write_template {
 
 # Validation related
 
-#sub _sha1sum {
-#    my ($file) = @_;
-#
-#    croak("shasum needs file param") if ! defined $file;
-#
-#    my $sha1 = Digest::SHA->new;
-#
-#    $sha1->addfile($file, 'U');
-#
-#    return $sha1->hexdigest;
-#}
 sub _validate_git {
     my $sep = $^O =~ /win32/i ? ';' : ':';
     return grep {-x "$_/git" } split /$sep/, $ENV{PATH};

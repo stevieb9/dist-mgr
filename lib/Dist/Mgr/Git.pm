@@ -65,12 +65,12 @@ sub _git_add {
     return $?;
 }
 sub _git_commit {
-    my ($version, $verbose) = @_;
+    my ($msg, $verbose) = @_;
 
-    croak("git_commit() requires a version sent in") if ! defined $version;
+    croak("git_commit() requires a commit message sent in") if ! defined $msg;
 
     if ( _validate_git()) {
-        _exec("git commit -am 'Release $version candidate'", $verbose);
+        _exec("git commit -am '$msg'", $verbose);
 
         if ($? != 0) {
             if ($? == 256) {

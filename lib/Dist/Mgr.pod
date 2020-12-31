@@ -260,17 +260,16 @@ I<Use>: Any time.
 
 I<Parameters>:
 
-    $version
+    $msg
 
-I<Mandatory, String>: The version of the distribution. This will be used in the
-commit message.
+I<Mandatory, String>: The commit message.
 
     $verbose
 
 I<Optional, Bool>: Set to true to display the Git command output. Defaults to
 false.
 
-I<Returns>: Exit code from the C<system> call.
+I<Returns>: Exit code.
 
 =head2 git_push
 
@@ -287,7 +286,7 @@ I<Parameters>:
 I<Optional, Bool>: Set to true to display the Git command output. Defaults to
 false.
 
-I<Returns>: Exit code from the C<system> call.
+I<Returns>: Exit code.
 
 =head2 git_pull
 
@@ -304,7 +303,7 @@ I<Parameters>:
 I<Optional, Bool>: Set to true to display the Git command output. Defaults to
 false.
 
-I<Returns>: Exit code from the C<system> call.
+I<Returns>: Exit code.
 
 =head2 git_release
 
@@ -350,7 +349,7 @@ B<Note>: Calls C<Dist::Mgr::Git::_git_tag()> internally.
 
 I<Use>: Any time.
 
-I<Returns>: Exit code from the C<system> call.
+I<Returns>: Exit code.
 
 =head2 init
 

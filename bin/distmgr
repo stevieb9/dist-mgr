@@ -2,4 +2,144 @@
 use warnings;
 use strict;
 
+use Data::Dumper;
 use Dist::Mgr qw(:all);
+use Getopt::Long;
+
+my $cmd = _init();    # shifts @ARGV
+
+my %args;
+my $git = 1;
+
+GetOptions(
+    "help|h"      => \$args{help},
+    "module|m=s@" => \$args{modules},
+    "author|a=s"  => \$args{author},
+    "email|e=s"   => \$args{email},
+    "repo|r=s"    => \$args{repo},
+    "user|u=s"    => \$args{user},
+    "cpanid|c=s"  => \$args{cpanid},
+    "version|v=s" => \$args{version},
+);
+
+commands()->{$cmd}(%args);
+
+# Commands
+
+sub create {
+    my (%args) = @_;
+
+    for (qw(modules author email)) {
+        if (! exists $args{$_}) {
+            warn "create: requires '$_' argument\n";
+            help();
+        }
+    }
+    for (qw(repo user)) {
+        if (! exists $args{$_} || ! defined $args{$_}) {
+            warn "Git functionality disabled... need both 'repo' and 'user'\n";
+            $git = 0;
+            last;
+        }
+    }
+
+    my $module = $args{modules}->[0];
+
+    # Create the distribution
+    init(%args);
+
+    # Move the files to the repo dir
+    move_distribution_files($module);
+
+    # Remove our unwanted files
+
+    remove_unwanted_files();
+
+    # Update Changes
+    changes($module);
+
+    # MANIFEST.SKIP
+
+    manifest_skip();
+
+    # .gitignore
+
+    git_ignore();
+
+    # CI config
+
+    ci_github();
+
+    # CI/Coverage badges
+
+    ci_badges($args{user}, $args{repo});
+
+    # Add bugtracker to Makefile.PL
+
+    add_bugtracker($args{user}, $args{repo});
+
+    # Add repository to Makefile.PL
+
+    add_repository($args{user}, $args{repo});
+
+}
+sub cycle {
+}
+sub install {
+}
+sub release {
+}
+
+# Functional
+
+sub help {
+    my @data = <DATA>;
+    print $_ for @data;
+    exit;
+}
+sub commands {
+    return {
+        create  => \&create,
+        cycle   => \&cycle,
+        install => \&install,
+        release => \&release,
+    };
+}
+
+# Private
+
+sub _init {
+    help() if ! @ARGV;
+    my $command = shift @ARGV;
+    help() if ! defined commands()->{$command};
+    return $command;
+}
+sub _check_repo_info {
+    my (%args) = @_;
+
+}
+
+__DATA__
+Usage: distmgr <command> [OPTIONS]
+
+Commands:
+
+create
+    -m | --module   Mandatory: The module name (eg. Test::Module)
+    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
+    -e | --email    Mandatory: The email address of the author
+    -u | --user     Optional:  The Github username (eg. stevieb9)
+    -r | --repo     Optional:  The Github repository name (eg. test-module)
+
+B<Notes>: We will skip adding repository information, skip adding CI badge info,
+and skip adding repository and bugtracker information to C<Makefile.PL> file
+if C<--user> or C<--repo> are not present in the parameter list.
+
+cycle
+    -v| --version
+
+install
+    -v
+
+release
+    -v
