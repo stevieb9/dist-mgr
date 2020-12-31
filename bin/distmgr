@@ -83,6 +83,9 @@ sub build {
     # MANIFEST.SKIP
     manifest_skip();
 
+    # manifest.t
+    manifest_t();
+
     # Git actions
     if ($git) {
         # .gitignore
@@ -144,6 +147,9 @@ sub dist {
 
     # MANIFEST.SKIP
     manifest_skip();
+
+    # manifest.t
+    manifest_t();
 }
 sub install {
     my (%args) = @_;
