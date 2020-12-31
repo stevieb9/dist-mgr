@@ -245,7 +245,7 @@ sub init {
 
     my $cwd = getcwd();
 
-    if ($cwd =~ /dist-mgr$/) {
+    if ($cwd =~ /dist-mgr(-\d+\.\d+)?$/i) {
         croak "Can't run init() while in the '$cwd' directory";
     }
 
