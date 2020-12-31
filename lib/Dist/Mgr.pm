@@ -177,7 +177,11 @@ sub ci_github {
     my ($os) = @_;
 
     if (defined $os && ref $os ne 'ARRAY') {
-        croak("\$os parameter to github_ci() must be an array ref");
+        croak("\$os parameter to ci_github() must be an array ref");
+    }
+
+    if (! defined $os) {
+        $os = [qw(5.32 5.24 5.18 5.14 5.10)];
     }
 
     my @contents = _ci_github_file($os);

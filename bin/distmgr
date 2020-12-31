@@ -20,6 +20,7 @@ GetOptions(
     "user|u=s"    => \$args{user},
     "cpanid|c=s"  => \$args{cpanid},
     "version|v=s" => \$args{version},
+    "verbose|V"   => \$args{verbose},
 );
 
 commands()->{$cmd}(%args);
@@ -45,6 +46,11 @@ sub create {
 
     my $module = $args{modules}->[0];
 
+    # Clone the repository
+    if ($git) {
+        git_clone($args{user}, $args{repo}, $args{verbose});
+    }
+
     # Create the distribution
     init(%args);
 
@@ -62,26 +68,41 @@ sub create {
 
     manifest_skip();
 
-    # .gitignore
+    # Git actions
 
-    git_ignore();
+    if ($git) {
+        # .gitignore
 
-    # CI config
+        git_ignore();
 
-    ci_github();
+        # CI config
 
-    # CI/Coverage badges
+        ci_github();
 
-    ci_badges($args{user}, $args{repo});
+        # CI/Coverage badges
 
-    # Add bugtracker to Makefile.PL
+        ci_badges($args{user}, $args{repo});
 
-    add_bugtracker($args{user}, $args{repo});
+        # Add bugtracker to Makefile.PL
 
-    # Add repository to Makefile.PL
+        add_bugtracker($args{user}, $args{repo});
 
-    add_repository($args{user}, $args{repo});
+        # Add repository to Makefile.PL
 
+        add_repository($args{user}, $args{repo});
+
+        # git add
+
+        git_add($args{verbose});
+
+        # git commit
+
+        git_commit("Initial import of $module", $args{verbose});
+
+        # git push
+
+        git_push($args{verbose});
+    }
 }
 sub cycle {
 }
