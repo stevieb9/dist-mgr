@@ -27,8 +27,7 @@ copy_module_files();
     is eval{ci_badges('stevieb9'); 1}, undef, "croak if only author param ok";
     like $@, qr/\Qci_badges() needs\E/, "...and error is sane";
 
-    is eval{ci_badges('stevieb9', 'test-repo'); 1}, undef, "croak if only author & repo param ok";
-    like $@, qr/\Qci_badges() needs\E/, "...and error is sane";
+    is eval{ci_badges('stevieb9', 'test-repo'); 1}, 1, "\$fs_entry parameter no longer required ok";
 }
 
 # files & content (live run)
