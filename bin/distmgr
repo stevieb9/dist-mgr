@@ -171,6 +171,32 @@ sub install {
     add_repository($args{user}, $args{repo}) if $args{add_repository}    || $args{install_all};
 }
 sub release {
+    my (%args) = @_;
+
+    die "release command requires 'module' argument" if ! defined $args{modules};
+
+    my $module = $args{modules}->[0];
+
+    for (qw(repo user)) {
+        if (! exists $args{$_} || ! defined $args{$_}) {
+            warn "Git functionality disabled... need both 'repo' and 'user'\n";
+            $git = 0;
+            last;
+        }
+    }
+
+    # Changes - Add release date
+    changes_date();
+
+    # Git release (commit, push, CI)
+    my $module_file = $module;
+    $module_file =~ s/::/\//g;
+    $module_file = 'lib/' . $module_file . '.pm';
+
+    my $ver = version_info($module_file)->{$module_file};
+    my $ver_incr = version_incr($ver);
+    print "$ver: $ver_incr\n";
+#    git_release($ver)
 }
 
 # Functional
@@ -207,9 +233,8 @@ Usage: distmgr <command> [OPTIONS]
 
 Commands:
 
-create
+create - Creates a full blown distribution with everything included
 
-Creates a full blown distribution with everything included
 
     -m | --module   Mandatory: The module name (eg. Test::Module)
     -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
@@ -220,23 +245,19 @@ Creates a full blown distribution with everything included
 
 Notes: We will skip adding repository information, skip adding CI badge info,
 and skip adding repository and bugtracker information to C<Makefile.PL> file
-if C<--user> or C<--repo> are not present in the parameter list.
+if --user or --repo are not present in the parameter list.
 
 cycle
     -v| --version
 
-dist
-
-Creates a bare-bones distribution with just the basics
+dist - Creates a bare-bones distribution with just the basics
 
     -m | --module   Mandatory: The module name (eg. Test::Module)
     -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
     -e | --email    Mandatory: The email address of the author
     -V | --verbose  Optional:  Display verbose output for each process
 
-install
-
-Installs/adds various files or file sections
+install - Installs/adds various files or file sections
 
     -g | --gitignore    Install .gitignore file
     -c | --ci           Install Github Actions CI configuration file
