@@ -45,7 +45,7 @@ sub build {
     }
     for (qw(repo user)) {
         if (! exists $args{$_} || ! defined $args{$_}) {
-            warn "Git functionality disabled... need both 'repo' and 'user'\n";
+            warn "Git functionality disabled... need both 'repo' and 'user'\n\n";
             $git = 0;
             last;
         }
@@ -185,7 +185,7 @@ sub release {
 
     for (qw(repo user)) {
         if (! exists $args{$_} || ! defined $args{$_}) {
-            warn "Git functionality disabled... need both 'repo' and 'user'\n";
+            warn "Git functionality disabled... need both 'repo' and 'user'\n\n";
             $git = 0;
             last;
         }
@@ -199,7 +199,10 @@ sub release {
     $module_file =~ s/::/\//g;
     $module_file = 'lib/' . $module_file . '.pm';
 
-    my $ver = version_info($module_file)->{$module_file};
+    my $ver;
+    if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
+        die "The $module_file file for $module can't be found\n";
+    }
     my $ver_incr = version_incr($ver);
     print "$ver: $ver_incr\n";
 #    git_release($ver)
