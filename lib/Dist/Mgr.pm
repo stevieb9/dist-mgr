@@ -180,10 +180,6 @@ sub ci_github {
         croak("\$os parameter to ci_github() must be an array ref");
     }
 
-    if (! defined $os) {
-        $os = [qw(5.32 5.24 5.18 5.14 5.10)];
-    }
-
     my @contents = _ci_github_file($os);
     _ci_github_write_file(\@contents);
 
