@@ -34,6 +34,7 @@ our @EXPORT_OK = qw(
     cpan_upload
     git_add
     git_commit
+    git_clone
     git_pull
     git_push
     git_ignore
@@ -223,6 +224,9 @@ sub git_ignore {
 }
 sub git_commit {
     _git_commit(@_);
+}
+sub git_clone {
+    _git_clone(@_);
 }
 sub git_push {
     _git_push(@_);

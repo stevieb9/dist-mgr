@@ -24,6 +24,7 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
     _git_add
     _git_commit
+    _git_clone
     _git_push
     _git_pull
     _git_release
@@ -56,7 +57,7 @@ sub _git_add {
 
     if (_validate_git()) {
         _exec('git add', $verbose);
-        croak("Git add failed... needs intervention...") if $? != 0;
+        croak("Git add failed with exit code: $?") if $? != 0;
     }
     else {
         warn "'git' not installed, can't add\n";
@@ -77,7 +78,7 @@ sub _git_commit {
                 print "\nNothing to commit, proceeding...\n";
             }
             else {
-                croak("Git commit failed... needs intervention...") if $? != 0;
+                croak("Git commit failed with exit code: $?") if $? != 0;
             }
         }
     }
@@ -87,12 +88,32 @@ sub _git_commit {
 
     return $?;
 }
+sub _git_clone {
+    my ($user, $repo, $verbose) = @_;
+
+    if (! defined $user || ! defined $repo) {
+        croak("git_clone() requires a user and repository sent in");
+    }
+
+    if ( _validate_git()) {
+        _exec("git clone 'https://$user\@github.com/$user/$repo'", $verbose);
+
+        if ($? != 0) {
+            croak("Git clone failed with exit code: $?") if $? != 0;
+        }
+    }
+    else {
+        warn "'git' not installed, can't clone\n";
+    }
+
+    return $?;
+}
 sub _git_pull {
     my ($version) = @_;
 
     if (_validate_git()) {
         `git pull`;
-        croak("Git pull failed... needs intervention...") if $? != 0;
+        croak("Git pull failed with exit code: $?") if $? != 0;
     }
     else {
         warn "'git' not installed, can't commit\n";
@@ -106,7 +127,7 @@ sub _git_push {
     if (_validate_git()) {
         _exec('git push', $verbose);
         _exec('git push --tags', $verbose);
-        croak("Git push failed... needs intervention...") if $? != 0;
+        croak("Git push failed with exit code: $?") if $? != 0;
     }
     else {
         warn "'git' not installed, can't push\n";
