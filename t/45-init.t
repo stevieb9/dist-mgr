@@ -178,7 +178,7 @@ remove_init();
 done_testing;
 
 sub before {
-    like $cwd, qr/dist-mgr/, "in proper directory ok";
+    like $cwd, qr/dist-mgr/i, "in proper directory ok";
 
     chdir $work or die $!;
     like getcwd(), qr/$work$/, "in $work directory ok";
@@ -194,7 +194,7 @@ sub before {
 }
 sub after {
     chdir $cwd or die $!;
-    like getcwd(), qr/dist-mgr/, "back in root directory ok";
+    like getcwd(), qr/dist-mgr/i, "back in root directory ok";
     remove_init();
 
     is -e "$work/init", undef, "'init' dir removed ok";
