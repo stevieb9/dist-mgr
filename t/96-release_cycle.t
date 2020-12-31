@@ -96,7 +96,7 @@ my %cpan_args = (
 
     # next cycle prep commit and push
 
-    git_commit("git commit -am 'Release $post_release_ver candidate'");
+    git_commit("Release $post_release_ver candidate");
     git_push();
 
     # Compare all files against the saved template (post next cycle prep)

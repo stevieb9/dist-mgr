@@ -1,5 +1,6 @@
 .github/workflows/github_ci_default.yml
 appveyor.yml
+bin/distmgr
 Changes
 dev/quote_file_contents.pl
 lib/Dist/Mgr.pm
@@ -9,7 +10,6 @@ lib/Dist/Mgr/Git.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
-pod2htmd.tmp
 t/00-load.t
 t/05-version_bump.t
 t/10-version_info.t
@@ -31,6 +31,7 @@ t/85-cpan_upload.t
 t/95-build_cycle.t
 t/96-release_cycle.t
 t/data/module_template/.github/workflows/github_ci_default.yml
+t/data/module_template/.gitignore
 t/data/module_template/Changes
 t/data/module_template/lib/Acme/STEVEB.pm
 t/data/module_template/Makefile.PL
@@ -40,6 +41,7 @@ t/data/module_template/t/00-load.t
 t/data/module_template/t/manifest.t
 t/data/module_template/t/pod-coverage.t
 t/data/module_template/t/pod.t
+t/data/orig/.gitignore
 t/data/orig/Bad.pm
 t/data/orig/Changes
 t/data/orig/Changes-release
@@ -52,6 +54,7 @@ t/data/orig/One.pm
 t/data/orig/Three.pm
 t/data/orig/Two.pm
 t/data/release_module_template/.github/workflows/github_ci_default.yml
+t/data/release_module_template/.gitignore
 t/data/release_module_template/Changes
 t/data/release_module_template/lib/Acme/STEVEB.pm
 t/data/release_module_template/Makefile.PL
@@ -61,6 +64,7 @@ t/data/release_module_template/t/00-load.t
 t/data/release_module_template/t/manifest.t
 t/data/release_module_template/t/pod-coverage.t
 t/data/release_module_template/t/pod.t
+t/data/work/placeholder.txt
 t/lib/Helper.pm
 t/manifest.t
 t/pod-coverage.t
