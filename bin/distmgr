@@ -127,6 +127,21 @@ sub build {
     }
 }
 sub cycle {
+
+    # - get ver
+    # - incr ver
+    # - ensure no UNREL (die)
+    # - bump ver in module
+    # - bump changes
+    #
+    # Increment version number
+    #my $ver;
+    #if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
+    #    die "The $module_file file for $module can't be found\n";
+    #}
+
+    #my $ver_incr = version_incr($ver);
+
 }
 sub dist {
     my (%args) = @_;
@@ -254,16 +269,13 @@ sub release {
 
     make_distclean();
 
+    # Git tag && push
+
+    git_tag($ver);
+    git_push();
+
     print "\nRelease process completed successfully\n";
 }
-#
-# Increment version number
-#my $ver;
-#if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
-#    die "The $module_file file for $module can't be found\n";
-#}
-
-#my $ver_incr = version_incr($ver);
 
 # Functional
 
