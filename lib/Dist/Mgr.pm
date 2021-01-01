@@ -43,6 +43,7 @@ our @EXPORT_OK = qw(
     init
     make_dist
     make_distclean
+    make_manifest
     make_test
     manifest_skip
     manifest_t
@@ -369,6 +370,18 @@ sub make_distclean {
 
     if ($? != 0) {
         croak("Exit code $? returned... 'make dist' failed");
+    }
+
+    return $?;
+}
+sub make_manifest {
+    capture_merged {
+        unlink 'MANIFEST' or warn "Can't remove the MANIFEST file!: $!";
+         `$^X Makefile.PL && make manifest`;
+    };
+
+    if ($? != 0) {
+        croak("Exit code $? returned... 'make manifest' failed");
     }
 
     return $?;

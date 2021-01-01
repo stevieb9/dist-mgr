@@ -11,8 +11,8 @@
 .hgignore$
 ^_build/
 ^Build$
-^MYMETA\.yml$
-^MYMETA\.json$
+^MYMETA\.yml
+^MYMETA\.json
 ^README.bak$
 ^Makefile$
 .metadata/

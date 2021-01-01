@@ -132,6 +132,10 @@ remove_init();
         "$new_ver is greater than $orig_ver ok"
     );
 
+    # make_manifest()
+
+    make_manifest();
+
     # Compare all files against the saved template
 
     like

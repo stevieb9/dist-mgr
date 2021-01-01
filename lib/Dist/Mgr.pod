@@ -437,6 +437,14 @@ the rest of the release cycle. Zero C<0> is success, everything else is fail.
 
 I<Returns>: C<0> on success. Anything other than C<0> is a failure.
 
+=head2 make_manifest
+
+Perform a C<make manifest>.
+
+I<Use>: Before running the release procedures.
+
+I<Returns>: C<0> on success. Anything other than C<0> is a failure.
+
 =head2 manifest_skip
 
 Generates a C<MANIFEST.SKIP> file.
