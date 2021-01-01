@@ -369,7 +369,7 @@ sub make_distclean {
     };
 
     if ($? != 0) {
-        croak("Exit code $? returned... 'make dist' failed");
+        croak("Exit code $? returned... 'make distclean' failed\n");
     }
 
     return $?;
@@ -381,7 +381,7 @@ sub make_manifest {
     };
 
     if ($? != 0) {
-        croak("Exit code $? returned... 'make manifest' failed");
+        croak("Exit code $? returned... 'make manifest' failed\n");
     }
 
     return $?;
@@ -392,7 +392,7 @@ sub make_test {
     };
 
     if ($? != 0) {
-        croak("Exit code $? returned... 'make test' failed");
+        croak("Exit code $? returned... 'make test' failed\n");
     }
 
     return $?;
