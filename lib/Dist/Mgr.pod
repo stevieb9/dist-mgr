@@ -358,7 +358,7 @@ running again.
 
 I<Default>: C<1>, Enabled.
 
-I<Returns>: C<0> on test success (CTRL-C), C<1> on test failure (ENTER).
+I<Returns>: C<1> on test success (CTRL-C), C<0> on test failure (ENTER).
 
 =head2 git_tag
 

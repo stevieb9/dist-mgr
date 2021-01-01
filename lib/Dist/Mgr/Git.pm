@@ -168,11 +168,11 @@ sub _git_release {
 
         if ($interrupt) {
             print "\nTests pass, continuing with release\n";
-            return 0;
+            return 1;
         }
         else {
             print "\nTests failed, halting progress\n";
-            return -1;
+            return 0;
         }
     }
 }
