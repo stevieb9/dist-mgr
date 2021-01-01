@@ -39,6 +39,7 @@ our @EXPORT_OK = qw(
     git_push
     git_ignore
     git_release
+    git_status
     git_tag
     init
     make_dist
@@ -239,6 +240,9 @@ sub git_pull {
 }
 sub git_release {
     _git_release(@_);
+}
+sub git_status {
+    _git_status(@_);
 }
 sub git_tag {
     _git_tag(@_);

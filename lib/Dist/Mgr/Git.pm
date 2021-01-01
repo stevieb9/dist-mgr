@@ -28,6 +28,7 @@ our @EXPORT_OK = qw(
     _git_push
     _git_pull
     _git_release
+    _git_status
     _git_tag
 );
 our %EXPORT_TAGS = (
@@ -176,6 +177,31 @@ sub _git_release {
         }
     }
 }
+sub _git_status {
+    my $status_output;
+
+    if (_validate_git()) {
+        $status_output = `git status`;
+    }
+    else {
+        warn "'git' not installed, can't get status\n";
+    }
+
+    my @git_output = (
+        'On branch',
+        'Your branch is up-to-date with',
+        'nothing to commit, working directory clean'
+    );
+
+    my @status = split /\n/, $status_output;
+
+    for (0..$#status) {
+        return 0 if $status[$_] !~ /$git_output[$_]/;
+    }
+
+    return 1;
+}
+
 sub _git_tag {
     my ($version, $verbose) = @_;
 
