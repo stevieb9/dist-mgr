@@ -7,6 +7,8 @@ use strict;
 
 # release
 # ./../repos/dist-mgr/bin/distmgr release -m Acme::STEVEB -u stevieb9 -r acme-steveb -V
+
+use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
 use Data::Dumper;
 use Dist::Mgr qw(:all);
@@ -24,6 +26,9 @@ GetOptions(
     "e|email=s"   => \$args{email},
     "r|repo=s"    => \$args{repo},
     "u|user=s"    => \$args{user},
+    "i|cpanid=s"  => \$args{cpan_id},
+    "p|cpanpw=s"  => \$args{cpan_pw},
+    "d|dryrun"    => \$args{cpan_dryrun},
     "v|version=s" => \$args{version},
     "V|verbose"   => \$args{verbose},
 
@@ -34,6 +39,9 @@ GetOptions(
     "R|repository"  => \$args{add_repository},
     "A|all"         => \$args{install_all},
 );
+
+$args{cpan_id} //= $ENV{CPAN_USERNAME};
+$args{cpan_pw} //= $ENV{CPAN_PASSWORD};
 
 commands()->{$cmd}(%args);
 
@@ -67,11 +75,11 @@ sub build {
     else {
         $dir = $module;
         $dir =~ s/::/-/g;
-        mkdir $dir or die "Can't create the '$dir' directory: $!";
+        mkdir $dir or die "ERROR: Can't create the '$dir' directory: $!";
     }
 
     # Change into module directory
-    chdir $dir or die "Can't change into the '$dir' directory: $!";
+    chdir $dir or die "ERROR: Can't change into the '$dir' directory: $!";
 
     # Create the distribution
     init(%args);
@@ -133,10 +141,10 @@ sub dist {
     my $module = $args{modules}->[0];
     my $dir = $module;
     $dir =~ s/::/-/g;
-    mkdir $dir or die "Can't create the '$dir' directory: $!";
+    mkdir $dir or die "ERROR: Can't create the '$dir' directory: $!";
 
     # Change into module directory
-    chdir $dir or die "Can't change into the '$dir' directory: $!";
+    chdir $dir or die "ERROR: Can't change into the '$dir' directory: $!";
 
     # Create the distribution
     init(%args);
@@ -164,16 +172,16 @@ sub install {
 
     if (! defined $args{user} || ! defined $args{repo}) {
         if ($args{add_badges}) {
-            die "--badges requires --user and --repo\n";
+            die "ERROR: --badges requires --user and --repo\n";
         }
         if ($args{add_bugtracker}) {
-            die "--bugtracker requires --user and --repo\n";
+            die "ERROR: --bugtracker requires --user and --repo\n";
         }
         if ($args{add_repository}) {
-            die "--repository requires --user and --repo\n";
+            die "ERROR: --repository requires --user and --repo\n";
         }
         if ($args{install_all}) {
-            die "badges, bugtracker and repository require --user and --repo\n";
+            die "ERROR: badges, bugtracker and repository require --user and --repo\n";
         }
     }
 
@@ -184,13 +192,13 @@ sub install {
 sub release {
     my (%args) = @_;
 
-    die "release command requires 'module' argument" if ! defined $args{modules};
+    die "ERROR: 'release' command requires 'module' argument" if ! defined $args{modules};
 
     my $module = $args{modules}->[0];
 
     for (qw(repo user)) {
         if (! exists $args{$_} || ! defined $args{$_}) {
-            warn "Git functionality disabled... need both 'repo' and 'user'\n\n";
+            warn "NOTICE: git functionality disabled... need both 'repo' and 'user'\n\n";
             $git = 0;
             last;
         }
@@ -207,15 +215,46 @@ sub release {
     # Version (current)
     my $ver;
     if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
-        die "The $module_file file for $module can't be found\n";
+        die "ERROR: The $module_file file for $module can't be found\n";
+    }
+
+    # make test
+
+    if (! eval { make_test(); 1 }) {
+        die "\nERROR: Local 'make test' failed. Intervention required. Halting the release procedure\n";
     }
 
     # CI testing
     if ($git) {
         if (! git_release($ver)) {
-            die "\nUser cancelled the release process due to failing CI testing\n";
+            die "\nERROR: User cancelled the release process due to failing CI testing\n";
         }
     }
+
+    # Bundle distribution
+
+    make_dist();
+
+    # CPAN upload
+
+    if ($args{cpan_id} && $args{cpan_pw}) {
+        (my $dist = $module) =~ s/::/-/g;
+        my $dist_file = (glob("${dist}-*.tar.gz"))[-1];
+
+        my $cpan_msg = capture_merged {
+            cpan_upload($dist_file, dry_run => $args{cpan_dryrun});
+        };
+
+        if ($cpan_msg =~ /Message:\s+(.*)/) {
+            die "ERROR: CPAN failed with error '$1'. Couldn't upload.\n";
+        }
+    }
+
+    # dist clean
+
+    make_distclean();
+
+    print "\nRelease process completed successfully\n";
 }
 #
 # Increment version number
