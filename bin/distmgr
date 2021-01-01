@@ -250,7 +250,7 @@ sub release {
         }
     }
 
-    # dist clean
+    # Clean the working directory
 
     make_distclean();
 
@@ -321,9 +321,9 @@ dist - Creates a bare-bones distribution with just the basics
     -m | --module   Mandatory: The module name (eg. Test::Module)
     -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
     -e | --email    Mandatory: The email address of the author
-    -V | --verbose  Optional:  Display verbose output for each process
+    -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
-install - Installs/adds various files or file sections
+install - Installs/adds various files or file sections (all flags)
 
     -g | --gitignore    Install .gitignore file
     -c | --ci           Install Github Actions CI configuration file
@@ -336,5 +336,12 @@ Notes: For badges, bugtracker and repository, the --user and --repo arguments
 must be supplied.
 
 release
-    -v
 
+    -m | --module   Mandatory: The module name (eg. Test::Module)
+    -i | --cpanid   Optional:  Your PAUSE userid
+    -p | --cpanpw   Optional:  Your PAUSE userid's password
+    -d | --dryrun   Optional:  (Flag) Don't actually upload to the CPAN
+
+Notes: No Git operations will be performed without C<--repo> and C<--user>. If
+the C<--cpanid> or C<--cpanpw> aren't available or the C<CPAN_USERNAME> or
+C<CPAN_PASSWORD> environment variables aren't set, we won't upload to the CPAN.
