@@ -460,6 +460,23 @@ specified, we'll create it in the current directory, C<.>.
 
 I<Returns>: An array of the file's contents.
 
+=head2 manifest_t
+
+Generates a C<t/manifest.t> test file. This overrides the default created with
+L<Module::Starter>, as some custom C<MANIFEST.SKIP> entries fail with the older
+version of the file.
+
+I<Use>: Any time.
+
+I<Parameters>:
+
+    $directory
+
+I<Optional, String>: The directory where we'll create the file. If not
+specified, we'll create it in the C<t/> directory within the current directory, C<.>.
+
+I<Returns>: An array of the file's contents.
+
 =head2 move_distribution_files
 
 After an L</init>, this method will scoop up all of the files and directories
