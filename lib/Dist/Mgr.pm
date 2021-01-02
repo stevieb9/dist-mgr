@@ -623,6 +623,8 @@ sub _makefile_insert_bugtracker {
 
     my ($mf, $tie) = _makefile_tie($makefile);
 
+    return -1 if grep /bugtracker/, @$mf;
+
     if (grep ! /META_MERGE/, @$mf) {
         _makefile_insert_meta_merge($mf);
     }
@@ -647,6 +649,8 @@ sub _makefile_insert_repository {
     }
 
     my ($mf, $tie) = _makefile_tie($makefile);
+
+    return -1 if grep /repository/, @$mf;
 
     if (grep ! /META_MERGE/, @$mf) {
         _makefile_insert_meta_merge($mf);
