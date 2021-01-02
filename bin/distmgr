@@ -127,21 +127,42 @@ sub build {
     }
 }
 sub cycle {
+    my (%args) = @_;
 
-    # - get ver
-    # - incr ver
-    # - ensure no UNREL (die)
-    # - bump ver in module
-    # - bump changes
-    #
-    # Increment version number
-    #my $ver;
-    #if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
-    #    die "The $module_file file for $module can't be found\n";
-    #}
+    die "ERROR: 'cycle' command requires 'module' argument\n" if ! defined $args{modules};
 
-    #my $ver_incr = version_incr($ver);
+    my $module = $args{modules}->[0];
 
+    for (qw(repo user)) {
+        if (! exists $args{$_} || ! defined $args{$_}) {
+            warn "NOTICE: git functionality disabled... need both 'repo' and 'user'\n\n";
+            $git = 0;
+            last;
+        }
+    }
+
+    # Version (updated)
+    my $module_file = $module;
+    $module_file =~ s/::/\//g;
+    $module_file = 'lib/' . $module_file . '.pm';
+
+    my $ver;
+    if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
+        die "ERROR: The $module_file file for $module can't be found\n";
+    }
+
+    my $ver_incr = version_incr($ver);
+
+    version_bump($ver_incr, $module_file);
+
+    changes_bump($ver_incr);
+
+    if ($git) {
+        git_commit("Prep for $ver_incr");
+        git_push();
+    }
+
+    print "\nSuccessfully cycled to the next development version\n";
 }
 sub dist {
     my (%args) = @_;
