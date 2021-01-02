@@ -57,6 +57,7 @@ like getcwd(), qr/Acme-STEVEB/, "in Acme-STEVEB dir ok";
     remove_unwanted_files();
 
     for (@unwanted_entries) {
+        next if $_ eq 'MANIFEST'; # We remove, then re-add this file
         is -e $_, undef, "'$_' removed ok";
     }
 }
