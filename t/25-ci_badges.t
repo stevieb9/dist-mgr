@@ -38,6 +38,19 @@ copy_module_files();
     }
 }
 
+# files & content (live run, duplicate) (fail)
+{
+    for my $file (@valid) {
+        my $ret = ci_badges($u, $r, $file);
+
+        if ($file !~ /Three\.pm/) {
+            is $ret, -1, "proper return from ci_badges() if trying to add dup";
+        }
+
+        verify_file($file);
+    }
+}
+
 unlink_module_files();
 verify_clean();
 

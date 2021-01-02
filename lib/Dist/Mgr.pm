@@ -175,11 +175,13 @@ sub ci_badges {
 
     $fs_entry //= DEFAULT_DIR;
 
+    my $exit = 0;
+
     for (_module_find_files($fs_entry)) {
-        _module_insert_ci_badges($author, $repo, $_);
+        $exit = -1 if _module_insert_ci_badges($author, $repo, $_) == -1;
     }
 
-    return 0;
+    return $exit;
 }
 sub ci_github {
     my ($os) = @_;
@@ -787,6 +789,8 @@ sub _module_insert_ci_badges {
     my ($author, $repo, $module_file) = @_;
 
     my ($mf, $tie) = _module_tie($module_file);
+
+    return -1 if grep /badge\.svg/, @$mf;
 
     for (0..$#$mf) {
         if ($mf->[$_] =~ /^=head1 NAME/) {

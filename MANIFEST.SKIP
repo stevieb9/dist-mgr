@@ -29,6 +29,7 @@ examples/
 build/
 ^\w+.list$
 .bblog$
+bblog/
 .base$
 BB-Pass/
 BB-Fail/
