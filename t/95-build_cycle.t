@@ -189,12 +189,13 @@ remove_init();
 
     is scalar @template_files, $file_count, "file count matches number of files in template";
 
-    print "POS: ";
-    print(join(', ', @possible_new_files)) . "\n";
-    print "NEW: ";
-    print(join(', ', @new_files)) . "\n";
-    print "TPL: ";
-    print(join(', ', @template_files)) . "\n";
+    print "POS: \n";
+    print "\t$_\n" for @possible_new_files;
+    print "NEW: \n";
+    print "\t$_\n" for @new_files;
+    print "TPL: \n";
+    print "\t$_\n" for @template_files;
+
     # Cleanup
 
     after();
