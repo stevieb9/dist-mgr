@@ -29,9 +29,9 @@ unlink_changes();
 
     file_compare("$work/Changes-prerelease", "$work/Changes-release");
 
-#    unlink_changes();
+    unlink_changes();
 }
 
-#unlink_changes();
+unlink_changes();
 
 done_testing;
