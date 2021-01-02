@@ -2,7 +2,7 @@
 Changes
 lib/Acme/STEVEB.pm
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 MANIFEST.SKIP
 t/00-load.t
 t/manifest.t
