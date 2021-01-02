@@ -72,6 +72,7 @@ use constant {
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
+    MAKE                => $^O =~ /win32/i ? 'gmake' : 'make',
 };
 
 # Public
@@ -356,59 +357,51 @@ sub remove_unwanted_files {
     for (_unwanted_filesystem_entries()) {
         rmtree $_;
     }
-
-    # Below is needed because in _unwanted_filesystem_entries() we list MANIFEST
-    # as on Windows, README doesn't get removed properly, so we blow it away
-    # then recreate the MANIFEST file here
-
     make_manifest();
-    make_distclean();
-
     return 0;
 }
 sub make_dist {
     capture_merged {
-        `make dist`;
+        `${\MAKE} dist`;
     };
 
     if ($? != 0) {
-        croak("Exit code $? returned... 'make dist' failed");
+        croak("Exit code $? returned... '${\MAKE} dist' failed");
     }
 
     return $?;
 }
 sub make_distclean {
-    capture_merged {
-        `make distclean`;
-    };
+        capture_merged {
+            `${\MAKE} distclean`;
+        };
 
     if ($? != 0) {
-        croak("Exit code $? returned... 'make distclean' failed\n");
+        croak("Exit code $? returned... '${\MAKE} distclean' failed\n");
     }
 
     return $?;
 }
 sub make_manifest {
-    capture_merged {
-#        open my $fh, '>', 'MANIFEST' or warn "make_manifest(): Can't open MANIFEST for re-writing: $!";
-#        print $fh '';
-#        close $fh or die $!;
-         `$^X Makefile.PL && make manifest`;
-    };
+        capture_merged {
+            `$^X Makefile.PL`;
+            `${\MAKE} manifest`;
+            make_distclean();
+        };
 
     if ($? != 0) {
-        croak("Exit code $? returned... 'make manifest' failed\n");
+        croak("Exit code $? returned... '${\MAKE} manifest' failed\n");
     }
 
     return $?;
 }
 sub make_test {
     capture_merged {
-        `$^X Makefile.PL && make test`;
+        `$^X Makefile.PL && ${\MAKE} test`;
     };
 
     if ($? != 0) {
-        croak("Exit code $? returned... 'make test' failed\n");
+        croak("Exit code $? returned... '${\MAKE} test' failed\n");
     }
 
     return $?;

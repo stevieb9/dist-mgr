@@ -182,7 +182,7 @@ remove_init();
         }
     }
 
-    is scalar @template_files, $file_count, "file count matches number of files in template";
+    is scalar $file_count, @template_files, "file count matches number of files in template";
 
     # Cleanup
 
