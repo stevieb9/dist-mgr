@@ -64,6 +64,9 @@ sub copy_changes {
     $y+= 1900;
     $m+= 1;
 
+    $d = "0$d" if length $d == 1;
+    $m = "0$m" if length $m == 1;
+
     my $changes_release = "$work_dir/Changes-release";
 
     my $tie = tie my @changes, 'Tie::File', $changes_release;

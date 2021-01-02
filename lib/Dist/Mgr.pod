@@ -366,9 +366,9 @@ Checks whether we need to commit or push.
 
 B<Note>: Calls C<Dist::Mgr::Git::_git_status()> internally.
 
-I<Use>: Any time.
+I<Use>: Any timet9.
 
-I<Returns>: C<0> if the repository differs and C<1> if nothing needs to be done.
+<Returns>: C<0> if the repository differs and C<1> if nothing needs to be done.
 
 =head2 git_tag
 

@@ -173,6 +173,10 @@ remove_init();
                         like $nf[$_], qr/\$VERSION = '9.66'/, "Changes line 2 contains date ok";
                         next;
                     }
+                    if ($tf[$_] =~ /\b2020\b/) {
+                        is $nf[$_] =~ /Copyright.* \d{4}/, 1, "$nf Copyright line ok";
+                        next;
+                    }
                 }
                 is $nf[$_], $tf[$_], "$nf file matches the template $tf ok";
             }

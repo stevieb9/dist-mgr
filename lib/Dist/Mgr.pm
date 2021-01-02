@@ -153,6 +153,9 @@ sub changes_date {
     $y += 1900;
     $m += 1;
 
+    $m = "0$m" if length $m == 1;
+    $d = "0$d" if length $d == 1;
+
     for (0..$#$contents) {
         if ($contents->[$_] =~ /^(.*)\s+UNREL/) {
             $contents->[$_] = "$1    $y-$m-$d";

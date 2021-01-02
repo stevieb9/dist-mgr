@@ -163,6 +163,10 @@ remove_init();
             is "#$new_tpl[$_]", "$orig_tpl[$_]", "module template line $_ matches ok";
             next;
         }
+        if ($orig_tpl[$_] =~ /Copyright.*2020/) {
+            like $new_tpl[$_], qr/Copyright.*\d{4}/, "module template line $_ Copyright matches ok";
+            next;
+        }
         is $new_tpl[$_], $orig_tpl[$_], "module template line $_ matches ok";
     }
 
