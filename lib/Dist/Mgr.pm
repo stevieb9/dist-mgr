@@ -383,9 +383,9 @@ sub make_distclean {
 }
 sub make_manifest {
     capture_merged {
-        open my $fh, '>', 'MANIFEST' or warn "make_manifest(): Can't open MANIFEST for re-writing: $!";
-        print $fh '';
-        close $fh or die $!;
+#        open my $fh, '>', 'MANIFEST' or warn "make_manifest(): Can't open MANIFEST for re-writing: $!";
+#        print $fh '';
+#        close $fh or die $!;
          `$^X Makefile.PL && make manifest`;
     };
 
