@@ -300,6 +300,7 @@ sub _unwanted_filesystem_entries {
         xt/
         ignore.txt
         README
+        MANIFEST
     );
 }
 

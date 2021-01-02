@@ -357,6 +357,13 @@ sub remove_unwanted_files {
         rmtree $_;
     }
 
+    # Below is needed because in _unwanted_filesystem_entries() we list MANIFEST
+    # as on Windows, README doesn't get removed properly, so we blow it away
+    # then recreate the MANIFEST file here
+
+    make_manifest();
+    make_distclean();
+
     return 0;
 }
 sub make_dist {

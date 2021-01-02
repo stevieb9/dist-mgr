@@ -189,7 +189,7 @@ remove_init();
     after();
 }
 
-remove_init() if getcwd() !~ /init$/;
+#remove_init() if getcwd() !~ /init$/;
 
 done_testing;
 
