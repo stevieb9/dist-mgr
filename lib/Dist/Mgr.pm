@@ -383,8 +383,7 @@ sub make_distclean {
 }
 sub make_manifest {
     capture_merged {
-#        unlink 'MANIFEST' or warn "Can't remove the MANIFEST file!: $!";
-        open my $fh, '>', 'MANIFEST' or die "Can't open MANIFEST for emptying: $!";
+        open my $fh, '>', 'MANIFEST' or warn "make_manifest(): Can't open MANIFEST for re-writing: $!";
         print $fh '';
         close $fh or die $!;
          `$^X Makefile.PL && make manifest`;

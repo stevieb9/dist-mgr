@@ -148,18 +148,13 @@ remove_init();
     my @template_files = File::Find::Rule->file()
         ->name('*')
         ->in($template_dir);
-    my @possible_new_files;
-    my @new_files;
-
     my $file_count = 0;
 
     for my $tf (@template_files) {
         (my $nf = $tf) =~ s/$template_dir//;
         # nf == new file
         # tf == template file
-        push @possible_new_files, $nf;
         if (-f $nf) {
-            push @new_files, $nf;
             open my $tfh, '<', $tf or die $!;
             open my $nfh, '<', $nf or die $!;
 
@@ -188,13 +183,6 @@ remove_init();
     }
 
     is scalar @template_files, $file_count, "file count matches number of files in template";
-
-    print "POS: \n";
-    print "\t$_\n" for @possible_new_files;
-    print "NEW: \n";
-    print "\t$_\n" for @new_files;
-    print "TPL: \n";
-    print "\t$_\n" for @template_files;
 
     # Cleanup
 
