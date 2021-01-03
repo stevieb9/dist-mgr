@@ -2,11 +2,13 @@
 use warnings;
 use strict;
 
-# create
-# dist-mgr/bin/distmgr create -m Test::Module -a Steve Bertrand -e steveb@cpan.org -u stevieb9 -r test-module -V
+# Test run
 
-# release
-# ./../repos/dist-mgr/bin/distmgr release -m Acme::STEVEB -u stevieb9 -r acme-steveb -V
+# distmgr create --destroy -m Test::Module -a "Steve Bertrand" -e steveb@cpan.org -r test-module -u stevieb9
+# cd test-module/
+# ...add lines to Changes, commit & push
+# distmgr release -d
+# distmgr cycle
 
 use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
