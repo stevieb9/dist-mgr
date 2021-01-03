@@ -2,12 +2,12 @@
 
 - [Description](#description)
 - [Limitations](#limitations)
-- [Examples](#examples)
 - [Create distribution with repository](#create)
 - [Create a distribution](#dist)
 - [Release a distribution](#release)
 - [Prepare next development cycle](#cycle)
 - [Install individual features](#install)
+- [Examples](#examples)
 
 #### Description
 
@@ -32,57 +32,7 @@ operations being executed
 - Coveralls.io is the only test coverage platform we support
 - Github is the only bugtracker platform we support
 - `ExtUtils::MakeMaker` is the only build system we support
-
-#### Examples
-
-- Create with repository
-
-```
-    distmgr create \
-            --module Test::Module \
-            --author "Steve Bertrand" \
-            --email  steveb@cpan.org \
-            --repo   test-module \
-            --user   stevieb9
-```
-
-- Create without repository
-
-```
-    distmgr dist \
-            -m Test::Module \
-            -a "Steve Bertrand" \
-            -e steveb@cpan.org
-```
-            
-- Release an existing distribution
-
-```
-    distmgr release \
-            --cpanid STEVEB
-            --cpanpw password
-```
-            
-- Prepare distribution for next development cycle
-
-
-    distmgr cycle
-    
-- Implement `Dist::Mgr` features into an existing distribution    
-                                    
-```
-    distmgr install \
-            --gitignore \
-            --ci \
-            --badges \
-            --bugtracker \
-            --repository 
-            
-    # or
-    
-    distmgr install --all
-```
-                
+               
 #### create
 
 This command allows you to create a distribution based on a previously created
@@ -168,3 +118,53 @@ an already-existing distribution that you author.
 
     -A | --all          Insert/Install all above options
 
+#### Examples
+
+- Create with repository
+
+```
+    distmgr create \
+            --module Test::Module \
+            --author "Steve Bertrand" \
+            --email  steveb@cpan.org \
+            --repo   test-module \
+            --user   stevieb9
+```
+
+- Create without repository
+
+```
+    distmgr dist \
+            -m Test::Module \
+            -a "Steve Bertrand" \
+            -e steveb@cpan.org
+```
+            
+- Release an existing distribution
+
+```
+    distmgr release \
+            --cpanid STEVEB
+            --cpanpw password
+```
+            
+- Prepare distribution for next development cycle
+
+
+    distmgr cycle
+    
+- Implement `Dist::Mgr` features into an existing distribution    
+                                    
+```
+    distmgr install \
+            --gitignore \
+            --ci \
+            --badges \
+            --bugtracker \
+            --repository 
+            
+    # or
+    
+    distmgr install --all
+```
+ 
