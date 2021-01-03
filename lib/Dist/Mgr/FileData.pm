@@ -264,6 +264,7 @@ sub _manifest_skip_file {
         q{pm_to_blib$},
         q{.git/},
         q{.debug$},
+        q{^\.github/},
         q{.gitignore$},
         q{^\w+.pl$},
         q{.ignore.txt$},
@@ -282,16 +283,20 @@ sub _manifest_skip_file {
 }
 sub _manifest_t_file {
     return (
-        q{use warnings;},
-        q{use strict;},
-        q{},
-        q{use Test::More;},
-        q{use ExtUtils::Manifest;},
-        q{},
-        q{is_deeply [ ExtUtils::Manifest::manicheck() ], [], 'missing';},
-        q{is_deeply [ ExtUtils::Manifest::filecheck() ], [], 'extra';},
-        q{},
-        q{done_testing;},
+        q|use warnings;|,
+        q|use strict;|,
+        q||,
+        q|use Test::More;|,
+        q|use ExtUtils::Manifest;|,
+        q||,
+        q|if (! $ENV{RELEASE_TESTING}) {|,
+        q|    plan skip_all => "Author tests not required for installation";|,
+        q|}|,
+        q||,
+        q|is_deeply [ ExtUtils::Manifest::manicheck() ], [], 'missing';|,
+        q|is_deeply [ ExtUtils::Manifest::filecheck() ], [], 'extra';|,
+        q||,
+        q|done_testing;|,
     );
 }
 

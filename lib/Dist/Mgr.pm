@@ -390,6 +390,9 @@ sub make_distclean {
 }
 sub make_manifest {
         capture_merged {
+            if (-f 'MANIFEST') {
+                unlink 'MANIFEST' or die "make_manifest() Couldn't remove MANIFEST\n";
+            }
             `$^X Makefile.PL`;
             `${\MAKE} manifest`;
             make_distclean();
