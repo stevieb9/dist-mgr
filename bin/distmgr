@@ -50,6 +50,10 @@ commands()->{$cmd}(%args);
 sub create {
     my (%args) = @_;
 
+    if ($args{help}) {
+        help('create');
+    }
+
     for (qw(module author email)) {
         if (! $args{$_}) {
             warn "create: requires --module --author --email\n";
@@ -130,6 +134,10 @@ sub create {
 sub cycle {
     my (%args) = @_;
 
+    if ($args{help}) {
+        help('cycle');
+    }
+
     my $module = _get_module();
 
     _check_repo();
@@ -159,6 +167,10 @@ sub cycle {
 }
 sub dist {
     my (%args) = @_;
+
+    if ($args{help}) {
+        help('dist');
+    }
 
     for (qw(module author email)) {
         if (! exists $args{$_}) {
@@ -198,6 +210,10 @@ sub dist {
 sub install {
     my (%args) = @_;
 
+    if ($args{help}) {
+        help('install');
+    }
+
     git_ignore() if $args{install_gitignore} || $args{install_all};
     ci_github()  if $args{install_ci}        || $args{install_all};
 
@@ -222,6 +238,10 @@ sub install {
 }
 sub release {
     my (%args) = @_;
+
+    if ($args{help}) {
+        help('release');
+    }
 
     my $module = _get_module();
 
@@ -287,11 +307,6 @@ sub release {
 
 # Functional
 
-sub help {
-    my @data = <DATA>;
-    print $_ for @data;
-    exit;
-}
 sub commands {
     return {
         create  => \&create,
@@ -339,13 +354,111 @@ sub _check_repo_info {
     my (%args) = @_;
 }
 
+sub help {
+    my ($command) = @_;
+
+    my $help = {
+        create  => [
+            qq{},
+            qq{Usage: distmgr create [OPTIONS]},
+            qq{},
+            qq{create - Creates a full blown distribution with everything included},
+            qq{},
+            qq{Options:},
+            qq{},
+            qq{    -m | --module   Mandatory: The module name (eg. Test::Module)},
+            qq{    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)},
+            qq{    -e | --email    Mandatory: The email address of the author},
+            qq{    -u | --user     Optional:  The Github username (eg. stevieb9)},
+            qq{    -r | --repo     Optional:  The Github repository name (eg. test-module)},
+            qq{    -V | --verbose  Optional:  (Flag) Display verbose output for each process},
+            qq{    -h | --help     Optional:  (Flag) Display this help message},
+            qq{},
+            qq{Notes: We will skip adding repository information, skip adding CI badge info,},
+            qq{and skip adding repository and bugtracker information to Makefile.PL file},
+            qq{if --user or --repo are not present in the parameter list.},
+            qq{},
+        ],
+        dist    => [
+            qq{},
+            qq{Usage: distmgr dist [OPTIONS]},
+            qq{},
+            qq{dist - Creates a bare-bones distribution with just the basics},
+            qq{},
+            qq{Options:},
+            qq{},
+            qq{    -m | --module   Mandatory: The module name (eg. Test::Module)},
+            qq{    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)},
+            qq{    -e | --email    Mandatory: The email address of the author},
+            qq{    -V | --verbose  Optional:  (Flag) Display verbose output for each process},
+            qq{    -h | --help     Optional:  (Flag) Display this help message},
+            qq{},
+        ],
+        release => [
+            qq{},
+            qq{Usage: distmgr release [OPTIONS]},
+            qq{},
+            qq{release - Test then release a distribution to the CPAN},
+            qq{},
+            qq{Options:},
+            qq{},
+            qq{    -i | --cpanid   Optional:  Your PAUSE userid},
+            qq{    -p | --cpanpw   Optional:  Your PAUSE userid's password},
+            qq{    -d | --dryrun   Optional:  (Flag) Don't actually upload to the CPAN},
+            qq{    -V | --verbose  Optional:  (Flag) Display verbose output for each process},
+            qq{    -h | --help     Optional:  (Flag) Display this help message},
+            qq{},
+            qq{Notes: No Git operations will be performed without --repo and --user. If},
+            qq{the --cpanid or --cpanpw aren't available or the CPAN_USERNAME or},
+            qq{CPAN_PASSWORD environment variables aren't set, we won't upload to the CPAN.},
+        ],
+        cycle   => [
+            qq{},
+            qq{Usage: distmgr cycle [OPTIONS]},
+            qq{},
+            qq{cycle - Prepare a distribution for next development cycle after release},
+            qq{},
+            qq{Options:},
+            qq{    -h | --help     Optional:  (Flag) Display this help message},
+            qq{},
+        ],
+        install => [
+            qq{},
+            qq{Usage: distmgr install [OPTIONS]},
+            qq{},
+            qq{install - Installs/adds various files or file sections (all flags)},
+            qq{},
+            qq{    -g | --gitignore    Install .gitignore file},
+            qq{    -c | --ci           Install Github Actions CI configuration file},
+            qq{    -B | --badges       Insert CI/Coverage badges links into the module's POD},
+            qq{    -b | --bugtracker   Insert bugtracker information into Makefile.PL},
+            qq{    -R | --repository   Insert repository information into Makefile.PL},
+            qq{    -A | --all          Insert/Install all above options},
+            qq{    -h | --help         Optional:  (Flag) Display this help message},
+            qq{},
+            qq{Notes: For badges, bugtracker and repository, the --user and --repo arguments},
+            qq{must be supplied.},
+            qq{},
+        ]
+    };
+
+    if (! defined $command || ! exists commands()->{$command}) {
+        my @data = <DATA>;
+        print $_ for @data;
+    }
+    else {
+        print "$_\n" for @{ $help->{$command} };
+    }
+
+    exit;
+}
+
 __DATA__
 Usage: distmgr <command> [OPTIONS]
 
 Commands:
 
 create - Creates a full blown distribution with everything included
-
 
     -m | --module   Mandatory: The module name (eg. Test::Module)
     -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
