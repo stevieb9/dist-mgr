@@ -1,15 +1,17 @@
-### distmgr - Manage a Perl distribution
+## distmgr - Manage a Perl distribution
 
 - [Description](#description)
 - [Limitations](#limitations)
-- [Create distribution with repository](#create)
-- [Create a distribution](#dist)
-- [Release a distribution](#release)
-- [Prepare next development cycle](#cycle)
-- [Install individual features](#install)
+- [Usage](#usage)
+- [Commands](#commands)
+- [**create** - Create distribution with repository](#create)
+- [**dist** - Create a distribution](#dist)
+- [**release** - Release a distribution](#release)
+- [**cycle** - Prepare next development cycle](#cycle)
+- [**install** - Install individual features](#install)
 - [Examples](#examples)
 
-#### Description
+### Description
 
 The `distmgr` command line application that's installed along with the 
 `Dist::Mgr` Perl distribution provides the facility to manage Perl distributions
@@ -20,7 +22,7 @@ release your distributions, automatically prepare your distribution's next
 development cycle, and install some or all of the features and files that we
 provide.
 
-#### Limitations
+### Limitations
 
 Due to this software being early in its life, we have some limitations currently
 
@@ -32,7 +34,13 @@ operations being executed
 - Coveralls.io is the only test coverage platform we support
 - Github is the only bugtracker platform we support
 - `ExtUtils::MakeMaker` is the only build system we support
-               
+
+### Usage
+
+    distmgr <command> [OPTIONS]
+
+### Commands
+
 #### create
 
 This command allows you to create a distribution based on a previously created
@@ -53,7 +61,8 @@ empty Github repository. It includes all features we provide, which are:
     -e | --email    Mandatory: The email address of the author
     -u | --user     Optional:  The Github username (eg. stevieb9)
     -r | --repo     Optional:  The Github repository name (eg. test-module)
-    -V | --verbose  Optional:  Display verbose output for each process
+    -h | --help     Optional:  (Flag) Display help
+    -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
 #### dist
 
@@ -65,6 +74,7 @@ This command is similar to [create](#create), but does not include any VCS or CI
     -m | --module   Mandatory: The module name (eg. Test::Module)
     -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
     -e | --email    Mandatory: The email address of the author
+    -h | --help     Optional:  (Flag) Display help
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
 #### release
@@ -86,6 +96,8 @@ directory):
     -i | --cpanid   Optional:  Your PAUSE userid
     -p | --cpanpw   Optional:  Your PAUSE userid's password
     -d | --dryrun   Optional:  (Flag) Don't actually upload to the CPAN
+    -h | --help     Optional:  (Flag) Display help
+    -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
 *Note*: The `--cpanid` and `--cpanpw` can be omitted if you set the 
 `CPAN_USERNAME` and `CPAN_PASSWORD` environment variables prior to script run.
@@ -101,7 +113,7 @@ for your next development cycle. We:
 
 ##### Options
 
-None.
+    -h | --help     Optional:  (Flag) Display help
 
 #### install
 
@@ -110,11 +122,14 @@ an already-existing distribution that you author.
 
 ##### Options
 
+All the options listed below are optional.
+
     -g | --gitignore    Install .gitignore file
     -c | --ci           Install Github Actions CI configuration file
     -B | --badges       Insert CI/Coverage badges links into the module's POD
     -b | --bugtracker   Insert bugtracker information into Makefile.PL
     -R | --repository   Insert repository information into Makefile.PL
+    -h | --help         Display help
 
     -A | --all          Insert/Install all above options
 
