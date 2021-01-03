@@ -43,10 +43,11 @@ operations being executed
 
 #### create
 
-This command allows you to create a distribution based on a previously created
-empty Github repository. It includes all features we provide, which are:
+This command creates a new distribution with all features enabled. Before using
+this command, you must create an empty Github repository through their site
+which we'll clone and insert the distribution's files into. We will include:
 
-- Creation of a base distribution skeleton, modelled around one created with
+- A base distribution skeleton, modelled around one created with
 `module-starter` from `Module::Starter`
 - `bugtracker` and `repository` information
 - CI and test coverage badges
