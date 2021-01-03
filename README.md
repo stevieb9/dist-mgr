@@ -3,7 +3,6 @@
 - [Description](#description)
 - [Limitations](#limitations)
 - [Examples](#examples)
-
 - [Create distribution with repository](#create)
 - [Create a distribution](#dist)
 - [Release a distribution](#release)
@@ -32,34 +31,37 @@ operations being executed
 - Github Actions is the only CI platform we support
 - Coveralls.io is the only test coverage platform we support
 - Github is the only bugtracker platform we support
-- `ExtUtils::MakeMaker` is the only build sustem we support
+- `ExtUtils::MakeMaker` is the only build system we support
 
 #### Examples
 
 - Create with repository
 
-
+```
     distmgr create \
             --module Test::Module \
             --author "Steve Bertrand" \
             --email  steveb@cpan.org \
             --repo   test-module \
             --user   stevieb9
+```
 
 - Create without repository
 
-
+```
     distmgr dist \
             -m Test::Module \
             -a "Steve Bertrand" \
             -e steveb@cpan.org
+```
             
 - Release an existing distribution
 
-
+```
     distmgr release \
             --cpanid STEVEB
             --cpanpw password
+```
             
 - Prepare distribution for next development cycle
 
@@ -68,7 +70,7 @@ operations being executed
     
 - Implement `Dist::Mgr` features into an existing distribution    
                                     
-    
+```
     distmgr install \
             --gitignore \
             --ci \
@@ -79,6 +81,7 @@ operations being executed
     # or
     
     distmgr install --all
+```
                 
 #### create
 
