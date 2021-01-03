@@ -28,6 +28,7 @@ our @EXPORT_OK = qw(
     _git_push
     _git_pull
     _git_release
+    _git_repo
     _git_status
     _git_tag
 );
@@ -100,7 +101,7 @@ sub _git_clone {
         _exec("git clone 'https://$user\@github.com/$user/$repo'", $verbose);
 
         if ($? != 0) {
-            croak("Git clone failed with exit code: $?") if $? != 0;
+            croak("Git clone failed with exit code: $?\n") if $? != 0;
         }
     }
     else {
@@ -177,6 +178,23 @@ sub _git_release {
         }
     }
 }
+sub _git_repo {
+    my $repo;
+
+    if (_validate_git()) {
+        capture_merged {
+            $repo = `git rev-parse --show-toplevel`;
+        };
+    }
+
+    if ($? == 0) {
+        $repo =~ s|.*/(.*)|$1|;
+        return $repo;
+    }
+    else {
+        return $?;
+    }
+}
 sub _git_status {
     my $status_output;
 
@@ -201,7 +219,6 @@ sub _git_status {
 
     return 1;
 }
-
 sub _git_tag {
     my ($version, $verbose) = @_;
 

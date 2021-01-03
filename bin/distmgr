@@ -11,17 +11,17 @@ use strict;
 use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
 use Data::Dumper;
-use Dist::Mgr qw(:all);
+use Dist::Mgr qw(:private);
 use Getopt::Long qw(:config no_ignore_case);
 
 my $cmd = _init();    # shifts @ARGV
 
 my %args;
-my $git = 1;
+my $git = _validate_git();
 
 GetOptions(
     "h|help"      => \$args{help},
-    "m|module=s@" => \$args{modules},
+    "m|module=s@" => \$args{module},
     "a|author=s"  => \$args{author},
     "e|email=s"   => \$args{email},
     "r|repo=s"    => \$args{repo},
@@ -50,10 +50,11 @@ commands()->{$cmd}(%args);
 sub build {
     my (%args) = @_;
 
-    for (qw(modules author email)) {
-        if (! exists $args{$_}) {
-            warn "create: requires '$_' argument\n";
-            help();
+    for (qw(module author email)) {
+        if (! $args{$_}) {
+            warn "create: requires --module --author --email\n";
+#            help();
+            exit;
         }
     }
     for (qw(repo user)) {
@@ -64,7 +65,7 @@ sub build {
         }
     }
 
-    my $module = $args{modules}->[0];
+    my $module = $args{module}->[0];
     my $dir;
 
     # Clone the repository, or create the directory if no VCS
@@ -82,6 +83,7 @@ sub build {
     chdir $dir or die "ERROR: Can't change into the '$dir' directory: $!";
 
     # Create the distribution
+    $args{modules} = $args{module};
     init(%args);
 
     # Move the files to the module dir
@@ -129,17 +131,9 @@ sub build {
 sub cycle {
     my (%args) = @_;
 
-    die "ERROR: 'cycle' command requires 'module' argument\n" if ! defined $args{modules};
+    my $module = _get_module();
 
-    my $module = $args{modules}->[0];
-
-    for (qw(repo user)) {
-        if (! exists $args{$_} || ! defined $args{$_}) {
-            warn "NOTICE: git functionality disabled... need both 'repo' and 'user'\n\n";
-            $git = 0;
-            last;
-        }
-    }
+    _check_repo();
 
     # Version (updated)
     my $module_file = $module;
@@ -167,14 +161,15 @@ sub cycle {
 sub dist {
     my (%args) = @_;
 
-    for (qw(modules author email)) {
+    for (qw(module author email)) {
         if (! exists $args{$_}) {
             warn "create: requires '$_' argument\n";
-            help();
+            exit;
+            #help();
         }
     }
 
-    my $module = $args{modules}->[0];
+    my $module = $args{module}->[0];
     my $dir = $module;
     $dir =~ s/::/-/g;
     mkdir $dir or die "ERROR: Can't create the '$dir' directory: $!";
@@ -183,6 +178,7 @@ sub dist {
     chdir $dir or die "ERROR: Can't change into the '$dir' directory: $!";
 
     # Create the distribution
+    $args{modules} = $args{module};
     init(%args);
 
     # Move the files to the module dir
@@ -228,17 +224,9 @@ sub install {
 sub release {
     my (%args) = @_;
 
-    die "ERROR: 'release' command requires 'module' argument" if ! defined $args{modules};
+    my $module = _get_module();
 
-    my $module = $args{modules}->[0];
-
-    for (qw(repo user)) {
-        if (! exists $args{$_} || ! defined $args{$_}) {
-            warn "NOTICE: git functionality disabled... need both 'repo' and 'user'\n\n";
-            $git = 0;
-            last;
-        }
-    }
+    _check_repo();
 
     # Changes (Add release date)
     changes_date();
@@ -322,6 +310,31 @@ sub _init {
     my $command = shift @ARGV;
     help() if ! defined commands()->{$command};
     return $command;
+}
+sub _check_repo {
+    if ($git) {
+        if (git_repo() =~ /^\d+$/) {
+            warn "Disabling Git as it doesn't appear as though you're in a " .
+                "repository directory\n";
+            $git = 0;
+        }
+    }
+}
+sub _get_module {
+    if ($args{modules}) {
+        return $args{modules}->[0];
+    }
+    else {
+        open my $fh, '<', 'Makefile.PL'
+            or die "Can't open Makefile.PL to find distribution name. Send in --module\n";
+
+        while (<$fh>) {
+            if (/^\s+NAME.*'(.*)'/) {
+                return $1;
+            }
+        }
+        die "Can't automatically find module name. Send in --module\n";
+    }
 }
 sub _check_repo_info {
     my (%args) = @_;

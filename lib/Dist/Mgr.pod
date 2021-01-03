@@ -360,13 +360,23 @@ I<Default>: C<1>, Enabled.
 
 I<Returns>: C<1> on test success (CTRL-C), C<0> on test failure (ENTER).
 
+=head2 git_repo
+
+Attempts to retrieve the repository name from the C<.git> directory.
+
+B<Note>: Calls C<Dist::Mgr::Git::_git_repo()> internally.
+
+I<Use>: Any time.
+
+I<Returns>: The string repository name on success, the exit code on failure.
+
 =head2 git_status
 
 Checks whether we need to commit or push.
 
 B<Note>: Calls C<Dist::Mgr::Git::_git_status()> internally.
 
-I<Use>: Any timet9.
+I<Use>: Any time.
 
 <Returns>: C<0> if the repository differs and C<1> if nothing needs to be done.
 
