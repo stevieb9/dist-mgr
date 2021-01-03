@@ -122,7 +122,7 @@ my %cpan_args = (
 }
 
 done_testing;
-#system("rm", "-rf", "/home/spek/repos/acme-steveb");
+system("rm", "-rf", "/home/spek/repos/acme-steveb");
 
 sub before {
     like $cwd, qr/dist-mgr/, "in proper directory ok";
