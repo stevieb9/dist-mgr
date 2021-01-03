@@ -47,19 +47,18 @@ commands()->{$cmd}(%args);
 
 # Commands
 
-sub build {
+sub create {
     my (%args) = @_;
 
     for (qw(module author email)) {
         if (! $args{$_}) {
             warn "create: requires --module --author --email\n";
-#            help();
             exit;
         }
     }
     for (qw(repo user)) {
         if (! exists $args{$_} || ! defined $args{$_}) {
-            warn "Git functionality disabled... need both 'repo' and 'user'\n\n";
+            warn "Git functionality disabled... need both '--repo' and '--user'\n\n";
             $git = 0;
             last;
         }
@@ -295,7 +294,7 @@ sub help {
 }
 sub commands {
     return {
-        create  => \&build,
+        create  => \&create,
         cycle   => \&cycle,
         dist    => \&dist,
         install => \&install,
@@ -383,7 +382,6 @@ must be supplied.
 
 release
 
-    -m | --module   Mandatory: The module name (eg. Test::Module)
     -i | --cpanid   Optional:  Your PAUSE userid
     -p | --cpanpw   Optional:  Your PAUSE userid's password
     -d | --dryrun   Optional:  (Flag) Don't actually upload to the CPAN
