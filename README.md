@@ -105,7 +105,7 @@ directory):
 
 #### cycle
 
-This command is run after `release`, and prepares your distribution/repository
+This command is run after [release](#release), and prepares your distribution/repository
 for your next development cycle. We:
 
 - Bump the version (by `0.01`) in the `Changes` file
@@ -166,9 +166,10 @@ All the options listed below are optional.
             
 - Prepare distribution for next development cycle
 
-
+```
     distmgr cycle
-    
+```
+   
 - Implement `Dist::Mgr` features into an existing distribution    
                                     
 ```
