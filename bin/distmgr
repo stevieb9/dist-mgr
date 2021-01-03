@@ -97,8 +97,8 @@ sub create {
     # Change into module directory
     chdir $dir or die "ERROR: Can't change into the '$dir' directory: $!";
 
+    # If in testing mode ('destroy'), clean some things up
     _destroy();
-    exit;
 
     # Create the distribution
     $args{modules} = $args{module};
@@ -145,6 +145,8 @@ sub create {
         # git push
         git_push($args{verbose});
     }
+
+    print "\nNew distribution created successfully.\n";
 }
 sub cycle {
     my (%args) = @_;
@@ -164,7 +166,7 @@ sub cycle {
 
     my $ver;
     if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
-        die "ERROR: The $module_file file for $module can't be found\n";
+        die "ERROR: The $module_file file for $module can't be found.\n";
     }
 
     my $ver_incr = version_incr($ver);
@@ -380,13 +382,18 @@ sub _destroy {
     my $dir = 'test-module-temporary';
 
     chdir '..' or die "Can't escalate to the parent directory\n";
-    mkdir  or die "Can't create a temporary repo dir\n";
-    move '.git', $dir or die "Can't move the .git directory to the temp dir\n";
-    chdir '..' or die "Can't escalate to the parent directory\n";
+    mkdir $dir or die "Can't create a temporary repo dir\n";
+    move 'test-module/.git', "$dir/.git" or die "Can't move the .git directory to the temp dir\n";
     rmtree 'test-module' or die "Can't delete the original repo dir\n";
     move $dir, 'test-module' or die "Can't rename the temp dir $dir to 'test-module'\n";
     chdir $cwd or die "Can't enter the repo dir\n";
+
+    git_commit("Dist::Mgr 'distmgr' test run");
+    git_push();
+
+    print "\nDone testing cleanup...\n";
 }
+
 sub help {
     my ($command) = @_;
 
@@ -452,6 +459,7 @@ sub help {
             qq{cycle - Prepare a distribution for next development cycle after release},
             qq{},
             qq{Options:},
+            qq{    -V | --verbose  Optional:  (Flag) Display verbose output for each process},
             qq{    -h | --help     Optional:  (Flag) Display this help message},
             qq{},
         ],
@@ -487,6 +495,7 @@ sub help {
 }
 
 __DATA__
+
 Usage: distmgr <command> [OPTIONS]
 
 Commands:
@@ -505,7 +514,7 @@ and skip adding repository and bugtracker information to C<Makefile.PL> file
 if --user or --repo are not present in the parameter list.
 
 cycle
-    -v| --version
+    -V | --verbose  Optional:  Display verbose output for each process
 
 dist - Creates a bare-bones distribution with just the basics
 
