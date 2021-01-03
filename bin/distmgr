@@ -12,6 +12,8 @@ use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
 use Data::Dumper;
 use Dist::Mgr qw(:private);
+use File::Copy qw(move);
+use File::Path qw(rmtree);
 use Getopt::Long qw(:config no_ignore_case);
 
 my $cmd = _init();    # shifts @ARGV
@@ -38,7 +40,17 @@ GetOptions(
     "b|bugtracker"  => \$args{add_bugtracker},
     "R|repository"  => \$args{add_repository},
     "A|all"         => \$args{install_all},
+
+    # destroy will erase the repository before running
+    # Used for testing purposes only
+    "destroy"       => \$args{destroy},
 );
+
+# Make sure we don't upload stuff to the CPAN when in testing
+
+if ($args{destroy}) {
+    $args{dryrun} = 1;
+}
 
 $args{cpan_id} //= $ENV{CPAN_USERNAME};
 $args{cpan_pw} //= $ENV{CPAN_PASSWORD};
@@ -84,6 +96,9 @@ sub create {
 
     # Change into module directory
     chdir $dir or die "ERROR: Can't change into the '$dir' directory: $!";
+
+    _destroy();
+    exit;
 
     # Create the distribution
     $args{modules} = $args{module};
@@ -353,7 +368,25 @@ sub _get_module {
 sub _check_repo_info {
     my (%args) = @_;
 }
+sub _destroy {
+    return if ! $args{destroy};
 
+    my $cwd = getcwd();
+
+    if ($cwd !~ /test-module$/) {
+        die "We're not in the test repository. No way we're destroying stuff!\n";
+    }
+
+    my $dir = 'test-module-temporary';
+
+    chdir '..' or die "Can't escalate to the parent directory\n";
+    mkdir  or die "Can't create a temporary repo dir\n";
+    move '.git', $dir or die "Can't move the .git directory to the temp dir\n";
+    chdir '..' or die "Can't escalate to the parent directory\n";
+    rmtree 'test-module' or die "Can't delete the original repo dir\n";
+    move $dir, 'test-module' or die "Can't rename the temp dir $dir to 'test-module'\n";
+    chdir $cwd or die "Can't enter the repo dir\n";
+}
 sub help {
     my ($command) = @_;
 

@@ -101,6 +101,11 @@ sub _git_clone {
         _exec("git clone 'https://$user\@github.com/$user/$repo'", $verbose);
 
         if ($? != 0) {
+            if ($? == 32768) {
+                croak(
+                    "Git clone failed with exit code: $? DIRECTORY $repo ALREADY EXISTS\n"
+                );
+            }
             croak("Git clone failed with exit code: $?\n") if $? != 0;
         }
     }
