@@ -36,16 +36,16 @@ GetOptions(
     "v|version=s" => \$args{version},
     "V|verbose"   => \$args{verbose},
 
-    "g|gitignore"   => \$args{install_gitignore},
-    "c|ci"          => \$args{install_ci},
-    "B|badges"      => \$args{add_badges},
-    "b|bugtracker"  => \$args{add_bugtracker},
-    "R|repository"  => \$args{add_repository},
-    "A|all"         => \$args{install_all},
+    "g|gitignore"  => \$args{install_gitignore},
+    "c|ci"         => \$args{install_ci},
+    "B|badges"     => \$args{add_badges},
+    "b|bugtracker" => \$args{add_bugtracker},
+    "R|repository" => \$args{add_repository},
+    "A|all"        => \$args{install_all},
 
     # destroy will erase the repository before running
     # Used for testing purposes only
-    "destroy"       => \$args{destroy},
+    "destroy"      => \$args{destroy},
 );
 
 # Make sure we don't upload stuff to the CPAN when in testing
