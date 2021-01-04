@@ -3,6 +3,8 @@ package Dist::Mgr::FileData;
 use warnings;
 use strict;
 
+our $VERSION = '1.01';
+
 use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
