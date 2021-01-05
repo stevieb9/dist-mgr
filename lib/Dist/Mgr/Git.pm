@@ -150,9 +150,11 @@ sub _git_release {
     $wait_for_ci //= 1;
     my $verbose = 0;
 
-    _git_pull(0);
-    _git_commit($version, $verbose);
-    _git_push($verbose);
+    if (! _git_status()) {
+        _git_pull(0);
+        _git_commit($version, $verbose);
+        _git_push($verbose);
+    }
 
     if ($wait_for_ci) {
         `clear`;

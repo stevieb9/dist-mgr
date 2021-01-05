@@ -311,8 +311,8 @@ sub release {
     }
 
     # CI testing
-    if ($git && ! git_status($args{verbose})) {
-        if (! git_release($ver, $args{verbose})) {
+    if ($git) {
+        if (! git_release($ver)) {
             die "\nERROR: User cancelled the release process due to failing CI testing\n";
         }
     }
