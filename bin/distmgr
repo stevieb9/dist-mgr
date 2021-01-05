@@ -258,7 +258,13 @@ sub install {
     }
     if ($args{install_ci} || $args{install_all}) {
         print "\nInstalling Git Actions CI configuration file\n";
-        ci_github() if $args{install_ci} || $args{install_all};
+
+        ci_github();
+        make_manifest();
+
+        if ($git) {
+            git_add($args{verbose});
+        }
         exit;
     }
     if ($args{add_badges} || $args{install_all}) {
@@ -306,8 +312,6 @@ sub release {
     if (! eval { $ver = version_info($module_file)->{$module_file}; 1 }) {
         die "ERROR: The $module_file file for $module can't be found\n";
     }
-
-    #
 
     # make manifest
     make_manifest($args{verbose});
