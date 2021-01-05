@@ -433,6 +433,14 @@ the current working directory.
 
 I<Use>: After all other release functions have been called.
 
+I<Parameters>:
+
+    $verbose
+
+I<Optional, Bool>: Set to true to display the output from the command.
+
+I<Default>: False
+
 I<Returns>: C<0> on success. Anything other than C<0> is a failure.
 
 =head2 make_distclean
@@ -441,6 +449,14 @@ Perform a C<make distclean> on the project directory.
 
 I<Use>: After all other post-release functions have been called.
 
+I<Parameters>:
+
+    $verbose
+
+I<Optional, Bool>: Set to true to display the output from the command.
+
+I<Default>: False
+
 I<Returns>: C<0> on success. Anything other than C<0> is a failure.
 
 =head2 make_test
@@ -448,6 +464,14 @@ I<Returns>: C<0> on success. Anything other than C<0> is a failure.
 Perform a C<%^X Makefile.PL> and C<make test>.
 
 I<Use>: After L</changes_date> and before all other release cycle functions.
+
+I<Parameters>:
+
+    $verbose
+
+I<Optional, Bool>: Set to true to display the output from the command.
+
+I<Default>: False
 
 B<Note>: Do not call this function from within the test suite, or else it'll
 spin off into an infinite loop.

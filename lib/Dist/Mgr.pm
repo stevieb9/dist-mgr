@@ -367,9 +367,10 @@ sub remove_unwanted_files {
     return 0;
 }
 sub make_dist {
-    capture_merged {
-        `${\MAKE} dist`;
-    };
+    my ($verbose) = @_;
+
+    my $cmd = "${\MAKE} dist";
+    $verbose ? `$cmd` : capture_merged {`$cmd`};
 
     if ($? != 0) {
         croak("Exit code $? returned... '${\MAKE} dist' failed");
@@ -378,9 +379,10 @@ sub make_dist {
     return $?;
 }
 sub make_distclean {
-        capture_merged {
-            `${\MAKE} distclean`;
-        };
+    my ($verbose) = @_;
+
+    my $cmd = "${\MAKE} distclean";
+    $verbose ? print `$cmd` : capture_merged {`$cmd`};
 
     if ($? != 0) {
         croak("Exit code $? returned... '${\MAKE} distclean' failed\n");
@@ -389,14 +391,26 @@ sub make_distclean {
     return $?;
 }
 sub make_manifest {
+    my ($verbose) = @_;
+
+    if ($verbose) {
+        if (-f 'MANIFEST') {
+            unlink 'MANIFEST' or die "make_manifest() Couldn't remove MANIFEST\n";
+        }
+        print `$^X Makefile.PL`;
+        print `${\MAKE} manifest`;
+        make_distclean($verbose);
+    }
+    else {
         capture_merged {
             if (-f 'MANIFEST') {
                 unlink 'MANIFEST' or die "make_manifest() Couldn't remove MANIFEST\n";
             }
             `$^X Makefile.PL`;
             `${\MAKE} manifest`;
-            make_distclean();
+            make_distclean($verbose);
         };
+    }
 
     if ($? != 0) {
         croak("Exit code $? returned... '${\MAKE} manifest' failed\n");
@@ -405,8 +419,15 @@ sub make_manifest {
     return $?;
 }
 sub make_test {
+    my ($verbose) = @_;
+
+    if ($verbose) {
+        print `$^X Makefile.PL`;
+        print `${\MAKE} test`;
+    }
     capture_merged {
-        `$^X Makefile.PL && ${\MAKE} test`;
+        `$^X Makefile.PL`;
+        `${\MAKE} test`;
     };
 
     if ($? != 0) {

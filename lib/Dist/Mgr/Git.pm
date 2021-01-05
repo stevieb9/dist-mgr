@@ -46,7 +46,7 @@ sub _exec {
     croak("_exec() requires cmd parameter sent in") if ! defined $cmd;
 
     if ($verbose) {
-        `$cmd`;
+        print `$cmd`;
     }
     else {
         capture_merged {
