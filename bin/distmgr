@@ -306,20 +306,20 @@ sub release {
 
     # make test
 
-    if (! eval { make_test(); 1 }) {
+    if (! eval { make_test($args{verbose}); 1 }) {
         die "\nERROR: Local 'make test' failed. Intervention required. Halting the release procedure\n";
     }
 
     # CI testing
-    if ($git && ! git_status()) {
-        if (! git_release($ver)) {
+    if ($git && ! git_status($args{verbose})) {
+        if (! git_release($ver, $args{verbose})) {
             die "\nERROR: User cancelled the release process due to failing CI testing\n";
         }
     }
 
     # Bundle distribution
 
-    make_dist();
+    make_dist($args{verbose});
 
     # CPAN upload
 
@@ -338,12 +338,12 @@ sub release {
 
     # Clean the working directory
 
-    make_distclean();
+    make_distclean($args{verbose});
 
     # Git tag && push
 
-    git_tag($ver);
-    git_push();
+    git_tag($ver, $args{verbose});
+    git_push($args{verbose});
 
     print "\nRelease process completed successfully\n";
 }
@@ -414,8 +414,8 @@ sub _destroy {
     move $dir, 'test-module' or die "Can't rename the temp dir $dir to 'test-module'\n";
     chdir $cwd or die "Can't enter the repo dir\n";
 
-    git_commit("Dist::Mgr 'distmgr' test run");
-    git_push();
+    git_commit("Dist::Mgr 'distmgr' test run", $args{verbose});
+    git_push($args{verbose});
 
     print "\nDone testing cleanup...\n";
 }
