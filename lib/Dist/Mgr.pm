@@ -191,6 +191,29 @@ sub ci_github {
         croak("\$os parameter to ci_github() must be an array ref");
     }
 
+    # Add the CI file to MANIFEST.SKIP
+
+    if (-e 'MANIFEST.SKIP') {
+        open my $fh, '<', 'MANIFEST.SKIP'
+            or croak("Can't open MANIFEST.SKIP for reading");
+
+        my @makefile_skip_contents = <$fh>;
+
+        if (grep !m|\.github.*yml$|, @makefile_skip_contents) {
+            close $fh;
+            open my $wfh, '>>', 'MANIFEST.SKIP'
+                or croak("Can't open MANIFEST.SKIP for writing");
+
+            print $wfh '^\.github/';
+        }
+    }
+    else {
+        open my $wfh, '>>', 'MANIFEST.SKIP'
+            or croak("Can't open MANIFEST.SKIP for writing");
+
+        print $wfh '^\.github/';
+    }
+
     my @contents = _ci_github_file($os);
     _ci_github_write_file(\@contents);
 
@@ -717,7 +740,8 @@ sub _manifest_t_write_file {
 
     my ($dir, $content) = @_;
 
-    open my $fh, '>', "$dir/manifest.t" or croak $!;
+    open my $fh, '>', "$dir/manifest.t"
+        or croak("Can't open t/manifest.t for writing: $!\n");
 
     for (@$content) {
         print $fh "$_\n"
