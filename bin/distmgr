@@ -192,8 +192,8 @@ sub dist {
     }
 
     for (qw(module author email)) {
-        if (! exists $args{$_}) {
-            warn "create: requires '$_' argument\n";
+        if (! $args{$_}) {
+            warn "dist: requires --module --author --email\n";
             exit;
             #help();
         }
@@ -233,10 +233,10 @@ sub install {
         help('install');
     }
 
-    git_ignore() if $args{install_gitignore} || $args{install_all};
-    ci_github()  if $args{install_ci}        || $args{install_all};
-
-    if (! defined $args{user} || ! defined $args{repo}) {
+    if (!$args{user} || !$args{repo}) {
+        if ($args{install_ci}) {
+            die "ERROR: --badges requires --user and --repo\n";
+        }
         if ($args{add_badges}) {
             die "ERROR: --badges requires --user and --repo\n";
         }
@@ -251,9 +251,26 @@ sub install {
         }
     }
 
-    ci_badges($args{user}, $args{repo})      if $args{add_badges}        || $args{install_all};
-    add_bugtracker($args{user}, $args{repo}) if $args{add_bugtracker}    || $args{install_all};
-    add_repository($args{user}, $args{repo}) if $args{add_repository}    || $args{install_all};
+    if ($args{install_gitignore} || $args{install_all}) {
+        print "\nInstalling .gitignore file...\n";
+        git_ignore() if $args{install_gitignore} || $args{install_all};
+    }
+    if ($args{install_ci} || $args{install_all}) {
+        print "\nInstalling Git Actions CI configuration file\n";
+        ci_github() if $args{install_ci} || $args{install_all};
+    }
+    if ($args{add_badges} || $args{install_all}) {
+        print "\nInstalling CI badges to POD...\n";
+        ci_badges($args{user}, $args{repo}) if $args{add_badges} || $args{install_all};
+    }
+    if ($args{add_bugtracker} || $args{install_all}) {
+        print "\nInstalling bugtracker information to Makefile.PL...\n";
+        add_bugtracker($args{user}, $args{repo}) if $args{add_bugtracker} || $args{install_all};
+    }
+    if ($args{add_repository} || $args{install_all}) {
+        print "\nInstalling repository information to Makefile.PL...\n";
+        add_repository($args{user}, $args{repo}) if $args{add_repository} || $args{install_all};
+    }
 }
 sub release {
     my (%args) = @_;
