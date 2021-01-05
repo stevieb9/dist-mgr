@@ -254,23 +254,30 @@ sub install {
     if ($args{install_gitignore} || $args{install_all}) {
         print "\nInstalling .gitignore file...\n";
         git_ignore() if $args{install_gitignore} || $args{install_all};
+        exit;
     }
     if ($args{install_ci} || $args{install_all}) {
         print "\nInstalling Git Actions CI configuration file\n";
         ci_github() if $args{install_ci} || $args{install_all};
+        exit;
     }
     if ($args{add_badges} || $args{install_all}) {
         print "\nInstalling CI badges to POD...\n";
         ci_badges($args{user}, $args{repo}) if $args{add_badges} || $args{install_all};
+        exit;
     }
     if ($args{add_bugtracker} || $args{install_all}) {
         print "\nInstalling bugtracker information to Makefile.PL...\n";
         add_bugtracker($args{user}, $args{repo}) if $args{add_bugtracker} || $args{install_all};
+        exit;
     }
     if ($args{add_repository} || $args{install_all}) {
         print "\nInstalling repository information to Makefile.PL...\n";
         add_repository($args{user}, $args{repo}) if $args{add_repository} || $args{install_all};
+        exit;
     }
+
+    help('install');
 }
 sub release {
     my (%args) = @_;
