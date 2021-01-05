@@ -286,6 +286,9 @@ sub release {
         help('release');
     }
 
+    # Set RELEASE_TESTING... we are creating a release after all
+    $ENV{RELEASE_TESTING} = 1;
+
     my $module = _get_module();
 
     _check_repo();
@@ -304,8 +307,12 @@ sub release {
         die "ERROR: The $module_file file for $module can't be found\n";
     }
 
-    # make test
+    #
 
+    # make manifest
+    make_manifest($args{verbose});
+
+    # make test
     if (! eval { make_test($args{verbose}); 1 }) {
         die "\nERROR: Local 'make test' failed. Intervention required. Halting the release procedure\n";
     }
@@ -335,6 +342,9 @@ sub release {
             die "ERROR: CPAN failed with error '$1'. Couldn't upload.\n";
         }
     }
+    else {
+        print "\nCPAN ID nor password are set, not uploading\n";
+    }
 
     # Clean the working directory
 
@@ -344,6 +354,8 @@ sub release {
 
     git_tag($ver, $args{verbose});
     git_push($args{verbose});
+
+    $ENV{RELEASE_TESTING} = 0;
 
     print "\nRelease process completed successfully\n";
 }
