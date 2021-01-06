@@ -14,10 +14,10 @@ L<documentation|https://metacpan.org/pod/distribution/Dist-Mgr/bin/distmgr> for
 the L<distmgr|https://metacpan.org/pod/distribution/Dist-Mgr/bin/distmgr>
 program that we've installed for you as part of this distribution.
 
-Performs a full suite of automated creation, addition, pre-release, release and
-post release tasks for Perl distributions. It integrates with VCS, automates the
-configuration of Continuous Integration, manages version numbers and Changes
-files, amongst a slew of other tasks.
+This software performs a full suite of automated creation, addition, pre-release,
+release and post release tasks for Perl distributions. It integrates with VCS,
+automates the configuration of Continuous Integration, manages version numbers
+and Changes files, amongst a slew of other tasks.
 
 This distribution is essentially a bunch of tools that revolve around a base
 distribution created with C<module-starter>.
