@@ -567,6 +567,11 @@ I<Parameters>:
 
 I<Mandatory, String>: The new version to update to.
 
+    $fs_entry
+
+I<Optional, String>: The name of a file or directory to work on. If a directory,
+we'll work on all Perl module files.
+
 =head3 Dry run mode
 
 The C<$version> parameter can be prepended with an optional dash (C<->), and if

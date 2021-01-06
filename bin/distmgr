@@ -173,7 +173,7 @@ sub cycle {
 
     my $ver_incr = version_incr($ver);
 
-    version_bump($ver_incr, $module_file);
+    version_bump($ver_incr);
 
     changes_bump($ver_incr);
 

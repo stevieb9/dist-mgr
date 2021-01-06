@@ -63,7 +63,7 @@ our %EXPORT_TAGS = (
     private => _export_private(),
 );
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',
@@ -471,6 +471,8 @@ sub version_bump {
         $version =~ s/-//;
         $dry_run = 1;
     }
+
+    $fs_entry //= DEFAULT_DIR;
 
     _validate_version($version);
     _validate_fs_entry($fs_entry);
