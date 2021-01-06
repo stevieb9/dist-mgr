@@ -379,15 +379,15 @@ I<Use>: Any time.
 
 I<Returns>: The string repository name on success, the exit code on failure.
 
-=head2 git_status
+=head2 git_status_differs
 
-Checks whether we need to commit or push.
+Checks whether we need to commit and push.
 
-B<Note>: Calls C<Dist::Mgr::Git::_git_status()> internally.
+B<Note>: Calls C<Dist::Mgr::Git::_git_status_differs()> internally.
 
 I<Use>: Any time.
 
-I<Returns>: C<0> if the repository differs and C<1> if nothing needs to be done.
+I<Returns>: C<1> if the repository differs and C<0> if nothing needs to be done.
 
 =head2 git_tag
 

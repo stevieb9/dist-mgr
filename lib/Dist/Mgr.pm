@@ -40,7 +40,7 @@ our @EXPORT_OK = qw(
     git_ignore
     git_release
     git_repo
-    git_status
+    git_status_differs
     git_tag
     init
     make_dist
@@ -237,6 +237,10 @@ sub cpan_upload {
         croak("\ncpan_upload() requires the CPAN_USERNAME and CPAN_PASSWORD env vars set");
     }
 
+    if ($args{dry_run}) {
+        print "\nCPAN upload is in dry run mode... nothing will be uploaded\n";
+    }
+
     CPAN::Uploader->upload_file(
         $dist_file_name,
         \%args
@@ -276,8 +280,8 @@ sub git_release {
 sub git_repo {
     _git_repo();
 }
-sub git_status {
-    _git_status(@_);
+sub git_status_differs {
+    _git_status_differs(@_);
 }
 sub git_tag {
     _git_tag(@_);

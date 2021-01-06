@@ -4,7 +4,10 @@ Revision history for Dist-Mgr
     - POD fixes and updates
     - In distmgr, add user interaction prior to cpan_upload() so the user can
       confirm for certain that the dist tarball should be uploaded
-    -
+    - Renamed git_status() to git_status_differs() to be less confusing
+    - We now skip over Git operations and CI testing if 'release' is called and
+      nothing has changed (closes #38)
+    - Added more output surrounding CPAN uploads
 
 1.02    2021-01-06
     - This release was skipped for internal testing purposes

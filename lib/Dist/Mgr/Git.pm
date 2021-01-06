@@ -29,7 +29,7 @@ our @EXPORT_OK = qw(
     _git_pull
     _git_release
     _git_repo
-    _git_status
+    _git_status_differs
     _git_tag
 );
 our %EXPORT_TAGS = (
@@ -150,7 +150,7 @@ sub _git_release {
     $wait_for_ci //= 1;
     my $verbose = 0;
 
-    if (! _git_status()) {
+    if (_git_status_differs()) {
         _git_pull(0);
         _git_commit($version, $verbose);
         _git_push($verbose);
@@ -202,7 +202,7 @@ sub _git_repo {
         return $?;
     }
 }
-sub _git_status {
+sub _git_status_differs {
     my $status_output;
 
     if (_validate_git()) {
@@ -221,10 +221,10 @@ sub _git_status {
     my @status = split /\n/, $status_output;
 
     for (0..$#status) {
-        return 0 if $status[$_] !~ /$git_output[$_]/;
+        return 1 if $status[$_] !~ /$git_output[$_]/;
     }
 
-    return 1;
+    return 0;
 }
 sub _git_tag {
     my ($version, $verbose) = @_;
