@@ -11,7 +11,7 @@ release and post-release tasks.
 
 For end-users, please review the
 [documentation](https://metacpan.org/pod/distribution/Dist-Mgr/bin/distmgr) for
-the [distmgr](https://metacpan.org/pod/distribution/Dist-Mgr/bin/distmgr)
+the L<distmgr|https://metacpan.org/pod/distribution/Dist-Mgr/bin/distmgr>
 program that we've installed for you as part of this distribution.
 
 Performs a full suite of automated creation, addition, pre-release, release and
