@@ -570,7 +570,7 @@ I<Mandatory, String>: The new version to update to.
     $fs_entry
 
 I<Optional, String>: The name of a file or directory to work on. If a directory,
-we'll work on all Perl module files.
+we'll work on all Perl module files. Defaults to C<lib/>.
 
 =head3 Dry run mode
 
