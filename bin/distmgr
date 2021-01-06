@@ -449,7 +449,7 @@ sub help {
             qq{Options:},
             qq{},
             qq{    -m | --module   Mandatory: The module name (eg. Test::Module)},
-            qq{    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)},
+            qq{    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")},
             qq{    -e | --email    Mandatory: The email address of the author},
             qq{    -u | --user     Optional:  The Github username (eg. stevieb9)},
             qq{    -r | --repo     Optional:  The Github repository name (eg. test-module)},
@@ -470,7 +470,7 @@ sub help {
             qq{Options:},
             qq{},
             qq{    -m | --module   Mandatory: The module name (eg. Test::Module)},
-            qq{    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)},
+            qq{    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")},
             qq{    -e | --email    Mandatory: The email address of the author},
             qq{    -V | --verbose  Optional:  (Flag) Display verbose output for each process},
             qq{    -h | --help     Optional:  (Flag) Display this help message},
@@ -545,7 +545,7 @@ Commands:
 create - Creates a full blown distribution with everything included
 
     -m | --module   Mandatory: The module name (eg. Test::Module)
-    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
+    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
     -e | --email    Mandatory: The email address of the author
     -u | --user     Optional:  The Github username (eg. stevieb9)
     -r | --repo     Optional:  The Github repository name (eg. test-module)
@@ -561,7 +561,7 @@ cycle - Bumps version numbers and prepares for the next development cycle
 dist - Creates a bare-bones distribution with just the basics
 
     -m | --module   Mandatory: The module name (eg. Test::Module)
-    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
+    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
     -e | --email    Mandatory: The email address of the author
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
@@ -617,7 +617,7 @@ Creates a full blown, brand new distribution with everything included.
 I<Options>:
 
     -m | --module   Mandatory: The module name (eg. Test::Module)
-    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
+    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
     -e | --email    Mandatory: The email address of the author
     -u | --user     Optional:  The Github username (eg. stevieb9)
     -r | --repo     Optional:  The Github repository name (eg. test-module)
@@ -641,7 +641,7 @@ distribution with a few small tweaks.
 I<Options>:
 
     -m | --module   Mandatory: The module name (eg. Test::Module)
-    -a | --author   Mandatory: The name of the author (eg. Steve Bertrand)
+    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
     -e | --email    Mandatory: The email address of the author
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
