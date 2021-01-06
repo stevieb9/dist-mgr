@@ -199,7 +199,7 @@ sub ci_github {
 
         my @makefile_skip_contents = <$fh>;
 
-        if (grep !m|\.github.*yml$|, @makefile_skip_contents) {
+        if (grep !m|\.github$|, @makefile_skip_contents) {
             close $fh;
             open my $wfh, '>>', 'MANIFEST.SKIP'
                 or croak("Can't open MANIFEST.SKIP for writing");
