@@ -234,13 +234,15 @@ sub cpan_upload {
     $args{password} = $ENV{CPAN_PASSWORD} ||= 0 if ! exists $args{password};
 
     if (! $args{user} || ! $args{password}) {
-        croak("cpan_upload() requires the CPAN_USERNAME and CPAN_PASSWORD env vars set");
+        croak("\ncpan_upload() requires the CPAN_USERNAME and CPAN_PASSWORD env vars set");
     }
 
     CPAN::Uploader->upload_file(
         $dist_file_name,
         \%args
     );
+
+    print "\nSuccessfully uploaded $dist_file_name to the CPAN\n";
 }
 sub git_add {
     _git_add();
