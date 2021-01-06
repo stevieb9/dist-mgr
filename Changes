@@ -23,6 +23,7 @@ Revision history for Dist-Mgr
     - distmgr now does a 'git add' and make_manifest() after installing Github
       Actions CI file (fixes #33)
     - Performed full release and cycle of Word::Rhymes 1.03!
+    - Re-run CI tests
 
 1.00    2020-12-30
     - Fix issue where ABSTRACT was being pulled from one of the test
