@@ -327,6 +327,9 @@ sub release {
             die "\nERROR: User cancelled the release process due to failing CI testing\n";
         }
     }
+    else {
+        print "\nRepository unchanged, skipping Git and CI operations\n";
+    }
 
     # Bundle distribution
 
