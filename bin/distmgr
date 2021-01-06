@@ -693,7 +693,7 @@ C<CPAN_PASSWORD> environment variables aren't set, we won't upload to the CPAN.
 
 =head2  cycle
 
-After release, this command will bump version numbers in all of your modules,
+After L</release>, this command will bump version numbers in all of your modules,
 and prepare the Changes file for your next development cycle.
 
 I<Options>:
