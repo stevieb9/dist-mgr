@@ -1,6 +1,8 @@
 Revision history for Dist-Mgr
 
 1.01 UNREL
+    - This release fully performed with this Dist::Mgr software!! (Crosses
+      fingers)
     - Added bin/distmgr script
     - ci_badges() was forcing $fs_entry param, but it should be optional; fixed
     - git_commit() now accepts $msg instead of $version as first param

@@ -1,12 +1,23 @@
 =head1 NAME
 
-Dist::Mgr - Distribution development cycle toolkit
+Dist::Mgr - Automation for Perl distribution creation, integration, pre-release,
+release and post-release tasks.
 
 =for html
 <a href="https://github.com/stevieb9/dist-mgr/actions"><img src="https://github.com/stevieb9/dist-mgr/workflows/CI/badge.svg"/></a>
 <a href='https://coveralls.io/github/stevieb9/dist-mgr?branch=master'><img src='https://coveralls.io/repos/stevieb9/dist-mgr/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
 
 =head1 DESCRIPTION
+
+For end-users, please review the
+[documentation](https://metacpan.org/pod/distribution/Dist-Mgr/bin/distmgr) for
+the [distmgr](https://metacpan.org/pod/distribution/Dist-Mgr/bin/distmgr)
+program that we've installed for you as part of this distribution.
+
+Performs a full suite of automated creation, addition, pre-release, release and
+post release tasks for Perl distributions. It integrates with VCS, automates the
+configuration of Continuous Integration, manages version numbers and Changes
+files, amongst a slew of other tasks.
 
 This distribution is essentially a bunch of tools that revolve around a base
 distribution created with C<module-starter>.
@@ -19,9 +30,7 @@ build system, which utilizes C<Makefile.PL> files.
 
     use Dist::Mgr qw(:all)
 
-    my $results = version_bump('2.02');
-
-    my $file_versions = version_info();
+    ...
 
 =head1 EXPORT_OK
 
