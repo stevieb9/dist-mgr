@@ -333,21 +333,28 @@ sub release {
     make_dist($args{verbose});
 
     # CPAN upload
+    print "\nAre you sure you're ready to upload to the CPAN?: [y/n]: ";
 
-    if ($args{cpan_id} && $args{cpan_pw}) {
-        (my $dist = $module) =~ s/::/-/g;
-        my $dist_file = (glob("${dist}-*.tar.gz"))[-1];
+    my $uploaded_to_cpan = 0;
 
-        my $cpan_msg = capture_merged {
-            cpan_upload($dist_file, dry_run => $args{cpan_dryrun});
-        };
+    if (<> =~ /[Yy]/) {
+        if ($args{cpan_id} && $args{cpan_pw}) {
+            (my $dist = $module) =~ s/::/-/g;
+            my $dist_file = (glob("${dist}-*.tar.gz"))[-1];
 
-        if ($cpan_msg =~ /Message:\s+(.*)/) {
-            die "ERROR: CPAN failed with error '$1'. Couldn't upload.\n";
+            my $cpan_msg = capture_merged {
+                cpan_upload($dist_file, dry_run => $args{cpan_dryrun});
+            };
+
+            if ($cpan_msg =~ /Message:\s+(.*)/) {
+                die "ERROR: CPAN failed with error '$1'. Couldn't upload.\n";
+            }
+
+            $uploaded_to_cpan = 1;
         }
-    }
-    else {
-        print "\nCPAN ID nor password are set, not uploading\n";
+        else {
+            print "\nCPAN ID nor password are set, not uploading\n";
+        }
     }
 
     # Clean the working directory
@@ -361,7 +368,9 @@ sub release {
 
     $ENV{RELEASE_TESTING} = 0;
 
-    print "\nRelease process completed successfully\n";
+    $uploaded_to_cpan
+        ? print "\nRelease process completed, and build uploaded to the CPAN\n"
+        : print "\nRelease process completed, but we didn't upload to the CPAN\n";
 }
 
 # Functional
