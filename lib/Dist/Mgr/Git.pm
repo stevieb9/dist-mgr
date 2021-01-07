@@ -116,10 +116,10 @@ sub _git_clone {
     return $?;
 }
 sub _git_pull {
-    my ($version) = @_;
+    my ($verbose) = @_;
 
     if (_validate_git()) {
-        `git pull`;
+        _exec(`git pull`, $verbose);
         croak("Git pull failed with exit code: $?") if $? != 0;
     }
     else {
