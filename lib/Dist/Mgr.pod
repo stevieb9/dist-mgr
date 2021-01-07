@@ -496,6 +496,14 @@ Perform a C<make manifest>.
 
 I<Use>: Before running the release procedures.
 
+I<Parameters>:
+
+    $verbose
+
+I<Optional, Bool>: Set to true to display the output from the command.
+
+I<Default>: False
+
 I<Returns>: C<0> on success. Anything other than C<0> is a failure.
 
 =head2 manifest_skip
@@ -543,7 +551,7 @@ I<Parameters>:
     $module
 
 I<Mandatory, String>: The name of the module that was created with L</init>, eg.
-C<Acme-STEVEB>.
+C<Acme::STEVEB>.
 
 I<Returns>: C<0> upon success.
 
@@ -577,13 +585,6 @@ we'll work on all Perl module files. Defaults to C<lib/>.
 The C<$version> parameter can be prepended with an optional dash (C<->), and if
 so, we'll operate in "dry-run" mode, where we'll return the results, but won't
 have written to any files. Eg: C<version_bump('-1.01')>.
-
-    $fs_entry
-
-I<Optional, String>: The directory or file to operate on. If a directory is
-sent in, we'll iterate over all files in all directories recursively.
-
-I<Default>: C<lib/>
 
 I<Returns>: An HoH:
 

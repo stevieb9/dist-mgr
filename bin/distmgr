@@ -642,7 +642,7 @@ directory.
 
 I<Note>: We will skip adding repository information, skip adding CI badge info,
 and skip adding repository and bugtracker information to C<Makefile.PL> file
-if --user or --repo are not present in the parameter list (see L</install>).
+if C<--user> or C<--repo> are not present in the parameter list (see L</install>).
 
 =head2 dist
 
