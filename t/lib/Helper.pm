@@ -47,7 +47,7 @@ our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 my $orig_dir        = 't/data/orig';
 my $work_dir        = 't/data/work';
-my $tpl_dir         = 't/data/module_template';
+my $tpl_dir         = 't/data/template/module_template';
 my $unwanted_dir    = 't/data/work/unwanted';
 my $init_dir        = 't/data/work/init';
 my $ci_dir          = 't/data/work/ci';

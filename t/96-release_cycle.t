@@ -195,7 +195,7 @@ sub remove_tarball {
 sub post_release_file_count {
     is getcwd(), "$work/acme-steveb", "in the repo dir ok";
 
-    my $template_dir = "$cwd/t/data/release_module_template/";
+    my $template_dir = "$cwd/t/data/template/release_module_template/";
 
     my @template_files = File::Find::Rule->file()
         ->name('*')
@@ -254,7 +254,7 @@ sub post_release_file_count {
 sub post_prep_next_cycle_file_count {
     is getcwd(), "$work/acme-steveb", "in the repo dir ok";
 
-    my $template_dir = "$cwd/t/data/release_module_template/";
+    my $template_dir = "$cwd/t/data/template/release_module_template/";
 
     my @template_files = File::Find::Rule->file()
         ->name('*')
