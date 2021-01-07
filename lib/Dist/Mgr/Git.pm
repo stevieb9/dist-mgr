@@ -119,7 +119,7 @@ sub _git_pull {
     my ($verbose) = @_;
 
     if (_validate_git()) {
-        _exec(`git pull`, $verbose);
+        _exec('git pull', $verbose);
         croak("Git pull failed with exit code: $?") if $? != 0;
     }
     else {
@@ -151,7 +151,7 @@ sub _git_release {
     my $verbose = 0;
 
     if (_git_status_differs()) {
-        _git_pull(0);
+        _git_pull();
         _git_commit($version, $verbose);
         _git_push($verbose);
     }
