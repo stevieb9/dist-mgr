@@ -226,6 +226,17 @@ sub trap_warn {
     }
 }
 
+sub make_second_module {
+    my ($dest) = @_;
+
+    if (! -e $dest) {
+        mkdir $dest or die "Can't create $dest dir\n";
+        is -d $dest, 1, "$dest dir created ok";
+    }
+
+    copy 't/data/orig/One.pm', $dest or die "Can't copy One.pm to $dest\n";
+
+}
 sub module_args {
     my %module_args = (
         author  => 'Test Author',

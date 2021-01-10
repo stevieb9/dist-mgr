@@ -4,7 +4,6 @@ use strict;
 
 # Test run
 
-# distmgr create --destroy -m Test::Module -a "Steve Bertrand" -e steveb@cpan.org -r test-module -u stevieb9
 # cd test-module/
 # ...add lines to Changes, commit & push
 # distmgr release -d
