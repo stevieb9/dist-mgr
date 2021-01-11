@@ -4,6 +4,7 @@ use strict;
 use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
 use Data::Dumper;
+use File::Copy;
 use File::Find::Rule;
 use File::Find;
 use Test::More;
@@ -21,10 +22,12 @@ BEGIN {
 use lib 't/lib';
 use Helper qw(:all);
 
+
 my $repos_dir = $ENV{DIST_MGR_REPO_DIR};
 my $repo = 'test-module';
 my $repo_dir = "$repos_dir/$repo";
-my $tpl_dir;
+
+system("rm", "-rf", $repo_dir);
 
 my $cwd = getcwd();
 
@@ -34,8 +37,6 @@ my %cpan_args = (
 
 # create
 {
-    $tpl_dir = 't/data/create_test-module';
-
     before ();
 
     my @create_cmd_list = (
@@ -50,15 +51,20 @@ my %cpan_args = (
     );
 
     my $cmd = join ' ', @create_cmd_list;
+    my $output = `$cmd`;
+    print $output;
 
-    print "$cmd\n";
+    my $tpl_dir = "$cwd/t/data/distmgr/create_test-module";
+    copy_second_module($tpl_dir);
+
+    compare_files($tpl_dir, 'create');
 
     after();
 }
 
 # dist
 {
-    $tpl_dir = 't/data/dist_test-module';
+    my $tpl_dir = 't/data/dist_test-module';
 
     before ();
 
@@ -72,7 +78,8 @@ my %cpan_args = (
 
     my $cmd = join ' ', @dist_cmd_list;
 
-    print "$cmd\n";
+#    my $output = `$cmd`;
+#    print $output;
 
     after();
 }
@@ -106,11 +113,11 @@ sub check_file {
 sub copy_second_module {
     my ($src) = @_;
 
-    mkdir "$repo_dir/lib/Module" or die "Can't create 'Module' dir in $repo_dir\n";
+    mkdir "$repo_dir/lib/Test/Module" or die "Can't create 'lib/Module' dir in $repo_dir\n";
     copy
         "$src/lib/Test/Module/Second.pm",
         "$repo_dir/lib/Test/Module/Second.pm"
-    or die "Can't copy Second.pm";
+    or die "Can't copy Second.pm: $!";
 
     is -e "$repo_dir/lib/Test/Module/Second.pm", 1, "Second.pm copied ok to $repo_dir/lib/Test/Module";
 
@@ -142,24 +149,34 @@ sub remove_tarball {
         is -e $_, undef, "dist file $_ removed ok";
     }
 }
-sub post_release_file_count {
-    is getcwd(), $$repo_dir, "in the repo dir ok";
+sub compare_files {
+    if (@_ != 2) {
+        die "compare_files() needs \$tpl dir, and 'phase' sent in\n";
+    }
 
-    my $template_dir = "$cwd/t/data/template/release_module_template/";
+    my ($tpl, $phase) = @_;
+
+    like getcwd(), qr/$repos_dir$/, "in $repos_dir directory ok";
+    die "Not in $repos_dir!" if getcwd() !~ /$repos_dir$/;
+
+    chdir $repo_dir or die "Can't go into $repo_dir: $!\n";
+    like getcwd(), qr/$repo_dir$/, "in $repo_dir directory ok";
 
     my @template_files = File::Find::Rule->file()
         ->name('*')
-        ->in($template_dir);
-
+        ->in($tpl);
     my $file_count = 0;
 
     if (1) {
+        my @files;
         for my $tf (@template_files) {
-            (my $nf = $tf) =~ s/$template_dir//;
+            (my $nf = $tf) =~ s/$tpl\///;
             # nf == new file
             # tf == template file
-
             if (-f $nf) {
+                next if $nf =~ m|^\.git/|;
+
+                push @files, $nf;
                 open my $tfh, '<', $tf or die $!;
                 open my $nfh, '<', $nf or die $!;
 
@@ -172,17 +189,19 @@ sub post_release_file_count {
                 for (0 .. $#tf) {
                     if ($nf eq 'Changes') {
                         if ($_ == 2) {
-                            # UNREL/Date line
-                            like $nf[$_], qr/\d{4}-\d{2}-\d{2}/, "Changes line 2 contains date ok";
-                            is $nf[$_] !~ /UNREL/, 1, "Changes line 2 has temp UNREL removed ok";
-                            next;
+                            if ($phase =~ /^create$/) {
+                                # UNREL/Date line
+                                like $nf[$_], qr/UNREL/, "Changes line 2 phase '$phase' contains UNREL ok";
+                                next;
+                            }
                         }
                         if ($nf[$_] =~ /^\s{4}-\s+$/) {
                             like $nf[$_], qr/^\s{4}-\s+$/, "line with only a dash ok";
                             next;
                         }
                     }
-                    if ($nf eq 'lib/Acme/STEVEB.pm') {
+                    # Module version may differ due to processing
+                    if ($nf =~ m|lib/Test/.*\.pm|) {
                         if ($nf[$_] =~ /\$VERSION/) {
                             # VERSION
                             like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Changes line 2 contains date ok";
@@ -195,70 +214,12 @@ sub post_release_file_count {
             }
         }
         my $base_count = scalar @template_files;
-        is scalar $file_count, $base_count, "file count matches number of files in module_template";
+        is scalar $file_count, $base_count, "file count matches number of files in module template";
     }
     else {
-        warn "SKIPPING POST RELEASE FILE COMPARE CHECKS!";
+        warn "SKIPPING $phase FILE COMPARE CHECKS!";
     }
-}
-sub post_prep_next_cycle_file_count {
-    is getcwd(), $repo_dir, "in the repo dir ok";
 
-    my $template_dir = "$cwd/t/data/template/release_module_template/";
-
-    my @template_files = File::Find::Rule->file()
-        ->name('*')
-        ->in($template_dir);
-
-    my $tpl_count = 0;
-    my $new_count = 0;
-
-    if (1) {
-        for my $tf (@template_files) {
-            (my $nf = $tf) =~ s/$template_dir//;
-            # nf == new file
-            # tf == template file
-
-            if (-f $nf) {
-                open my $tfh, '<', $tf or die $!;
-                open my $nfh, '<', $nf or die $!;
-
-                my @tf = <$tfh>;
-                my @nf = <$nfh>;
-
-                close $tfh;
-                close $nfh;
-
-                for (0 .. $#tf) {
-                    if ($nf eq 'Changes') {
-                        if ($_ == 2) {
-                            # UNREL/Date line
-                            is $nf[$_] !~ qr/\d{4}-\d{2}-\d{2}/, 1, "Changes line 2 contains date ok";
-                            is $nf[$_] =~ /UNREL/, 1, "Changes line 2 has temp UNREL removed ok";
-                            next;
-                        }
-                        if ($nf[$_] =~ /^\s{4}-\s+$/) {
-                            like $nf[$_], qr/^\s{4}-\s+$/, "line with only a dash ok";
-                            next;
-                        }
-                    }
-                    if ($nf eq 'lib/Acme/STEVEB.pm') {
-                        if ($nf[$_] =~ /\$VERSION/) {
-                            # VERSION
-                            like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Changes line 2 contains date ok";
-                            next;
-                        }
-                    }
-                    is $nf[$_], $tf[$_], "$nf file line $_ matches the template $tf ok";
-                }
-                $tpl_count++;
-            }
-            $new_count++;
-        }
-        my $base_count = scalar @template_files;
-        is scalar $new_count, $base_count, "file count matches number of files in module_release_template";
-    }
-    else {
-        warn "SKIPPING FILE NEXT CYCLE COMPARE CHECKS!";
-    }
+    chdir $cwd or die "Can't go into $cwd: $!\n";
+    like getcwd(), qr/$cwd$/, "in $cwd directory ok";
 }
