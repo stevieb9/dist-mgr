@@ -2,10 +2,12 @@ use warnings;
 use strict;
 
 use Capture::Tiny qw(:all);
+use Carp;
 use Cwd qw(getcwd);
 use Data::Dumper;
 use File::Copy;
 use File::Find::Rule;
+use File::Path qw(make_path rmtree);
 use File::Find;
 use Test::More;
 use Dist::Mgr qw(:all);
@@ -23,11 +25,11 @@ use lib 't/lib';
 use Helper qw(:all);
 
 
+my @phases = qw(create dist cycle install release);
+
 my $repos_dir = $ENV{DIST_MGR_REPO_DIR};
 my $repo = 'test-module';
 my $repo_dir = "$repos_dir/$repo";
-
-system("rm", "-rf", $repo_dir);
 
 my $cwd = getcwd();
 
@@ -37,7 +39,9 @@ my %cpan_args = (
 
 # create
 {
-    before ();
+    before ('create');
+
+    system("rm", "-rf", $repo_dir);
 
     my @create_cmd_list = (
         'distmgr',
@@ -55,18 +59,21 @@ my %cpan_args = (
     print $output;
 
     my $tpl_dir = "$cwd/t/data/distmgr/create_test-module";
-    copy_second_module($tpl_dir);
+    copy_second_module($tpl_dir, 'create');
 
     compare_files($tpl_dir, 'create');
+
+    system("rm", "-rf", $repo_dir);
 
     after();
 }
 
 # dist
 {
-    my $tpl_dir = 't/data/dist_test-module';
+    system("rm", "-rf", 't/temp');
+    mkdir 't/temp' or die "Can't create t/temp dir: $!";
 
-    before ();
+    before ('dist');
 
     my @dist_cmd_list = (
         'distmgr',
@@ -77,21 +84,42 @@ my %cpan_args = (
     );
 
     my $cmd = join ' ', @dist_cmd_list;
+    my $output = `$cmd`;
 
-#    my $output = `$cmd`;
-#    print $output;
+    chdir 'Test-Module' or die "Can't change into Test-Module/ dir: $!";
+    like getcwd(), qr|t/temp/Test-Module$|, "in t/temp/Test-Modules ok";
+
+    my $tpl_dir = "$cwd/t/data/distmgr/dist_test-module";
+    print "** $tpl_dir **\n";
+    copy_second_module($tpl_dir, 'dist');
+
+    compare_files($tpl_dir, 'dist');
+
+#    system("rm", "-rf", 't/temp');
 
     after();
 }
 
 done_testing;
-#system("rm", "-rf", $repo_dir);
 
 sub before {
-    chdir $repos_dir or die "Can't chdir to $repos_dir";
-    like getcwd(), qr/$repos_dir$/, "in $repos_dir directory ok";
-    die "Not in $repos_dir!" if getcwd() !~ /$repos_dir$/;
+    my ($phase) = @_;
+    if (! defined $phase || ! grep /$phase/, @phases) {
+        croak( "before() needs a phase sent in");
+    }
+
+    if ($phase eq 'create') {
+        chdir $repos_dir or die "Can't chdir to $repos_dir";
+        like getcwd(), qr/$repos_dir$/, "in $repos_dir directory ok";
+        die "Not in $repos_dir!" if getcwd() !~ /$repos_dir$/;
+    }
+    elsif ($phase eq 'dist') {
+        chdir 't/temp' or die "Can't chdir to t/temp";
+        like getcwd(), qr/t\/temp$/, "in t/temp directory ok";
+        die "Not in t/temp!" if getcwd() !~ /t\/temp$/;
+    }
 }
+
 sub after {
     chdir $cwd or die $!;
     like getcwd(), qr/dist-mgr/, "back in root directory $cwd ok";
@@ -111,15 +139,25 @@ sub check_file {
     is grep(/$regex/, @contents) >= 1, 1, $msg;
 }
 sub copy_second_module {
-    my ($src) = @_;
+    my ($src, $phase) = @_;
 
-    mkdir "$repo_dir/lib/Test/Module" or die "Can't create 'lib/Module' dir in $repo_dir\n";
+    croak("copy_second_module needs src dir sent in") if ! defined $src;
+
+    if (! defined $phase || ! grep /$phase/, @phases) {
+        croak( "copy_second_module() needs a phase sent in. You sent $phase");
+    }
+
+    my $dir;
+    $dir = $repo_dir if $phase eq 'create';
+    $dir = "$cwd/t/temp/Test-Module" if $phase eq 'dist';
+
+    make_path "$dir/lib/Test/Module" or die "Can't create 'lib/Test/Module' dir in $dir";
     copy
         "$src/lib/Test/Module/Second.pm",
-        "$repo_dir/lib/Test/Module/Second.pm"
+        "$dir/lib/Test/Module/Second.pm"
     or die "Can't copy Second.pm: $!";
 
-    is -e "$repo_dir/lib/Test/Module/Second.pm", 1, "Second.pm copied ok to $repo_dir/lib/Test/Module";
+    is -e "$dir/lib/Test/Module/Second.pm", 1, "Second.pm copied ok to $dir/lib/Test/Module";
 
 }
 sub done {
@@ -155,12 +193,12 @@ sub compare_files {
     }
 
     my ($tpl, $phase) = @_;
+    my $dir;
+    $dir = $repo_dir if $phase eq 'create';
+    $dir = "$cwd/t/temp/Test-Module" if $phase eq 'dist';
 
-    like getcwd(), qr/$repos_dir$/, "in $repos_dir directory ok";
-    die "Not in $repos_dir!" if getcwd() !~ /$repos_dir$/;
-
-    chdir $repo_dir or die "Can't go into $repo_dir: $!\n";
-    like getcwd(), qr/$repo_dir$/, "in $repo_dir directory ok";
+    chdir $dir or die "Can't go into $dir: $!\n";
+    like getcwd(), qr/$dir$/, "in $dir directory ok";
 
     my @template_files = File::Find::Rule->file()
         ->name('*')
