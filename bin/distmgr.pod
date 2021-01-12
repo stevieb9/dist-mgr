@@ -22,6 +22,8 @@ This B<distmgr> application uses the L<Dist::Mgr> library as its backend.
 
 =head1 COMMANDS
 
+=head2 Command Process Flows
+
 I<Notice>: Be sure to read the
 L<Command Process Flows|https://github.com/stevieb9/dist-mgr#command-process-flows>
 documentation in the L<README|https://github.com/stevieb9/dist-mgr/blob/master/README.md>
