@@ -44,7 +44,7 @@ GetOptions(
 # Make sure we don't upload stuff to the CPAN when in testing
 
 if ($args{destroy}) {
-    $args{dryrun} = 1;
+    $args{cpan_dryrun} = 1;
 }
 
 $args{cpan_id} //= $ENV{CPAN_USERNAME};
@@ -340,7 +340,12 @@ sub release {
             my $dist_file = (glob("${dist}-*.tar.gz"))[-1];
 
             my $cpan_msg = capture_merged {
-                cpan_upload($dist_file, dry_run => $args{cpan_dryrun});
+                cpan_upload(
+                    $dist_file,
+                    user        => $args{cpan_id},
+                    password    => $args{cpan_pw},
+                    dry_run     => $args{cpan_dryrun}
+                    );
             };
 
             if ($cpan_msg =~ /Message:\s+(.*)/) {
