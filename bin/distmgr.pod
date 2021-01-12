@@ -16,6 +16,9 @@ files, amongst a slew of other tasks.
 
 This B<distmgr> application uses the L<Dist::Mgr> library as its backend.
 
+See the L<README|https://github.com/stevieb9/dist-mgr/blob/master/README.md> for
+full details beyond this document.
+
 =head1 USAGE
 
     distmgr <command> [OPTIONS]
