@@ -97,8 +97,9 @@ directory):
     -i | --cpanid   Optional:  Your PAUSE userid
     -p | --cpanpw   Optional:  Your PAUSE userid's password
     -d | --dryrun   Optional:  (Flag) Don't actually upload to the CPAN
-    -h | --help     Optional:  (Flag) Display help
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
+    -w | --wait     Optional:  (Flag) Wait for CI tests to finish (--nowait to disable)
+    -h | --help     Optional:  (Flag) Display help
 
 *Note*: The `--cpanid` and `--cpanpw` can be omitted if you set the 
 `CPAN_USERNAME` and `CPAN_PASSWORD` environment variables prior to script run.

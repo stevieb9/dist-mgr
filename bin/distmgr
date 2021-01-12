@@ -34,6 +34,7 @@ GetOptions(
     "d|dryrun"    => \$args{cpan_dryrun},
     "v|version=s" => \$args{version},
     "V|verbose"   => \$args{verbose},
+    "w|wait!"     => \$args{wait},
 
     "g|gitignore"  => \$args{install_gitignore},
     "c|ci"         => \$args{install_ci},
@@ -322,7 +323,7 @@ sub release {
 
     # CI testing
     if ($git && git_status_differs()) {
-        if (! git_release($ver)) {
+        if (! git_release($ver, $args{wait})) {
             die "\nERROR: User cancelled the release process due to failing CI testing\n";
         }
     }
@@ -555,12 +556,13 @@ Commands:
 
 create - Creates a full blown distribution with everything included
 
-    -m | --module   Mandatory: The module name (eg. Test::Module)
-    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
-    -e | --email    Mandatory: The email address of the author
-    -u | --user     Optional:  The Github username (eg. stevieb9)
-    -r | --repo     Optional:  The Github repository name (eg. test-module)
-    -V | --verbose  Optional:  Display verbose output for each process
+    -m | --module    Mandatory: The module name (eg. Test::Module)
+    -a | --author    Mandatory: The name of the author (eg. "Steve Bertrand")
+    -e | --email     Mandatory: The email address of the author
+    -u | --user      Optional:  The Github username (eg. stevieb9)
+    -r | --repo      Optional:  The Github repository name (eg. test-module)
+    -x | --wait      Optional:  Don't wait for CI test results (--nowait to disable)
+    -V | --verbose   Optional:  Display verbose output for each process
 
 Note: For Git integration, create an empty Github repository, send in its short
 name with --repo and your Github username with --user.
@@ -627,12 +629,13 @@ Creates a full blown, brand new distribution with everything included.
 
 I<Options>:
 
-    -m | --module   Mandatory: The module name (eg. Test::Module)
-    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
-    -e | --email    Mandatory: The email address of the author
-    -u | --user     Optional:  The Github username (eg. stevieb9)
-    -r | --repo     Optional:  The Github repository name (eg. test-module)
-    -V | --verbose  Optional:  Display verbose output for each process
+    -m | --module    Mandatory: The module name (eg. Test::Module)
+    -a | --author    Mandatory: The name of the author (eg. "Steve Bertrand")
+    -e | --email     Mandatory: The email address of the author
+    -u | --user      Optional:  The Github username (eg. stevieb9)
+    -r | --repo      Optional:  The Github repository name (eg. test-module)
+    -x | --wait      Optional:  Wait for CI test results (--nowait to disable)
+    -V | --verbose   Optional:  Display verbose output for each process
 
 I<Note>: For Git integration, create an empty repository on Github, then supply
 the short name of the repository with C<--repo> and your Github username with
