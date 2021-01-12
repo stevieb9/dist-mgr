@@ -2,13 +2,6 @@
 use warnings;
 use strict;
 
-# Test run
-
-# cd test-module/
-# ...add lines to Changes, commit & push
-# distmgr release -d
-# distmgr cycle
-
 use Capture::Tiny qw(:all);
 use Cwd qw(getcwd);
 use Data::Dumper;

@@ -24,3 +24,9 @@ One - The crappy ol' One module
 =head1 DESCRIPTION
 
 This module does something, but I forget what
+
+=head1 FUNCTIONS
+
+=head2 dummy
+
+This sub does something

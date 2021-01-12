@@ -56,16 +56,43 @@ my %cpan_args = (
 
     my $cmd = join ' ', @create_cmd_list;
     my $output = `$cmd`;
-    print $output;
 
     my $tpl_dir = "$cwd/t/data/distmgr/create_test-module";
     copy_second_module($tpl_dir, 'create');
 
     compare_files($tpl_dir, 'create');
 
-    system("rm", "-rf", $repo_dir);
+    # NOTE: Do not remove the repo dir... we need it for the release test
 
     after();
+}
+
+# release
+{
+    before('release');
+
+    my $cmd = 'distmgr release --nowait -d'; # no wait CI, dryrun CPAN
+    my $output = `$cmd`;
+
+    my $tpl_dir = "$cwd/t/data/distmgr/release_test-module";
+    compare_files($tpl_dir, 'release');
+
+    after();
+}
+
+# cycle
+{
+    before('cycle');
+
+    my $pre_cycle_versions = version_info();
+
+    my $cmd = 'distmgr cycle';
+    my $output = `$cmd`;
+
+    my $tpl_dir = "$cwd/t/data/distmgr/cycle_test-module";
+    compare_files($tpl_dir, 'cycle');
+
+    system("rm", "-rf", $repo_dir);
 }
 
 # dist
@@ -90,16 +117,61 @@ my %cpan_args = (
     like getcwd(), qr|t/temp/Test-Module$|, "in t/temp/Test-Modules ok";
 
     my $tpl_dir = "$cwd/t/data/distmgr/dist_test-module";
-    print "** $tpl_dir **\n";
     copy_second_module($tpl_dir, 'dist');
 
     compare_files($tpl_dir, 'dist');
 
-#    system("rm", "-rf", 't/temp');
+    # NOTE: Don't delete the temp dir!
 
     after();
 }
 
+# install
+{
+    before('install');
+
+    # --ci
+
+    is -e '.github/workflows/github_ci_default.yml', undef, "CI not created yet ok";
+    `distmgr install --ci --repo test-module --user stevieb9`;
+
+    file_count(18, "--ci");
+    is -e '.github/workflows/github_ci_default.yml', 1, "CI config in place ok";
+    check_file(
+        '.github/workflows/github_ci_default.yml',
+        qr/PL2Bat/,
+        "our custom CI config file is in place ok"
+    );
+
+    # --gitignore
+
+    is -e '.gitignore', undef, ".gitignore not created yet ok";
+    git_ignore();
+    is -e '.gitignore', 1, ".gitignore in place ok";
+    check_file('.gitignore', qr/BB-Pass/, "our custom .gitignore is in place ok");
+
+    # --badges
+
+    `distmgr install --badges -u stevieb9 -r test-module`;
+    check_file('lib/Test/Module.pm', qr/=for html/, "ci_badges() has html for loop ok");
+    check_file('lib/Test/Module.pm', qr/coveralls/, "ci_badges() dropped coveralls ok");
+    check_file('lib/Test/Module.pm', qr/workflows/, "ci_badges() dropped github actions ok");
+
+    # --bugtracker
+
+    `distmgr install --bugtracker -u stevieb9 -r test-module`;
+    check_file('Makefile.PL', qr/META_MERGE/, "bugtrack META_MERGE added ok");
+    check_file('Makefile.PL', qr/bugtracker/, "bugtracker added ok");
+
+    # --repository
+
+    `distmgr install --repository -u stevieb9 -r test-module`;
+    check_file('Makefile.PL', qr/META_MERGE/, "repo META_MERGE added ok");
+    check_file('Makefile.PL', qr/repository/, "repository added ok");
+
+    #system("rm", "-rf", 't/temp');
+    after();
+}
 done_testing;
 
 sub before {
@@ -118,8 +190,17 @@ sub before {
         like getcwd(), qr/t\/temp$/, "in t/temp directory ok";
         die "Not in t/temp!" if getcwd() !~ /t\/temp$/;
     }
+    elsif ($phase eq 'install') {
+        chdir 't/temp/Test-Module' or die "Can't chdir to t/temp/Test-Module";
+        like getcwd(), qr/t\/temp\/Test-Module$/, "in t/temp/Test-Module directory ok";
+        die "Not in t/temp/Test-Module!" if getcwd() !~ /t\/temp\/Test-Module$/;
+    }
+    elsif ($phase eq 'release' || $phase eq 'cycle') {
+        chdir $repo_dir or die "Can't chdir to $repo_dir";
+        like getcwd(), qr/$repo_dir$/, "in $repo_dir directory ok";
+        die "Not in $repo_dir: $!" if getcwd() !~ /$repo_dir$/;
+    }
 }
-
 sub after {
     chdir $cwd or die $!;
     like getcwd(), qr/dist-mgr/, "back in root directory $cwd ok";
@@ -149,6 +230,7 @@ sub copy_second_module {
 
     my $dir;
     $dir = $repo_dir if $phase eq 'create';
+    $dir = $repo_dir if $phase eq 'release';
     $dir = "$cwd/t/temp/Test-Module" if $phase eq 'dist';
 
     make_path "$dir/lib/Test/Module" or die "Can't create 'lib/Test/Module' dir in $dir";
@@ -160,33 +242,6 @@ sub copy_second_module {
     is -e "$dir/lib/Test/Module/Second.pm", 1, "Second.pm copied ok to $dir/lib/Test/Module";
 
 }
-sub done {
-    done_testing;
-#    system("rm", "-rf", "/home/spek/repos/acme-steveb");
-    exit;
-}
-sub update_version {
-    # version_info()
-
-    my ($orig_ver) = values %{(version_info('lib/Acme/STEVEB.pm'))[0]};
-
-    release_version($orig_ver);
-    my ($new_ver) = values %{(version_info('lib/Acme/STEVEB.pm'))[0]};
-    is(
-        version->parse($new_ver) > version->parse($orig_ver),
-        1,
-        "$new_ver is greater than $orig_ver ok"
-    );
-
-    return $new_ver;
-}
-sub remove_tarball {
-    my @dist_files = glob('*Acme-STEVEB*');
-    for (@dist_files) {
-        unlink $_ or die "can't unlink dist file $_: $!";
-        is -e $_, undef, "dist file $_ removed ok";
-    }
-}
 sub compare_files {
     if (@_ != 2) {
         die "compare_files() needs \$tpl dir, and 'phase' sent in\n";
@@ -195,6 +250,8 @@ sub compare_files {
     my ($tpl, $phase) = @_;
     my $dir;
     $dir = $repo_dir if $phase eq 'create';
+    $dir = $repo_dir if $phase eq 'cycle';
+    $dir = $repo_dir if $phase eq 'release';
     $dir = "$cwd/t/temp/Test-Module" if $phase eq 'dist';
 
     chdir $dir or die "Can't go into $dir: $!\n";
@@ -227,22 +284,45 @@ sub compare_files {
                 for (0 .. $#tf) {
                     if ($nf eq 'Changes') {
                         if ($_ == 2) {
+                            # create
                             if ($phase =~ /^create$/) {
                                 # UNREL/Date line
-                                like $nf[$_], qr/UNREL/, "Changes line 2 phase '$phase' contains UNREL ok";
+                                like $nf[$_], qr/0\.01 UNREL/, "Changes line 2 phase '$phase' contains UNREL ok";
                                 next;
                             }
+                            # release
+                            if ($phase =~ /^release$/) {
+                                # UNREL/Date line
+                                like $nf[$_], qr/0\.01    \d{4}-\d{2}-\d{2}/, "Changes line 2 phase '$phase' has date ok";
+                                unlike $nf[$_], qr/UNREL/, "Changes line 2 phase '$phase' no UNREL ok";
+                                next;
+                            }
+                            # cycle
+                            if ($phase =~ /^cycle$/) {
+                                # UNREL/Date line
+                                like $nf[$_], qr/0\.02 UNREL/, "Changes line 2 phase '$phase' contains UNREL ok";
+                                next;
+                            }
+                        }
+                        if ($_ == 5 && $phase eq 'cycle') {
+                            like $nf[$_], qr/0\.01    \d{4}-\d{2}-\d{2}/, "Changes line 2 phase '$phase' has date ok";
+                            next;
                         }
                         if ($nf[$_] =~ /^\s{4}-\s+$/) {
                             like $nf[$_], qr/^\s{4}-\s+$/, "line with only a dash ok";
                             next;
                         }
                     }
-                    # Module version may differ due to processing
+                    # Modules
                     if ($nf =~ m|lib/Test/.*\.pm|) {
                         if ($nf[$_] =~ /\$VERSION/) {
                             # VERSION
-                            like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Changes line 2 contains date ok";
+                            like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Module has ver ok";
+                            next;
+                        }
+                        if ($nf[$_] =~ /Copyright/) {
+                            # Copyright
+                            like $nf[$_], qr/Copyright.*\d{4}/, "Module has copyright ok";
                             next;
                         }
                     }
@@ -260,4 +340,8 @@ sub compare_files {
 
     chdir $cwd or die "Can't go into $cwd: $!\n";
     like getcwd(), qr/$cwd$/, "in $cwd directory ok";
+}
+sub done {
+    done_testing;
+    exit;
 }
