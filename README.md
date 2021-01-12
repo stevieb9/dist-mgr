@@ -10,7 +10,13 @@
 - [**cycle** - Prepare next development cycle](#cycle)
 - [**install** - Install individual features](#install)
 - [Examples](#examples)
-
+- [Command Process Flows](#command-process-flows)
+    - [create](#create-process)
+    - [dist](#dist-process)
+    - [release](#release-process)
+    - [cycle](#cycle-process)
+    - [install](#install-process)
+    
 ### Description
 
 The `distmgr` command line application that's installed along with the 
@@ -186,9 +192,9 @@ All the options listed below are optional.
     distmgr install --all
 ```
 
-### Process Flows
+### Command Process Flows
 
-#### create
+#### create process
 
 - Create the distribution skeleton from an empty repository or new directory.
 For Github integration, you must create a new empty repository on Github, then
@@ -215,14 +221,14 @@ this information to be presented on the CPAN (requires `--user` and `--repo`)
 - Perform a `git add .`, then `git commit` and finally `git push` (requires 
 `--user` and `--repo`)
 
-#### dist
+#### dist process
 
 - Create a base distribution skeleton within a directory that is representative
 of the module name you've sent in. Other than custom `Changes`, `MANIFEST.SKIP`,
 `t/manifest.t` files, the skeleton is pretty well exactly like a distribution
 created by `module-starter` from the `Module::Starter` distribution
 
-#### release
+#### release process
 
 - Enable git interaction if A) `git` is installed, B) `--repo` and `--user` are
 sent in
@@ -258,7 +264,7 @@ to be enabled)
 - Perform a `git push --tags` to push the new tag to Github (requires Git
 enabled)
 
-#### cycle
+#### cycle process
 
 - Enable git interaction if A) `git` is installed, B) `--repo` and `--user` are
 sent in
@@ -270,7 +276,7 @@ unreleased indicator
 
 - `git commit` and `git push` these changes, if git interaction is enabled
 
-#### install
+#### install process
 
 - Inserts sections into specific files for new features, or installs files for
 updated functionality
