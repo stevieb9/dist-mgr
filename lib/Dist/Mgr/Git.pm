@@ -184,6 +184,8 @@ sub _git_release {
             return 0;
         }
     }
+
+    return 1;
 }
 sub _git_repo {
     my $repo;

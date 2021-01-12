@@ -169,9 +169,10 @@ my %cpan_args = (
     check_file('Makefile.PL', qr/META_MERGE/, "repo META_MERGE added ok");
     check_file('Makefile.PL', qr/repository/, "repository added ok");
 
-    #system("rm", "-rf", 't/temp');
+    system("rm", "-rf", 't/temp');
     after();
 }
+
 done_testing;
 
 sub before {
