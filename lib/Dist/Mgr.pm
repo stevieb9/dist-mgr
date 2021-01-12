@@ -63,7 +63,7 @@ our %EXPORT_TAGS = (
     private => _export_private(),
 );
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use constant {
     GITHUB_CI_FILE      => 'github_ci_default.yml',

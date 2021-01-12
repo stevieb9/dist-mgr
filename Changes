@@ -1,5 +1,8 @@
 Revision history for Dist-Mgr
 
+1.04 UNREL
+    -
+
 1.03    2021-01-12
     - POD fixes and updates
     - In distmgr, add user interaction prior to cpan_upload() so the user can
