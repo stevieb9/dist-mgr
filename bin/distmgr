@@ -560,7 +560,7 @@ create - Creates a full blown distribution with everything included
     -e | --email     Mandatory: The email address of the author
     -u | --user      Optional:  The Github username (eg. stevieb9)
     -r | --repo      Optional:  The Github repository name (eg. test-module)
-    -x | --wait      Optional:  Don't wait for CI test results (--nowait to disable)
+    -w | --wait      Optional:  Don't wait for CI test results (--nowait to disable)
     -V | --verbose   Optional:  Display verbose output for each process
 
 Note: For Git integration, create an empty Github repository, send in its short
@@ -633,7 +633,7 @@ I<Options>:
     -e | --email     Mandatory: The email address of the author
     -u | --user      Optional:  The Github username (eg. stevieb9)
     -r | --repo      Optional:  The Github repository name (eg. test-module)
-    -x | --wait      Optional:  Wait for CI test results (--nowait to disable)
+    -w | --wait      Optional:  Wait for CI test results (--nowait to disable)
     -V | --verbose   Optional:  Display verbose output for each process
 
 I<Note>: For Git integration, create an empty repository on Github, then supply

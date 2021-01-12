@@ -1,7 +1,7 @@
 Revision history for Dist-Mgr
 
 1.04 UNREL
-    -
+    - Change -x to -w in distmgr POD
 
 1.03    2021-01-12
     - POD fixes and updates
