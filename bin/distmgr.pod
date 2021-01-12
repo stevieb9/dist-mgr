@@ -22,6 +22,11 @@ This B<distmgr> application uses the L<Dist::Mgr> library as its backend.
 
 =head1 COMMANDS
 
+I<Notice>: Be sure to read the
+L<Command Process Flows|https://github.com/stevieb9/dist-mgr#command-process-flows>
+documentation in the L<README|https://github.com/stevieb9/dist-mgr/blob/master/README.md>
+so you understand what is happening, why its happening, and when it happens.
+
 =head2 create
 
 Creates a full blown, brand new distribution with everything included.
