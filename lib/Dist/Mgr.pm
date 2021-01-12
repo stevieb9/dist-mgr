@@ -550,6 +550,8 @@ sub version_incr {
 sub version_info {
     my ($fs_entry) = @_;
 
+    $fs_entry //= DEFAULT_DIR;
+
     _validate_fs_entry($fs_entry);
 
     my @module_files = _module_find_files($fs_entry);
