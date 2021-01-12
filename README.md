@@ -62,8 +62,8 @@ which we'll clone and insert the distribution's files into. We will include:
     -e | --email    Mandatory: The email address of the author
     -u | --user     Optional:  The Github username (eg. stevieb9)
     -r | --repo     Optional:  The Github repository name (eg. test-module)
-    -h | --help     Optional:  (Flag) Display help
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
+    -h | --help     Optional:  (Flag) Display help
 
 #### dist
 
@@ -185,4 +185,92 @@ All the options listed below are optional.
     
     distmgr install --all
 ```
- 
+
+### Process Flows
+
+#### create
+
+- Create the distribution skeleton from an empty repository or new directory.
+For Github integration, you must create a new empty repository on Github, then
+supply its short name with the `--repo` argument along with the `--user`
+argument.
+
+- Remove files that we don't deem necessary for the distribution
+
+- Add a custom `Changes` file, formatted to a standard that is understood to
+this software
+
+- Add a `MANIFEST.SKIP` file
+
+- Add a custom `t/manifest.t` test file
+
+- Add a custom `.gitignore` file (requires `--user` and `--repo`)
+
+- Add a default Github Actions Continuous Integration configuration file
+(requires `--user` and `--repo`)
+
+- Add bugtracker and repository meta information to `Makefile.PL`, which allows
+this information to be presented on the CPAN (requires `--user` and `--repo`)
+
+- Perform a `git add .`, then `git commit` and finally `git push` (requires 
+`--user` and `--repo`)
+
+#### dist
+
+- Create a base distribution skeleton within a directory that is representative
+of the module name you've sent in. Other than custom `Changes`, `MANIFEST.SKIP`,
+`t/manifest.t` files, the skeleton is pretty well exactly like a distribution
+created by `module-starter` from the `Module::Starter` distribution
+
+#### release
+
+- Enable git interaction if A) `git` is installed, B) `--repo` and `--user` are
+sent in
+
+- Set the date in the `Changes` file for the current version we're about to
+release
+
+- Perform a `make manifest` to update the `MANIFEST` file
+
+- Run a `make test` and halt progress if any test fails
+
+- Run a `git commit` and `git push` if anything has changed and git interaction
+is enabled
+
+- Present the user for a prompt while we wait for CI testing to complete. You
+must manually check your Github Actions progress while we wait. When CI testing
+is complete, you press `CNTRL-C` to inform us of success, or `ENTER` to indicate
+CI failure. If you signify failure, we'll halt all further processing. Git must
+be enabled for these steps.
+
+- Run a `make dist` to generate the distribution tarball that gets sent to the
+CPAN
+
+- Upload the new distribution to the CPAN via `Pause::Uploader`. This process
+will not take place unless the `--cpanid` and `--cpanpw` are supplied, or the
+`CPAN_USERNAME` and `CPAN_PASSWORD` environment variables are populated
+
+- Run a `make distclean` to clean up the distribution directory
+
+- Perform a `git tag` with the version number of this release (requires Git
+to be enabled)
+
+- Perform a `git push --tags` to push the new tag to Github (requires Git
+enabled)
+
+#### cycle
+
+- Enable git interaction if A) `git` is installed, B) `--repo` and `--user` are
+sent in
+
+- Increment the version number of all module files found by `0.01`
+
+- Add a new section into the `Changes` file, with the updated version and an
+unreleased indicator
+
+- `git commit` and `git push` these changes, if git interaction is enabled
+
+#### install
+
+- Inserts sections into specific files for new features, or installs files for
+updated functionality

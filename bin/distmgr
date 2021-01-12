@@ -295,7 +295,7 @@ sub release {
     # Changes (Add release date)
     changes_date();
 
-    # Git release (commit, push, CI)
+    # Convert module name to file name
     my $module_file = $module;
     $module_file =~ s/::/\//g;
     $module_file = 'lib/' . $module_file . '.pm';
