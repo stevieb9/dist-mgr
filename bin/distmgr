@@ -332,8 +332,9 @@ sub release {
     print "\nAre you sure you're ready to upload to the CPAN?: [y/n]: ";
 
     my $uploaded_to_cpan = 0;
+    my $upload_to_cpan_confirmed = $args{cpan_dryrun} ? 'No' : <>;
 
-    if (<> =~ /[Yy]/) {
+    if ($upload_to_cpan_confirmed =~ /[Yy]/) {
         if ($args{cpan_id} && $args{cpan_pw}) {
             (my $dist = $module) =~ s/::/-/g;
             my $dist_file = (glob("${dist}-*.tar.gz"))[-1];

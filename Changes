@@ -1,6 +1,6 @@
 Revision history for Dist-Mgr
 
-1.03 UNREL
+1.03    2021-01-12
     - POD fixes and updates
     - In distmgr, add user interaction prior to cpan_upload() so the user can
       confirm for certain that the dist tarball should be uploaded
@@ -10,7 +10,7 @@ Revision history for Dist-Mgr
     - Added more output surrounding CPAN uploads
     - version_info() now sets a default directory if $fs_entry not sent in
     - distmgr release now has --wait and --nowait for CI test run completion
-    -
+    - distmgr binary now has thorough and complete unit tests
 
 1.02    2021-01-06
     - This release was skipped for internal testing purposes

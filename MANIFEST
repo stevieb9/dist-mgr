@@ -119,13 +119,3 @@ t/lib/Helper.pm
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
-t/temp/Test-Module/Changes
-t/temp/Test-Module/lib/Test/Module.pm
-t/temp/Test-Module/lib/Test/Module/Second.pm
-t/temp/Test-Module/Makefile.PL
-t/temp/Test-Module/MANIFEST
-t/temp/Test-Module/MANIFEST.SKIP
-t/temp/Test-Module/t/00-load.t
-t/temp/Test-Module/t/manifest.t
-t/temp/Test-Module/t/pod-coverage.t
-t/temp/Test-Module/t/pod.t

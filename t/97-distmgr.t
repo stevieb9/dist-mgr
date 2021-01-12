@@ -92,6 +92,8 @@ my %cpan_args = (
     my $tpl_dir = "$cwd/t/data/distmgr/cycle_test-module";
     compare_files($tpl_dir, 'cycle');
 
+    after();
+
     system("rm", "-rf", $repo_dir);
 }
 
@@ -169,8 +171,9 @@ my %cpan_args = (
     check_file('Makefile.PL', qr/META_MERGE/, "repo META_MERGE added ok");
     check_file('Makefile.PL', qr/repository/, "repository added ok");
 
-    system("rm", "-rf", 't/temp');
     after();
+
+    system("rm", "-rf", 't/temp');
 }
 
 done_testing;
