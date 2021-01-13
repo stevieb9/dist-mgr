@@ -34,6 +34,8 @@ our @EXPORT_OK = qw(
     ci_github
     config
     config_file
+    copyright_info
+    copyright_bump
     cpan_upload
     git_add
     git_commit
@@ -77,6 +79,7 @@ use constant {
     FSTYPE_IS_DIR       => 1,
     FSTYPE_IS_FILE      => 2,
     DEFAULT_DIR         => 'lib/',
+    DEFAULT_POD_DIR     => '.',
     MAKE                => $^O =~ /win32/i ? 'gmake' : 'make',
 };
 
@@ -266,6 +269,26 @@ sub config_file {
 
     return $file;
 }
+sub copyright_info {
+    my ($fs_entry) = @_;
+
+    $fs_entry //= DEFAULT_POD_DIR;
+
+    _validate_fs_entry($fs_entry);
+
+    my @pod_files = _pod_find_files($fs_entry);
+
+    my %copyright_info;
+
+    for my $file (@pod_files) {
+        my $copyright = _pod_extract_file_copyright($file);
+        next if ! defined $copyright || $copyright !~ /^\d{4}$/;
+        $copyright_info{$file} = $copyright if defined $copyright;
+    }
+
+    return \%copyright_info;
+}
+
 sub cpan_upload {
     my ($dist_file_name, %args) = @_;
 
@@ -979,6 +1002,50 @@ sub _module_write_template {
     print $wfh "$_\n" for @content;
 }
 
+# POD related
+
+sub _pod_extract_file_copyright {
+    # Extracts the copyright year from POD
+
+    my ($module_file) = @_;
+
+    my $copyright_line = _pod_extract_file_copyright_line($module_file);
+
+    if (defined $copyright_line) {
+        if ($copyright_line =~ /^Copyright\s+(\d{4})\s+\w+/) {
+            return $1;
+        }
+    }
+    else {
+        warn("$_: Can't find a Copyright definition\n");
+    }
+    return undef;
+}
+sub _pod_extract_file_copyright_line {
+    # Extracts the Copyright line from a module file
+
+    my ($pod_file) = @_;
+
+    open my $fh, '<', $pod_file or croak("Can't open POD file $pod_file: $!");
+
+    while (<$fh>) {
+        if (/^Copyright\s+\d{4}\s+\w+/) {
+            return $_;
+        }
+    }
+}
+sub _pod_find_files {
+    # Finds POD files
+
+    my ($fs_entry) = @_;
+
+    $fs_entry //= DEFAULT_POD_DIR;
+
+    return File::Find::Rule->file()
+        ->name('*.pod', '*.pm', '*.pl')
+        ->in($fs_entry);
+}
+
 # Validation related
 
 sub _validate_git {
@@ -1034,16 +1101,3 @@ copy of the full license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
 
-=head1 AUTHOR
-
-Steve Bertrand, C<< <steveb at cpan.org> >>
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2020-2021 Steve Bertrand.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
-
-L<http://www.perlfoundation.org/artistic_license_2_0>

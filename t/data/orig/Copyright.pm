@@ -1,4 +1,4 @@
-package One;
+package Copyright;
 
 use warnings;
 use strict;
