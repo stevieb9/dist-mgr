@@ -12,6 +12,7 @@ MANIFEST.SKIP
 README.md
 t/00-load.t
 t/01-_config.t
+t/03-copyright.t
 t/05-version_bump.t
 t/10-version_info.t
 t/15-add_repo_add_bugtrack.t
@@ -85,6 +86,7 @@ t/data/orig/.gitignore
 t/data/orig/Bad.pm
 t/data/orig/Changes
 t/data/orig/Changes-release
+t/data/orig/Copyright.pm
 t/data/orig/github_ci_default.yml
 t/data/orig/Makefile.PL
 t/data/orig/MANIFEST.SKIP
