@@ -1,7 +1,7 @@
 ## distmgr - Manage a Perl distribution
 
 - [Description](#description)
-- [Configuration](#configuraton)
+- [Configuration](#configuration)
 - [Limitations](#limitations)
 - [Usage](#usage)
 - [Commands](#commands)
