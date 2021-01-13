@@ -49,8 +49,6 @@ copy_module_files();
             like $line, qr/^Copyright\s+$year\s+Steve\s+Bertrand/, "$files[$_] has $year as copyright line in file ok";
         }
     }
-
-
 }
 
 unlink_module_files();

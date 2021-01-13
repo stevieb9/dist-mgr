@@ -25,7 +25,6 @@ BEGIN {
 use lib 't/lib';
 use Helper qw(:all);
 
-
 my @phases = qw(create dist cycle install release);
 
 my $repos_dir = $ENV{DIST_MGR_REPO_DIR};
@@ -198,6 +197,8 @@ my %cpan_args = (
     remove_config($file);
     is -e $file, undef, 'no config file present ok';
 }
+
+cpan_restore();
 
 done_testing;
 

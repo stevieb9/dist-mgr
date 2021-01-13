@@ -22,6 +22,9 @@ our @EXPORT_OK = qw(
     copy_manifest
     copy_git_ignore
 
+    cpan_save
+    cpan_restore
+
     unlink_changes
     unlink_ci_files
     unlink_makefile
@@ -96,6 +99,20 @@ sub copy_git_ignore {
     copy "$orig_dir/.gitignore", $work_dir or die $!;
 }
 
+sub cpan_save {
+    my $f = "$ENV{HOME}/dist-mgr.json";
+
+    if (-e $f) {
+        copy $f, "$f.bak" or die "Can't copy config file: $!";
+    }
+}
+sub cpan_restore {
+    my $f = "$ENV{HOME}/dist-mgr.json";
+
+    if (-e "$f.bak") {
+        copy "$f.bak", $f or die "Can't copy config file: $!";
+    }
+}
 sub unlink_changes {
     if (-e "$work_dir/Changes") {
         unlink "$work_dir/Changes" or die $!;

@@ -1,6 +1,6 @@
 Revision history for Dist-Mgr
 
-1.04 UNREL
+1.04    2021-01-13
     - Change -x to -w in distmgr POD
     - Moved distmgr POD from binary to separate POD file
     - Add distmgr command process flow documentation to the README (closes #37)
@@ -10,6 +10,7 @@ Revision history for Dist-Mgr
       (some CPAN testers dump the dist into a numbered directory)
     - Added copyright bump functionality (copyright_bump(), copyright_info())
       (closes #32)
+    - We now save an existing config file before testing, and restore it after
 
 1.03    2021-01-12
     - POD fixes and updates
