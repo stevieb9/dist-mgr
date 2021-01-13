@@ -340,11 +340,11 @@ sub release {
     my $uploaded_to_cpan = 0;
     my $upload_to_cpan_confirmed = $args{cpan_dryrun} ? 'No' : <>;
 
-    print Dumper \%args;
-    exit;
-
     if ($upload_to_cpan_confirmed =~ /[Yy]/) {
+        print "$args{cpan_id}, $args{cpan_pw}\n";
+
         if ($args{cpan_id} && $args{cpan_pw}) {
+            print "HERE!\n";
             (my $dist = $module) =~ s/::/-/g;
             my $dist_file = (glob("${dist}-*.tar.gz"))[-1];
 
