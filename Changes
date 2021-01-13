@@ -1,5 +1,8 @@
 Revision history for Dist-Mgr
 
+1.06 UNREL
+    -
+
 1.04    2021-01-13
     - Change -x to -w in distmgr POD
     - Moved distmgr POD from binary to separate POD file

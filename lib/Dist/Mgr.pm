@@ -68,7 +68,7 @@ our %EXPORT_TAGS = (
     private => _export_private(),
 );
 
-our $VERSION = '1.05';
+our $VERSION = '1.06';
 
 use constant {
     CONFIG_FILE         => 'dist-mgr.json',
