@@ -309,7 +309,8 @@ sub release {
     }
 
     # Copyright bump
-    copyright_bump();
+    copyright_bump('lib/');
+    copyright_bump('bin/');
 
     # make manifest
     make_manifest($args{verbose});
@@ -338,6 +339,9 @@ sub release {
 
     my $uploaded_to_cpan = 0;
     my $upload_to_cpan_confirmed = $args{cpan_dryrun} ? 'No' : <>;
+
+    print Dumper \%args;
+    exit;
 
     if ($upload_to_cpan_confirmed =~ /[Yy]/) {
         if ($args{cpan_id} && $args{cpan_pw}) {
