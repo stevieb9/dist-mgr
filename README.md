@@ -1,6 +1,7 @@
 ## distmgr - Manage a Perl distribution
 
 - [Description](#description)
+- [Configuration](#configuraton)
 - [Limitations](#limitations)
 - [Usage](#usage)
 - [Commands](#commands)
@@ -9,6 +10,7 @@
     - [**release** - Release a distribution](#release)
     - [**cycle** - Prepare next development cycle](#cycle)
     - [**install** - Install individual features](#install)
+    - [**config** - Create a default configuration file](#config)
 - [Examples](#examples)
 - [Command Process Flows](#command-process-flows)
     - [create](#create-process)
@@ -27,6 +29,11 @@ It allows you to create distributions (with or without a Github repository),
 release your distributions, automatically prepare your distribution's next
 development cycle, and install some or all of the features and files that we
 provide.
+
+### Configuration
+
+Some command line arguments can be configured in a configuration file. See the
+[config command](#config) section for details.
 
 ### Limitations
 
@@ -141,6 +148,13 @@ All the options listed below are optional.
 
     -A | --all          Insert/Install all above options
 
+#### config
+
+Creates an initial, default configuration file.
+
+This file will be named `dist-mgr.json` and will be placed in your `HOME`
+directory on Unix systems, and in your `USERPROFILE` directory on Windows.
+
 #### Examples
 
 - Create with repository
@@ -190,6 +204,12 @@ All the options listed below are optional.
     # or
     
     distmgr install --all
+```
+
+- Create an initial default configuration file
+
+```
+    distmgr config
 ```
 
 ### Command Process Flows

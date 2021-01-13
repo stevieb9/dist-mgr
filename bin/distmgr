@@ -377,8 +377,21 @@ sub release {
 
 # Functional
 
+sub generate_config {
+    config({});
+
+    my $file = config_file();
+
+    if (-e $file) {
+        print "\nDefault configuration file $file created ok\n";
+    }
+    else {
+        print "\nUnable to create the $file configuration file\n";
+    }
+}
 sub commands {
     return {
+        config  => \&generate_config,
         create  => \&create,
         cycle   => \&cycle,
         dist    => \&dist,
@@ -596,3 +609,7 @@ Notes: No Git operations will be performed without C<--repo> and C<--user>. If
 the --cpanid or --cpanpw aren't available or the CPAN_USERNAME or
 CPAN_PASSWORD environment variables aren't set, we won't upload to the CPAN.
 
+config - Creates an initial default configuration file.
+
+This file will be named dist-mgr.json and will be placed in your HOME
+directory on Unix systems, and in your USERPROFILE directory on Windows.

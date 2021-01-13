@@ -9,6 +9,7 @@ use File::Copy;
 use File::Find::Rule;
 use File::Path qw(make_path rmtree);
 use File::Find;
+use JSON;
 use Test::More;
 use Dist::Mgr qw(:all);
 use version;
@@ -174,6 +175,28 @@ my %cpan_args = (
     after();
 
     system("rm", "-rf", 't/temp');
+}
+
+# config
+{
+    my $file = config_file();
+
+    remove_config($file);
+    is -e $file, undef, 'no config file present ok';
+
+    `distmgr config`;
+
+    is -e $file, 1, 'config file present ok';
+
+    my $data = get_config($file);
+
+    is ref $data, 'HASH', "config file data is a href ok";
+
+    is $data->{cpan_id}, '', "cpan_id empty string ok";
+    is $data->{cpan_pw}, '', "cpan_pw empty string ok";
+
+    remove_config($file);
+    is -e $file, undef, 'no config file present ok';
 }
 
 done_testing;
@@ -349,3 +372,24 @@ sub done {
     done_testing;
     exit;
 }
+sub get_config {
+    my ($conf_file) = @_;
+    {
+        local $/;
+        open my $fh, '<', $conf_file or die "can't open $conf_file: $!";
+        my $json = <$fh>;
+        my $perl = decode_json($json);
+        return $perl;
+    }
+}
+sub remove_config {
+    my ($conf_file) = @_;
+
+    if (-e $conf_file) {
+        unlink $conf_file or die "Can't remove config file $conf_file: $!";
+        is -e $conf_file, undef, "Removed config file $conf_file ok";
+    }
+
+    is -e $conf_file, undef, "(unlink) config file $conf_file doesn't exist ok";
+}
+

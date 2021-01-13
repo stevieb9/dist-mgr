@@ -199,6 +199,34 @@ C<5.24>, C<5.18>, C<5.14> and C<5.10>.
 
 I<Returns>: An array of the contents of the generated file.
 
+=head2 config
+
+Writes out a default configuration file if one doesn't exist, and updates
+the C<%args> hash within a function.
+
+I<Parameters>:
+
+    \%args
+
+I<Mandatory, Hash reference>: Send in a reference to your C<%args> hash, and
+we'll update it with any directives within the configuration file before you
+send them off to other various routines.
+
+    $file
+
+I<Optional, String>: The name of an alternate configuration file you'd like to
+write out, or read from. Default is C<$ENV{USERPROFILE}/dist-mgr.json> on
+Windows systems, and C<$ENV{HOME}/dist-mgr.json> on Unix systems.
+
+I<Returns>: The reference to the C<%args> hash you sent in as the first
+parameter.
+
+=head2 config_file
+
+Returns the path and filename of the default configuration file. this is
+C<$ENV{USERPROFILE}/dist-mgr.json> on Windows systems, and
+C<$ENV{HOME}/dist-mgr.json> on Unix systems.
+
 =head2 cpan_upload
 
 Uploads the distribution tarball to PAUSE.
@@ -226,7 +254,7 @@ process.
 
 =back
 
-I<Returns>: C<1> (true) on success.
+I<Returns>: C<%args> hash on success.
 
 =head2 git_add
 

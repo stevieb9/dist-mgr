@@ -4,6 +4,8 @@ Revision history for Dist-Mgr
     - Change -x to -w in distmgr POD
     - Moved distmgr POD from binary to separate POD file
     - Add distmgr command process flow documentation to the README (closes #37)
+    - Added config file integration (config(), config_file(), distmgr config)
+      (closes #40)
 
 1.03    2021-01-12
     - POD fixes and updates

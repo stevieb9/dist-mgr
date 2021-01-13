@@ -1,4 +1,5 @@
 bin/distmgr
+bin/distmgr.pod
 Changes
 dev/quote_file_contents.pl
 lib/Dist/Mgr.pm
@@ -10,6 +11,7 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 README.md
 t/00-load.t
+t/01-_config.t
 t/05-version_bump.t
 t/10-version_info.t
 t/15-add_repo_add_bugtrack.t

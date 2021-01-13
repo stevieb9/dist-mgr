@@ -16,6 +16,7 @@ use File::Copy;
 use File::Copy::Recursive qw(rmove_glob);
 use File::Path qw(make_path rmtree);
 use File::Find::Rule;
+use JSON;
 use Module::Starter;
 use PPI;
 use Term::ReadKey;
@@ -31,6 +32,8 @@ our @EXPORT_OK = qw(
     changes_date
     ci_badges
     ci_github
+    config
+    config_file
     cpan_upload
     git_add
     git_commit
@@ -66,6 +69,7 @@ our %EXPORT_TAGS = (
 our $VERSION = '1.04';
 
 use constant {
+    CONFIG_FILE         => 'dist-mgr.json',
     GITHUB_CI_FILE      => 'github_ci_default.yml',
     GITHUB_CI_PATH      => '.github/workflows/',
     CHANGES_FILE        => 'Changes',
@@ -219,8 +223,53 @@ sub ci_github {
 
     return @contents;
 }
+sub config {
+    my ($args, $file) = @_;
+
+    if (! defined $args) {
+        croak("config() requires \$args hash reference parameter");
+    }
+    elsif (ref $args ne 'HASH') {
+        croak("\$args parameter must be a hash reference.");
+    }
+
+    $file = config_file() if ! defined $file;
+    my $conf;
+
+    if (-e $file && -f $file) {
+        {
+            local $/;
+            open my $fh, '<', $file or croak "Can't open config file $file: $!";
+            my $json = <$fh>;
+            $conf = decode_json $json;
+
+            for (keys %{ $conf }) {
+                delete $conf->{$_} if $conf->{$_} eq '';
+            }
+        }
+    }
+    else {
+        # No config file present
+        _config_file_write($file, _config_file());
+
+        print "\nGenerated new configuration file: $file\n";
+    }
+
+    %{ $args } = (%{ $args }, %{ $conf }) if $conf;
+
+    return $args;
+}
+sub config_file {
+    my $file = $^O =~ /win32/i
+        ? "$ENV{USERPROFILE}/${\CONFIG_FILE}"
+        : "$ENV{HOME}/${\CONFIG_FILE}";
+
+    return $file;
+}
 sub cpan_upload {
     my ($dist_file_name, %args) = @_;
+
+    config(\%args);
 
     if (! defined $dist_file_name) {
         croak("cpan_upload() requires the name of a distribution file sent in");
@@ -230,8 +279,11 @@ sub cpan_upload {
         croak("File name sent to cpan_upload() isn't a valid file");
     }
 
-    $args{user} = $ENV{CPAN_USERNAME} ||= 0 if ! exists $args{user};
-    $args{password} = $ENV{CPAN_PASSWORD} ||= 0 if ! exists $args{password};
+    $args{user} = $ENV{CPAN_USERNAME} if ! exists $args{user};
+    $args{password} = $ENV{CPAN_PASSWORD} if ! exists $args{password};
+
+    $args{user}     //= $args{cpan_id};
+    $args{password} //= $args{cpan_pw};
 
     if (! $args{user} || ! $args{password}) {
         croak("\ncpan_upload() requires the CPAN_USERNAME and CPAN_PASSWORD env vars set");
@@ -247,6 +299,8 @@ sub cpan_upload {
     );
 
     print "\nSuccessfully uploaded $dist_file_name to the CPAN\n";
+
+    return %args;
 }
 sub git_add {
     _git_add();
@@ -288,6 +342,8 @@ sub git_tag {
 }
 sub init {
     my (%args) = @_;
+
+    config(\%args);
 
     my $cwd = getcwd();
 
@@ -611,6 +667,25 @@ sub _ci_github_write_file {
     open my $fh, '>', $ci_file or croak $!;
 
     print $fh "$_\n" for @$contents;
+}
+
+# Configuration related
+
+sub _config_file_write {
+    my ($file, $contents) = @_;
+
+    if (ref $contents ne 'HASH') {
+        croak("_config_file_write() requires a hash ref of contents");
+    }
+
+    my $jobj = JSON->new;
+
+    my $json = $jobj->pretty->encode($contents);
+
+    open my $fh, '>', $file or croak "Can't open config $file for writing: $!";
+
+    print $fh $json;
+
 }
 
 # Distribution related

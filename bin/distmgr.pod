@@ -111,6 +111,13 @@ I<Options>:
 
     -V | --verbose  Optional:  Display verbose output for each process
 
+=head2 config
+
+config - Creates an initial default configuration file.
+
+This file will be named C<dist-mgr.json> and will be placed in your C<HOME>
+directory on Unix systems, and in your C<USERPROFILE> directory on Windows.
+
  =head1 AUTHOR
 
  Steve Bertrand, C<< <steveb at cpan.org> >>
