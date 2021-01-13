@@ -1,8 +1,5 @@
 Revision history for Dist-Mgr
 
-1.05 UNREL
-    -
-
 1.04    2021-01-13
     - Change -x to -w in distmgr POD
     - Moved distmgr POD from binary to separate POD file
@@ -15,6 +12,7 @@ Revision history for Dist-Mgr
       (closes #32)
     - We now save an existing config file before testing, and restore it after
     - Check if git status differs before waiting for CI tests to complete
+    - Test fixes regarding MANIFEST files
 
 1.03    2021-01-12
     - POD fixes and updates
