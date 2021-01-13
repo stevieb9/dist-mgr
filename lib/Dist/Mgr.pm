@@ -269,6 +269,33 @@ sub config_file {
 
     return $file;
 }
+sub copyright_bump {
+    my ($fs_entry) = @_;
+
+    $fs_entry //= DEFAULT_POD_DIR;
+    _validate_fs_entry($fs_entry);
+
+    my ($year) = (localtime)[5];
+    $year += 1900;
+
+    my @pod_files = _pod_find_files($fs_entry);
+    my %info;
+
+    for my $pod_file (@pod_files) {
+        my ($contents, $tie) = _pod_tie($pod_file);
+
+        for (0 .. $#$contents) {
+            if ($contents->[$_] =~ /^(Copyright\s+)\d{4}(\s+.*)/) {
+                $contents->[$_] = "$1$year$2";
+                $info{$pod_file} = $year;
+                last;
+            }
+        }
+        untie $tie;
+    }
+
+    return \%info;
+}
 sub copyright_info {
     my ($fs_entry) = @_;
 
@@ -1043,6 +1070,15 @@ sub _pod_find_files {
     return File::Find::Rule->file()
         ->name('*.pod', '*.pm', '*.pl')
         ->in($fs_entry);
+}
+sub _pod_tie {
+    # Ties a POD file to an array
+
+    my ($pod_file) = @_;
+    croak("_pod_tie() needs a POD file name sent in") if ! defined $pod_file;
+
+    my $tie = tie my @pf, 'Tie::File', $pod_file;
+    return (\@pf, $tie);
 }
 
 # Validation related

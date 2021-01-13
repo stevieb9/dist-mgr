@@ -35,6 +35,22 @@ copy_module_files();
         is $i->{$files[$_]}, 1999, "$files[$_] has correct initial copyright (1999) ok";
     }
 
+    my $u = copyright_bump($d);
+    my ($year) = (localtime)[5];
+    $year += 1900;
+
+    for (0..$#files) {
+        is exists $u->{$files[$_]}, 1, "$files[$_] exists in hash";
+        is $u->{$files[$_]}, 2021, "$files[$_] has correct copyright ($year) ok";
+
+        open my $fh, '<', $files[$_] or die "Can't open $files[$_]: $!";
+        while (my $line = <$fh>) {
+            next if $line !~ /^Copyright/;
+            like $line, qr/^Copyright\s+$year\s+Steve\s+Bertrand/, "$files[$_] has $year as copyright line in file ok";
+        }
+    }
+
+
 }
 
 unlink_module_files();

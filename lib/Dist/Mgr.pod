@@ -227,6 +227,41 @@ Returns the path and filename of the default configuration file. this is
 C<$ENV{USERPROFILE}/dist-mgr.json> on Windows systems, and
 C<$ENV{HOME}/dist-mgr.json> on Unix systems.
 
+=head2 copyright_bump
+
+Finds and updates the copyright year of a Perl POD or module file, or all Perl
+files in a directory structure. We operate on all C<*.pl>, C<*.pm> and C<*.pod>
+files.
+
+I<Use>: Before publishing a release.
+
+I<Parameters>:
+
+    $fs_entry
+
+I<Optional, String>: The name of a file or directory to work on. If a directory,
+we'll work on all Perl and POD files. Defaults to C<.>.
+
+I<Returns>: A hash reference with the file name as the key, and the updated year
+as the value.
+
+=head2 copyright_info
+
+Fetches the current copyright year in a file or all files in a directory. We
+operate on all C<*.pl>, C<*.pm> and C<*.pod> files.
+
+I<Use>: Anytime.
+
+I<Parameters>:
+
+    $fs_entry
+
+I<Optional, String>: The name of a file or directory to work on. If a directory,
+we'll work on all Perl and POD files. Defaults to C<.>.
+
+I<Returns>: A hash reference with the file name as the key, and the current
+copyright year as the value.
+
 =head2 cpan_upload
 
 Uploads the distribution tarball to PAUSE.

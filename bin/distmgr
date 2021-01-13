@@ -306,6 +306,9 @@ sub release {
         die "ERROR: The $module_file file for $module can't be found\n";
     }
 
+    # Copyright bump
+    copyright_bump();
+
     # make manifest
     make_manifest($args{verbose});
 

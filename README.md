@@ -256,6 +256,8 @@ sent in
 - Set the date in the `Changes` file for the current version we're about to
 release
 
+- Updates POD Copyright year, if applicable
+
 - Perform a `make manifest` to update the `MANIFEST` file
 
 - Run a `make test` and halt progress if any test fails

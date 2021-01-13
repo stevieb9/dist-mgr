@@ -6,6 +6,10 @@ Revision history for Dist-Mgr
     - Add distmgr command process flow documentation to the README (closes #37)
     - Added config file integration (config(), config_file(), distmgr config)
       (closes #40)
+    - Regex cleanup in test files that check the current working directory
+      (some CPAN testers dump the dist into a numbered directory)
+    - Added copyright bump functionality (copyright_bump(), copyright_info())
+      (closes #32)
 
 1.03    2021-01-12
     - POD fixes and updates
