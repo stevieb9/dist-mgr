@@ -35,6 +35,7 @@ t/90-version_incr.t
 t/95-build_cycle.t
 t/96-release_cycle.t
 t/97-distmgr.t
+t/99-cleanup.t
 t/data/distmgr/create_test-module/.github/workflows/github_ci_default.yml
 t/data/distmgr/create_test-module/.gitignore
 t/data/distmgr/create_test-module/Changes
