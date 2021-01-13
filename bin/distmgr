@@ -281,6 +281,8 @@ sub install {
 sub release {
     my (%args) = @_;
 
+    config(\%args);
+
     if ($args{help}) {
         help('release');
     }

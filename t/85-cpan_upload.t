@@ -41,7 +41,7 @@ my %args = (
         cpan_upload(__FILE__, %args);
         1
     }, undef, "username required ok";
-    like $@, qr/CPAN_USERNAME/, "...and error is sane";
+    like $@, qr/cpan_upload\(\) requires/, "...and error is sane";
 
     # no password
     $args{username} = 'STEVEB';
@@ -50,7 +50,7 @@ my %args = (
         cpan_upload(__FILE__, %args);
         1
     }, undef, "username required ok";
-    like $@, qr/CPAN_USERNAME/, "...and error is sane";
+    like $@, qr/cpan_upload\(\) requires/, "...and error is sane";
 
     delete $args{username};
 

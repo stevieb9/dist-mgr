@@ -11,6 +11,8 @@ Revision history for Dist-Mgr
     - Added copyright bump functionality (copyright_bump(), copyright_info())
       (closes #32)
     - We now save an existing config file before testing, and restore it after
+    - Check if git status differs before waiting for CI tests to complete
+    -
 
 1.03    2021-01-12
     - POD fixes and updates

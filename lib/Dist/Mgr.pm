@@ -328,14 +328,14 @@ sub cpan_upload {
         croak("File name sent to cpan_upload() isn't a valid file");
     }
 
-    $args{user} = $ENV{CPAN_USERNAME} if ! exists $args{user};
-    $args{password} = $ENV{CPAN_PASSWORD} if ! exists $args{password};
-
     $args{user}     //= $args{cpan_id};
     $args{password} //= $args{cpan_pw};
 
+    $args{user} = $ENV{CPAN_USERNAME} if ! $args{user};
+    $args{password} = $ENV{CPAN_PASSWORD} if ! $args{password};
+
     if (! $args{user} || ! $args{password}) {
-        croak("\ncpan_upload() requires the CPAN_USERNAME and CPAN_PASSWORD env vars set");
+        croak("\ncpan_upload() requires --cpan_id and --cpan_pw");
     }
 
     if ($args{dry_run}) {

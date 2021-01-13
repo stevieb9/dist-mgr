@@ -156,7 +156,7 @@ sub _git_release {
         _git_push($verbose);
     }
 
-    if ($wait_for_ci) {
+    if ($wait_for_ci && _git_status_differs()) {
         `clear`;
 
         print "\n\nWaiting for CI tests to complete.\n\n";
