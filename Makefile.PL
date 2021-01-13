@@ -12,7 +12,7 @@ WriteMakefile(
     LICENSE          => 'perl_5',
     PL_FILES         => {},
     EXE_FILES        => [qw(bin/distmgr)],
-    MIN_PERL_VERSION => '5.006',
+    MIN_PERL_VERSION => '5.010',
     META_MERGE => {
         'meta-spec' => { version => 2 },
         resources   => {

@@ -288,7 +288,6 @@ sub copyright_info {
 
     return \%copyright_info;
 }
-
 sub cpan_upload {
     my ($dist_file_name, %args) = @_;
 
@@ -370,7 +369,7 @@ sub init {
 
     my $cwd = getcwd();
 
-    if ($cwd =~ /dist-mgr(-\d+\.\d+)?$/i) {
+    if ($cwd =~ /dist-mgr(-\d+\.\d+)?(-\d+)?$/i) {
         croak "Can't run init() while in the '$cwd' directory";
     }
 
