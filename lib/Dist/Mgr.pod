@@ -254,7 +254,7 @@ process.
 
 =back
 
-I<Returns>: C<%args> hash on success.
+I<Returns>: Copy of C<%args> hash on success.
 
 =head2 git_add
 

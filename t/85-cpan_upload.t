@@ -61,7 +61,7 @@ my %args = (
 # success (dry run)
 {
     if ($ENV{CPAN_USERNAME} || $ENV{CPAN_PASSWORD}) {
-        is cpan_upload(__FILE__, %args), 1, "cpan_upload() proper run ok";
+        is eval {cpan_upload(__FILE__, %args); 1 }, 1, "cpan_upload() proper run ok";
     }
     else {
         warn "CPAN_USERNAME & CPAN_PASSWORD env vars not set\n";
