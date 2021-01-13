@@ -310,7 +310,6 @@ sub release {
 
     # Copyright bump
     copyright_bump('lib/');
-    copyright_bump('bin/');
 
     # make manifest
     make_manifest($args{verbose});
@@ -341,10 +340,7 @@ sub release {
     my $upload_to_cpan_confirmed = $args{cpan_dryrun} ? 'No' : <>;
 
     if ($upload_to_cpan_confirmed =~ /[Yy]/) {
-        print "$args{cpan_id}, $args{cpan_pw}\n";
-
         if ($args{cpan_id} && $args{cpan_pw}) {
-            print "HERE!\n";
             (my $dist = $module) =~ s/::/-/g;
             my $dist_file = (glob("${dist}-*.tar.gz"))[-1];
 

@@ -238,6 +238,10 @@ sub post_release_file_count {
                             like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Changes line 2 contains date ok";
                             next;
                         }
+                        if ($nf[$_] =~ /^Copyright/) {
+                            like $nf[$_], qr/^Copyright\s+\d{4}/, "Copyright year ok";
+                            next;
+                        }
                     }
                     is $nf[$_], $tf[$_], "$nf file matches the template $tf ok";
                 }
@@ -296,6 +300,10 @@ sub post_prep_next_cycle_file_count {
                         if ($nf[$_] =~ /\$VERSION/) {
                             # VERSION
                             like $nf[$_], qr/\$VERSION = '\d+\.\d+'/, "Changes line 2 contains date ok";
+                            next;
+                        }
+                        if ($nf[$_] =~ /^Copyright/) {
+                            like $nf[$_], qr/^Copyright\s+\d{4}/, "Copyright year ok";
                             next;
                         }
                     }

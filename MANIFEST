@@ -54,7 +54,6 @@ t/data/distmgr/cycle_test-module/Changes
 t/data/distmgr/cycle_test-module/lib/Test/Module.pm
 t/data/distmgr/cycle_test-module/lib/Test/Module/Second.pm
 t/data/distmgr/cycle_test-module/Makefile.PL
-t/data/distmgr/cycle_test-module/MANIFEST
 t/data/distmgr/cycle_test-module/MANIFEST.SKIP
 t/data/distmgr/cycle_test-module/t/00-load.t
 t/data/distmgr/cycle_test-module/t/manifest.t

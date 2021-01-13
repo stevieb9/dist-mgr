@@ -3,7 +3,7 @@ package Dist::Mgr::FileData;
 use warnings;
 use strict;
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 use Exporter qw(import);
 our @ISA = qw(Exporter);
