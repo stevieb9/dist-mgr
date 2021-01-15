@@ -1,7 +1,9 @@
 Revision history for Dist-Mgr
 
 1.07 UNREL
-    -
+    - In _git_release(), put output of _git_status_differs() into variable,
+      otherwise the second check for CI has already been set to false after the
+      previous commit/push
 
 1.06    2021-01-15
     - Bump prereq version of File::Copy::Recursive, as older versions of perl
