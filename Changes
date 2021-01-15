@@ -1,5 +1,8 @@
 Revision history for Dist-Mgr
 
+1.07 UNREL
+    -
+
 1.06    2021-01-15
     - Bump prereq version of File::Copy::Recursive, as older versions of perl
       came with v0.38 which didn't export rmove_glob(), which would cause tests
