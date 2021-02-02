@@ -1,5 +1,9 @@
 Revision history for Dist-Mgr
 
+1.08 UNREL
+    -
+
+
 1.07    2021-02-02
     - For some reason, CPAN installs were breaking due to an unknown reason
       on Windows. After a dev release, the problem seems resolved    
