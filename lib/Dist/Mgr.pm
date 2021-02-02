@@ -1089,7 +1089,7 @@ sub _dist_dir_re {
     # CPAN testers
     # Use YAPE::Regex::Explain for details
 
-    return qr/dist-mgr(?:-\d+\.\d+)?(?:-\w+)?$/i;
+    return qr/dist-mgr(?:-\d+\.\d+)?(?:-\w+|_\d+)?$/i;
 }
 sub _validate_git {
     my $sep = $^O =~ /win32/i ? ';' : ':';
