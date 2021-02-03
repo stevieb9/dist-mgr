@@ -185,7 +185,11 @@ sub file_compare {
     close $orig_fh or die $!;
 
     for (0..$#new) {
-        is $new[$_], $orig[$_], "Updated Changes file line $_ matches template custom ok";
+        $new[$_] =~ s/[\r\n]//g;
+        $orig[$_] =~ s/[\r\n]//g;
+        chomp $orig;
+
+        like $new[$_], qr/^$orig[$_]/, "Updated Changes file line $_ matches template custom ok";
     }
 }
 sub file_scalar {

@@ -1,7 +1,8 @@
 Revision history for Dist-Mgr
 
-1.08 UNREL
-    -
+1.08_01 UNREL
+    - Still having test failures, now on Linux. This has something to do
+      with line endings
 
 
 1.07    2021-02-02
