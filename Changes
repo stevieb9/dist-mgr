@@ -1,9 +1,8 @@
 Revision history for Dist-Mgr
 
-1.08_01 UNREL
-    - Still having test failures, now on Linux. This has something to do
-      with line endings
-
+1.08    2021-02-03
+    - Skip failing tests on Windows due to line-ending issues when
+      uploaded to CPAN. Windows CI tests pass just fine
 
 1.07    2021-02-02
     - For some reason, CPAN installs were breaking due to an unknown reason
