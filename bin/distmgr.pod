@@ -97,7 +97,7 @@ I<Options>:
     -i | --cpanid   Optional:  Your PAUSE userid
     -p | --cpanpw   Optional:  Your PAUSE userid's password
     -d | --dryrun   Optional:  (Flag) Don't actually upload to the CPAN
-    -w | --wait     Optional:  (Flag) Wait for confirmation of CI before uploading to CPAN
+    -w | --wait     Optional:  (Flag) Wait for confirmation of CI before uploading to CPAN (--nowait to disable)
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
 I<Note>: No Git operations will be performed without C<--repo> and C<--user>. If
