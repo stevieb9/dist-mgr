@@ -1,6 +1,7 @@
 Revision history for Dist-Mgr
 
 1.10 UNREL
+    - Remove -w|--wait flag from 'distmgr cycle' docs (fixes #46)
     -
 
 1.09    2021-02-03
@@ -10,7 +11,7 @@ Revision history for Dist-Mgr
 
 1.07    2021-02-02
     - For some reason, CPAN installs were breaking due to an unknown reason
-      on Windows. After a dev release, the problem seems resolved    
+      on Windows. After a dev release, the problem seems resolved
     - Updated _dist_dir_re() so it includes development versions
 
 1.06_01    2021-02-02
