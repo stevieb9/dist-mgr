@@ -1,5 +1,8 @@
 Revision history for Dist-Mgr
 
+1.10 UNREL
+    -
+
 1.09    2021-02-03
     - Skip failing tests on Windows due to line-ending issues when
       uploaded to CPAN. Windows CI tests pass just fine
