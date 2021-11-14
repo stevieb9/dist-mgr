@@ -1,6 +1,6 @@
 Revision history for Dist-Mgr
 
-1.10 UNREL
+1.10    2021-11-14
     - Remove -w|--wait flag from 'distmgr cycle' docs (fixes #46)
     - Fix broken links to distmgr POD from module POD (fixes #44)
     - Removed conditionals in distmgr install which was preventing elements
