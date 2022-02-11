@@ -1,10 +1,8 @@
 Revision history for Dist-Mgr
 
 1.12 UNREL
-    -
-
-1.11 UNREL
-    -
+    - In the copyright update tests, test year dynamically instead of
+      using the magic number
 
 1.10    2021-11-14
     - Remove -w|--wait flag from 'distmgr cycle' docs (fixes #46)
