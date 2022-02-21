@@ -98,7 +98,7 @@ sub _git_clone {
     }
 
     if ( _validate_git()) {
-        _exec("git clone 'https://$user\@github.com/$user/$repo'", $verbose);
+        _exec("git clone 'git\@github.com:/$user/$repo'", $verbose);
 
         if ($? != 0) {
             if ($? == 32768) {
