@@ -66,9 +66,9 @@ sub _ci_github_file {
         qq{name: CI},
         qq{on:},
         qq{  push:},
-        qq{    branches: [ master ]},
+        qq{    branches: [ main ]},
         qq{  pull_request:},
-        qq{    branches: [ master ]},
+        qq{    branches: [ main ]},
         qq{  workflow_dispatch:},
         qq{jobs:},
         qq{  build:},
@@ -148,7 +148,7 @@ sub _module_section_ci_badges {
         qq{},
         qq{=for html},
         qq{<a href="https://github.com/$author/$repo/actions"><img src="https://github.com/$author/$repo/workflows/CI/badge.svg"/></a>},
-        qq{<a href='https://coveralls.io/github/$author/$repo?branch=master'><img src='https://coveralls.io/repos/$author/$repo/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>},
+        qq{<a href='https://coveralls.io/github/$author/$repo?branch=main'><img src='https://coveralls.io/repos/$author/$repo/badge.svg?branch=main&service=github' alt='Coverage Status' /></a>},
         qq{},
     );
 }
@@ -275,7 +275,6 @@ sub _manifest_skip_file {
         q{pm_to_blib$},
         q{.git/},
         q{.debug$},
-        q{.github/},
         q{.gitignore$},
         q{^\w+.pl$},
         q{.ignore.txt$},
@@ -290,6 +289,7 @@ sub _manifest_skip_file {
         q{BB-Fail/},
         q{cover_db/},
         q{scrap\.pl},
+        q{^\.github/}
     );
 }
 sub _manifest_t_file {
