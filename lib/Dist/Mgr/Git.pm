@@ -36,7 +36,7 @@ our %EXPORT_TAGS = (
     all     => [@EXPORT_OK],
 );
 
-our $VERSION = '1.12';
+our $VERSION = '1.13';
 
 my $spinner_count;
 
