@@ -1,7 +1,8 @@
 Revision history for Dist-Mgr
 
 1.13 UNREL
-    -
+    - Made changes to CI Github Actions configuration file, modified Perls
+      installed, only install ExtUtils::PL2Bat on Windows systems
 
 1.12    2022-05-10
     - In the copyright update tests, test year dynamically instead of
