@@ -17,6 +17,10 @@ Revision history for Dist-Mgr
       Makefile.PL under coverage, which left a structure-less entry that
       crashed the Coveralls reporter (Can't call method "location" on an
       undefined value)
+    - Raised the minimum Perl version to 5.14 (MIN_PERL_VERSION). The
+      libwww-perl and CPAN::Uploader dependency chain no longer installs
+      cleanly on Perl 5.10/5.12, so those were dropped from CI and 5.14/5.16
+      added
 
 1.13    2022-05-11
     - Made changes to CI Github Actions configuration file, modified Perls
