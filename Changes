@@ -12,6 +12,11 @@ Revision history for Dist-Mgr
     - copyright_bump() now updates copyright year ranges; 'Copyright 2016-2019'
       bumps the latter year to the current year, and comma ranges (2016,2019)
       are normalized to a dash. Single years are still replaced as before
+    - Fixed the coverage Github Actions job; Makefile.PL is now ignored during
+      Devel::Cover reporting. The build-cycle tests run several distributions'
+      Makefile.PL under coverage, which left a structure-less entry that
+      crashed the Coveralls reporter (Can't call method "location" on an
+      undefined value)
 
 1.13    2022-05-11
     - Made changes to CI Github Actions configuration file, modified Perls

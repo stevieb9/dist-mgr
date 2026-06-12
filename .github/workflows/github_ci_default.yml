@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest']
-        perl: [ '5.32', '5.28', '5.24', '5.18' ]
+        perl: [ '5.42', '5.36', '5.32', '5.28', '5.24', '5.18', '5.12' ]
         include:
           - perl: '5.32'
             os: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
           CPAN_PASSWORD: test
         run: |
           cpanm -n Devel::Cover::Report::Coveralls
-          cover -ignore Git.pm$ -test -report Coveralls
+          cover -ignore 'Git.pm$' -ignore 'Makefile.PL$' -test -report Coveralls
   finish:
     needs: test
     runs-on: ubuntu-latest
