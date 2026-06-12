@@ -9,6 +9,9 @@ Revision history for Dist-Mgr
       was inadvertently commented out
     - Fixed version_incr() so it preserves a version's decimal precision when
       bumping (eg. 3.1802 now increments to 3.1803, not 3.19)
+    - copyright_bump() now updates copyright year ranges; 'Copyright 2016-2019'
+      bumps the latter year to the current year, and comma ranges (2016,2019)
+      are normalized to a dash. Single years are still replaced as before
 
 1.13    2022-05-11
     - Made changes to CI Github Actions configuration file, modified Perls

@@ -286,8 +286,21 @@ sub copyright_bump {
         my ($contents, $tie) = _pod_tie($pod_file);
 
         for (0 .. $#$contents) {
-            if ($contents->[$_] =~ /^(Copyright\s+)\d{4}(\s+.*)/) {
-                $contents->[$_] = "$1$year$2";
+            # Match a single year (Copyright 2016), a dash range
+            # (Copyright 2016-2019) or a comma range (Copyright 2016,2019)
+            if ($contents->[$_] =~ /^(Copyright\s+)(\d{4})(?:\s*[-,]\s*(\d{4}))?(\s+.*)/) {
+                my ($prefix, $first, $second, $rest) = ($1, $2, $3, $4);
+
+                if (defined $second) {
+                    # A range: keep the first year, bump the latter to the
+                    # current year, and normalize the separator to a dash
+                    $contents->[$_] = "$prefix$first-$year$rest";
+                }
+                else {
+                    # A single year: replace it with the current year
+                    $contents->[$_] = "$prefix$year$rest";
+                }
+
                 $info{$pod_file} = $year;
                 last;
             }
@@ -1054,8 +1067,9 @@ sub _pod_extract_file_copyright {
     my $copyright_line = _pod_extract_file_copyright_line($module_file);
 
     if (defined $copyright_line) {
-        if ($copyright_line =~ /^Copyright\s+(\d{4})\s+\w+/) {
-            return $1;
+        if ($copyright_line =~ /^Copyright\s+(\d{4})(?:\s*[-,]\s*(\d{4}))?\s+\w+/) {
+            # For a range, report the latter (most recent) year
+            return defined $2 ? $2 : $1;
         }
     }
     else {
@@ -1071,7 +1085,7 @@ sub _pod_extract_file_copyright_line {
     open my $fh, '<', $pod_file or croak("Can't open POD file $pod_file: $!");
 
     while (<$fh>) {
-        if (/^Copyright\s+\d{4}\s+\w+/) {
+        if (/^Copyright\s+\d{4}(?:\s*[-,]\s*\d{4})?\s+\w+/) {
             return $_;
         }
     }
