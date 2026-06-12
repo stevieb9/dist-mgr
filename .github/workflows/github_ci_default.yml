@@ -42,7 +42,7 @@ jobs:
           CPAN_PASSWORD: test
         run: |
           cpanm -n Devel::Cover::Report::Coveralls
-          cover -ignore 'Git.pm$' -ignore 'Makefile.PL$' -test -report Coveralls
+          cover -test -select 'Dist/Mgr' -ignore 'Git.pm$' -report Coveralls
   finish:
     needs: test
     runs-on: ubuntu-latest

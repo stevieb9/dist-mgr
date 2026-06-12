@@ -76,7 +76,7 @@ sub _ci_github_file {
         qq{    strategy:},
         qq{      matrix:},
         qq{        os: $os_matrix},
-        qq{        perl: [ '5.34', '5.32', '5.28', '5.24', '5.18', '5.14' ]},
+        qq{        perl: [ '5.42', '5.34', '5.32', '5.28', '5.24', '5.18', '5.14', '5.10' ]},
         qq{        include:},
         qq{          - perl: '5.32'},
         qq{            os: ubuntu-latest},
