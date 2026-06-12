@@ -1,4 +1,5 @@
 ~$
+.claude/
 ^blib/
 ^pm_to_blib/
 .old$
