@@ -658,10 +658,15 @@ sub version_incr {
 
     croak("version_incr() needs a version number sent in") if ! defined $version;
 
-    my $incremented_version;
-
     _validate_version($version);
-    return sprintf("%.2f", $version + '0.01');
+
+    # Increment the least-significant digit while preserving the version's
+    # precision (eg. 3.1802 -> 3.1803, not 3.19)
+
+    my $decimals  = $version =~ /\.(\d+)$/ ? length $1 : 0;
+    my $increment = 1 / 10 ** $decimals;
+
+    return sprintf("%.${decimals}f", $version + $increment);
 }
 sub version_info {
     my ($fs_entry) = @_;
