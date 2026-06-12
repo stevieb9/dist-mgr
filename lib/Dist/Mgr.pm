@@ -414,13 +414,23 @@ sub init {
         croak("init()'s 'modules' parameter must be an array reference");
     }
 
+    # Module::Starter 1.79+ added multi-author support and now requires
+    # 'author' to be an arrayref of 'Name <email>' strings; older versions
+    # expect a plain scalar. Normalize for the installed version while
+    # leaving $args{author} untouched for _module_write_template() below
+    my %distro_args = %args;
+
+    if ($Module::Starter::VERSION >= 1.79) {
+        $distro_args{author} = ["$args{author} <$args{email}>"];
+    }
+
     if ($args{verbose}) {
-        delete $args{verbose};
-        Module::Starter->create_distro(%args);
+        delete $distro_args{verbose};
+        Module::Starter->create_distro(%distro_args);
     }
     else {
         capture_merged {
-            Module::Starter->create_distro(%args);
+            Module::Starter->create_distro(%distro_args);
         };
     }
 
@@ -484,7 +494,7 @@ sub move_distribution_files {
             my $inner = $move_count[$outer_idx][$inner_idx];
             for (0..$#$inner) {
                 if ($inner->[$_] != $dist_count->[$outer_idx][$inner_idx][$_]) {
-                    #croak("Results from the move are mismatched... bailing out");
+                    croak("Results from the move are mismatched... bailing out");
                 }
             }
         }
