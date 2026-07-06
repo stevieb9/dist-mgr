@@ -1,6 +1,6 @@
 Revision history for Dist-Mgr
 
-1.15 UNREL
+1.15    2026-07-06
     - Fix issue in move_distribution_files() where counts will mismatch if
       a new distribution has three levels (eg: A::B::C)
 
