@@ -24,6 +24,7 @@ t/35-git_ignore.t
 t/40-remove_unwanted_files.t
 t/45-init.t
 t/50-move_distribution_files.t
+t/51-move_distribution_files_depth.t
 t/55-changes.t
 t/60-changes_date.t
 t/65-changes_bump.t
