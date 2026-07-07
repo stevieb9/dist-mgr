@@ -1,7 +1,11 @@
 Revision history for Dist-Mgr
 
 1.17 UNREL
-    -
+    - Fixed _git_clone() misreporting all clone failures as "DIRECTORY x
+      ALREADY EXISTS". It hard-coded git's exit 128 (raw wait status 32768)
+      to that single cause; it now decodes the real exit code and surfaces
+      git's own stderr (repository not found, auth failure, destination
+      exists, and so on)
 
 1.16    2026-07-06
     - Fix issue in move_distribution_files() where counts will mismatch if

@@ -30,6 +30,7 @@ t/60-changes_date.t
 t/65-changes_bump.t
 t/70-make_test.t
 t/75-git.t
+t/76-git_clone_fail.t
 t/80-git_release.t
 t/85-cpan_upload.t
 t/90-version_incr.t

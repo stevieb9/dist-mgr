@@ -45,14 +45,18 @@ sub _exec {
 
     croak("_exec() requires cmd parameter sent in") if ! defined $cmd;
 
+    my $output = '';
+
     if ($verbose) {
         print `$cmd`;
     }
     else {
-        capture_merged {
+        $output = capture_merged {
             `$cmd`;
         };
     }
+
+    return $output;
 }
 sub _git_add {
     my ($verbose) = @_;
@@ -97,16 +101,21 @@ sub _git_clone {
         croak("git_clone() requires a user and repository sent in");
     }
 
-    if ( _validate_git()) {
-        _exec("git clone 'git\@github.com:/$user/$repo'", $verbose);
+    if (_validate_git()) {
+        my $output = _exec("git clone 'git\@github.com:/$user/$repo'", $verbose);
 
         if ($? != 0) {
-            if ($? == 32768) {
-                croak(
-                    "Git clone failed with exit code: $? DIRECTORY $repo ALREADY EXISTS\n"
-                );
-            }
-            croak("Git clone failed with exit code: $?\n") if $? != 0;
+            # $? is the raw wait status; the real git exit code is $? >> 8.
+            # Exit 128 is git's generic fatal (repository not found, auth
+            # failure, destination already exists, ...), so surface git's own
+            # message rather than guessing at a single cause.
+            my $exit = $? >> 8;
+            chomp(my $detail = $output // '');
+
+            my $msg = "Git clone of '$user/$repo' failed with exit code: $exit";
+            $msg .= "\n$detail" if length $detail;
+
+            croak("$msg\n");
         }
     }
     else {
