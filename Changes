@@ -6,6 +6,16 @@ Revision history for Dist-Mgr
       to that single cause; it now decodes the real exit code and surfaces
       git's own stderr (repository not found, auth failure, destination
       exists, and so on)
+    - Added add_buildcheck($type): an opt-in inserter that splices the
+      RPi::WiringPi family's canonical RPi::Const::BuildCheck guard shim into a
+      new distribution's Makefile.PL (ahead of WriteMakefile) and adds
+      RPi::Const to CONFIGURE_REQUIRES, so RPi:: modules are born with the
+      correct NA-not-FAIL build check. $type is 'wiringpi' or 'i2c'. Idempotent
+      (returns -1 if already present) and not run by init(), so it never
+      touches non-RPi dists. Covered by t/16-add_buildcheck.t
+    - Wired add_buildcheck into the distmgr CLI as -k|--buildcheck <type> for
+      the create, dist and install commands, so a new RPi:: dist can be born
+      with the guard. Deliberately excluded from --all (RPi-specific)
 
 1.16    2026-07-06
     - Fix issue in move_distribution_files() where counts will mismatch if

@@ -26,6 +26,7 @@ use Exporter qw(import);
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
     add_bugtracker
+    add_buildcheck
     add_repository
     changes
     changes_bump
@@ -96,6 +97,17 @@ sub add_bugtracker {
     $makefile //= 'Makefile.PL';
 
     _makefile_insert_bugtracker($author, $repo, $makefile);
+}
+sub add_buildcheck {
+    my ($type, $makefile) = @_;
+
+    if (! defined $type || ($type ne 'wiringpi' && $type ne 'i2c')) {
+        croak("Usage: add_buildcheck('wiringpi'|'i2c' [, \$makefile])\n");
+    }
+
+    $makefile //= 'Makefile.PL';
+
+    _makefile_insert_buildcheck($type, $makefile);
 }
 sub add_repository {
     my ($author, $repo, $makefile) = @_;
@@ -892,6 +904,64 @@ sub _makefile_insert_repository {
     untie $tie;
 
     return 0;
+}
+sub _makefile_insert_buildcheck {
+    # Inserts the RPi::Const::BuildCheck guard shim into Makefile.PL
+
+    my ($type, $makefile) = @_;
+
+    if (! defined $type || ! defined $makefile) {
+        croak("_makefile_insert_buildcheck() needs type and makefile");
+    }
+
+    my ($mf, $tie) = _makefile_tie($makefile);
+
+    # Idempotent: leave an already-guarded Makefile.PL untouched
+    if (grep /RPi::Const::BuildCheck/, @$mf) {
+        untie $tie;
+        return -1;
+    }
+
+    # Pull RPi::Const in via CONFIGURE_REQUIRES so the check resolves at
+    # configure time, then splice the guard shim in ahead of WriteMakefile()
+    _makefile_insert_buildcheck_configure($mf);
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /^WriteMakefile\s*\(/) {
+            splice @$mf, $_, 0, _makefile_section_buildcheck($type);
+            last;
+        }
+    }
+    untie $tie;
+
+    return 0;
+}
+sub _makefile_insert_buildcheck_configure {
+    # Adds 'RPi::Const' to the CONFIGURE_REQUIRES block, creating the block
+    # ahead of PREREQ_PM if the skeleton somehow lacks one.
+
+    my ($mf) = @_;
+
+    return -1 if grep /'RPi::Const'/, @$mf;
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /CONFIGURE_REQUIRES\s*=>\s*\{/) {
+            splice @$mf, $_+1, 0, _makefile_section_buildcheck_configure();
+            return 0;
+        }
+    }
+
+    for (0..$#$mf) {
+        if ($mf->[$_] =~ /PREREQ_PM\s*=>\s*\{/) {
+            splice @$mf, $_, 0,
+                "    CONFIGURE_REQUIRES => {",
+                _makefile_section_buildcheck_configure(),
+                "    },";
+            return 0;
+        }
+    }
+
+    return -1;
 }
 
 # MANIFEST related

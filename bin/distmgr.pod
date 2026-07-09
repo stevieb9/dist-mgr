@@ -43,6 +43,9 @@ I<Options>:
     -e | --email     Mandatory: The email address of the author
     -u | --user      Optional:  The Github username (eg. stevieb9)
     -r | --repo      Optional:  The Github repository name (eg. test-module)
+    -k | --buildcheck Optional: Insert the RPi::Const::BuildCheck guard into
+                                Makefile.PL (RPi:: family only). Takes a type:
+                                'wiringpi' or 'i2c'
     -V | --verbose   Optional:  Display verbose output for each process
 
 I<Note>: For Git integration, create an empty repository on Github, then supply
@@ -65,6 +68,9 @@ I<Options>:
     -m | --module   Mandatory: The module name (eg. Test::Module)
     -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")
     -e | --email    Mandatory: The email address of the author
+    -k | --buildcheck Optional: Insert the RPi::Const::BuildCheck guard into
+                                Makefile.PL (RPi:: family only). Takes a type:
+                                'wiringpi' or 'i2c'
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
 =head2 install
@@ -74,18 +80,26 @@ you author.
 
 I<Options>:
 
-All of the below options are flags, and don't take any arguments.
+All of the below options are flags (they take no arguments), except
+C<--buildcheck> which takes a type argument.
 
     -g | --gitignore    Install .gitignore file
     -c | --ci           Install Github Actions CI configuration file
     -B | --badges       Insert CI/Coverage badges links into the module's POD
     -b | --bugtracker   Insert bugtracker information into Makefile.PL
     -R | --repository   Insert repository information into Makefile.PL
+    -k | --buildcheck   Insert the RPi::Const::BuildCheck guard into
+                        Makefile.PL. Takes a type: 'wiringpi' or 'i2c'
     -A | --all          Insert/Install all above options
+
     -V | --verbose  Optional:  (Flag) Display verbose output for each process
 
 I<Note>: For badges, bugtracker and repository, the C<--user> (Github username)
 and C<--repo> (Github repository) arguments must be supplied.
+
+I<Note>: C<--buildcheck> is RPi-specific and deliberately excluded from
+C<--all>; supply it explicitly (eg. C<--buildcheck wiringpi>) only for
+C<RPi::> family distributions.
 
 =head2 release
 

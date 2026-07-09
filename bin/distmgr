@@ -34,6 +34,7 @@ GetOptions(
     "B|badges"     => \$args{add_badges},
     "b|bugtracker" => \$args{add_bugtracker},
     "R|repository" => \$args{add_repository},
+    "k|buildcheck=s" => \$args{buildcheck},
     "A|all"        => \$args{install_all},
 
     # destroy will erase the repository before running
@@ -113,6 +114,11 @@ sub create {
 
     # manifest.t
     manifest_t();
+
+    # RPi:: family build guard (opt-in: --buildcheck wiringpi|i2c)
+    if ($args{buildcheck}) {
+        add_buildcheck($args{buildcheck});
+    }
 
     # Git actions
     if ($git) {
@@ -218,6 +224,11 @@ sub dist {
 
     # manifest.t
     manifest_t();
+
+    # RPi:: family build guard (opt-in: --buildcheck wiringpi|i2c)
+    if ($args{buildcheck}) {
+        add_buildcheck($args{buildcheck});
+    }
 }
 sub install {
     my (%args) = @_;
@@ -269,6 +280,10 @@ sub install {
     if ($args{add_repository} || $args{install_all}) {
         print "\nInstalling repository information to Makefile.PL...\n";
         add_repository($args{user}, $args{repo});
+    }
+    if ($args{buildcheck}) {
+        print "\nInstalling RPi::Const::BuildCheck guard to Makefile.PL...\n";
+        add_buildcheck($args{buildcheck});
     }
 
     help('install') if $args{help};
@@ -477,6 +492,8 @@ sub help {
             qq{    -e | --email    Mandatory: The email address of the author},
             qq{    -u | --user     Optional:  The Github username (eg. stevieb9)},
             qq{    -r | --repo     Optional:  The Github repository name (eg. test-module)},
+            qq{    -k | --buildcheck Optional: RPi:: only. Insert the RPi::Const::BuildCheck},
+            qq{                               guard into Makefile.PL ('wiringpi' or 'i2c')},
             qq{    -V | --verbose  Optional:  (Flag) Display verbose output for each process},
             qq{    -h | --help     Optional:  (Flag) Display this help message},
             qq{},
@@ -496,6 +513,8 @@ sub help {
             qq{    -m | --module   Mandatory: The module name (eg. Test::Module)},
             qq{    -a | --author   Mandatory: The name of the author (eg. "Steve Bertrand")},
             qq{    -e | --email    Mandatory: The email address of the author},
+            qq{    -k | --buildcheck Optional: RPi:: only. Insert the RPi::Const::BuildCheck},
+            qq{                               guard into Makefile.PL ('wiringpi' or 'i2c')},
             qq{    -V | --verbose  Optional:  (Flag) Display verbose output for each process},
             qq{    -h | --help     Optional:  (Flag) Display this help message},
             qq{},
@@ -540,6 +559,8 @@ sub help {
             qq{    -B | --badges       Insert CI/Coverage badges links into the module's POD},
             qq{    -b | --bugtracker   Insert bugtracker information into Makefile.PL},
             qq{    -R | --repository   Insert repository information into Makefile.PL},
+            qq{    -k | --buildcheck   RPi:: only. Insert the RPi::Const::BuildCheck guard},
+            qq{                        into Makefile.PL ('wiringpi' or 'i2c'); not in --all},
             qq{    -A | --all          Insert/Install all above options},
             qq{    -h | --help         Optional:  (Flag) Display this help message},
             qq{},

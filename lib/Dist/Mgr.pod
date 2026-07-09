@@ -68,6 +68,35 @@ default to C<./Makefile.PL>.
 
 I<Returns>: C<0> upon success.
 
+=head2 add_buildcheck
+
+Inserts the C<RPi::WiringPi> family's canonical build guard into a new
+distribution's C<Makefile.PL>, so RPi:: modules are born with the correct
+NA-not-FAIL behaviour on CPAN testers. It splices an C<eval>-guarded call to
+L<RPi::Const::BuildCheck> in ahead of C<WriteMakefile()> and adds C<RPi::Const>
+to C<CONFIGURE_REQUIRES>.
+
+This is B<opt-in> and RPi-specific: it is not run by L</init>, so it never
+touches a non-RPi distribution. Call it after L</init> for a new RPi:: dist.
+
+I<Use>: After L</init>, or any time.
+
+I<Parameters>:
+
+    $type
+
+I<Mandatory, String>: Which build check to install - C<'wiringpi'> for a
+distribution that links C<wiringPi>, or C<'i2c'> for one that uses the raw
+Linux I2C headers.
+
+    $makefile
+
+I<Optional, String>: The path and name of the C<Makefile.PL> file to use. We
+default to C<./Makefile.PL>.
+
+I<Returns>: C<0> upon success; C<-1> if the guard is already present (the call
+is idempotent).
+
 =head2 add_repository
 
 Adds repository information to the C<Makefile.PL> file. If the required

@@ -16,6 +16,7 @@ t/03-copyright.t
 t/05-version_bump.t
 t/10-version_info.t
 t/15-add_repo_add_bugtrack.t
+t/16-add_buildcheck.t
 t/20-ci_config_files.t
 t/25-ci_badges.t
 t/30-manifest_skip.t

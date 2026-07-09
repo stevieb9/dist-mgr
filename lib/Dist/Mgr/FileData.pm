@@ -22,6 +22,8 @@ our @EXPORT_OK = qw(
     _makefile_section_meta_merge
     _makefile_section_bugtracker
     _makefile_section_repo
+    _makefile_section_buildcheck
+    _makefile_section_buildcheck_configure
 
     _manifest_skip_file
     _manifest_t_file
@@ -254,6 +256,59 @@ sub _makefile_section_repo {
         "            },"
     );
 
+}
+
+sub _makefile_section_buildcheck {
+    # The RPi::Const::BuildCheck guard shim, inserted before WriteMakefile() in
+    # a new RPi:: family distribution so it's born with the family-canonical
+    # wiringPi/i2c build check (NA-not-FAIL on CPAN testers). $type selects the
+    # check: 'wiringpi' for dists linking wiringPi, 'i2c' for raw-I2C dists.
+
+    my ($type) = @_;
+
+    $type //= 'wiringpi';
+
+    my %spec = (
+        wiringpi => {
+            comment => 'wiringPi presence + version guard',
+            check   => 'wiringpi_build_check',
+            missing => 'wiringPi is missing or too old',
+            skip    => 'wiringPi',
+        },
+        i2c => {
+            comment => 'I2C development-header presence guard',
+            check   => 'i2c_build_check',
+            missing => 'the I2C headers are missing',
+            skip    => 'i2c',
+        },
+    );
+
+    my $s = $spec{$type}
+        or die "_makefile_section_buildcheck() type must be 'wiringpi' or 'i2c'\n";
+
+    return (
+        "# The $s->{comment} is the family-canonical check in",
+        "# RPi::Const::BuildCheck (pulled in via CONFIGURE_REQUIRES below). It honours",
+        "# RPI_DIST_RELEASE and exits 0 with a message before WriteMakefile when",
+        "# $s->{missing}, so CPAN testers report NA, not FAIL.",
+        "eval {",
+        "    require RPi::Const::BuildCheck;",
+        "    RPi::Const::BuildCheck::$s->{check}();",
+        "    1;",
+        "} or do {",
+        "    print \"RPi::Const (the build-check dependency) is not installed; install \" .",
+        "          \"it first, or set RPI_DIST_RELEASE to skip the $s->{skip} check.\\n\";",
+        "    exit 0 if ! \$ENV{RPI_DIST_RELEASE};",
+        "};",
+        "",
+    );
+}
+sub _makefile_section_buildcheck_configure {
+    # The CONFIGURE_REQUIRES entry that pulls RPi::Const (which ships
+    # RPi::Const::BuildCheck) in before configure runs.
+    return (
+        "        'RPi::Const'          => '1.07',",
+    );
 }
 
 sub _manifest_skip_file {
